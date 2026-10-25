@@ -590,7 +590,7 @@ https://migu.yang-1989.xyz/sh/tz9qmc.m3u8
 https://migu.yang-1989.xyz/sh/bv6ev8.m3u8
 #EXTINF:-1 tvg-id="上海都市" tvg-name="上海都市" tvg-logo="https://iptv.yang-1989.xyz/logo/上海都市频道.webp" group-title="其他" catchup="append" catchup-days="3" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHmmss}",上海都市频道「72小时回看」
 https://migu.yang-1989.xyz/sh/2ge7yp.m3u8
-#EXTINF:-1 tvg-id="上海新纪实" tvg-name="上海新纪实" tvg-logo="https://iptv.yang-1989.xyz/logo/上海新纪实.webp" group-title="其他" catchup="append" catchup-days="3" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHmmss}",上海新纪实「72小时回看」
+#EXTINF:-1 tvg-id="上海新纪实" tvg-name="上海新纪实" tvg-logo="https://iptv.yang-1989.xyz/logo/上海新纪实.webp" group-title="其他" catchup="append" catchup-days="3" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHmmss}",上海新纪实
 https://migu.yang-1989.xyz/sh/mhw63f.m3u8
 #EXTINF:-1 tvg-id="魔都眼" tvg-name="魔都眼" tvg-logo="https://iptv.yang-1989.xyz/logo/魔都眼.webp" group-title="其他",魔都眼
 https://migu.yang-1989.xyz/sh/rjmgwh.m3u8
