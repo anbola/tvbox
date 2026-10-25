@@ -184,6 +184,31 @@ anbola/tvbox
 - 多半地址末尾多了空格，或填成了介绍页网页而非 `.json` 直链。请整行复制「一、源地址一览」里的地址。
 - 老旧 Android 5 电视若报证书错误，可把 `https://` 换成 `http://`（仅当该服务器支持时）。
 
+### Q4. 导入配置弹「导入配置错误」，而且**时好时坏**
+已逐项排查，**结论：配置文件本身没问题**：
+
+| 检查项 | 结果 |
+|--------|------|
+| 格式（是否合法 JSON） | ✅ 4 个配置全部合法 |
+| 编码（UTF-8 / BOM） | ✅ UTF-8，**无 BOM** |
+| 响应头 Content-Type | ✅ `application/json; charset=utf-8` |
+| 一致性（连续抓取） | ✅ 大小完全一致，无截断/半包 |
+
+真实原因集中在三点：
+1. **Pages 重建 / CDN 窗口（最常见）**：仓库每次更新后，GitHub Pages 要几十秒~几分钟重建并刷新 CDN。你若正好在这个窗口导入，就会拿到未就绪或旧内容 → 报错，过一会儿再试又成功。**对策：刚更新完等 2–3 分钟再导入。**
+2. **国内访问 `github.io` 不稳定**：时快时慢、偶发超时。**对策：换下面的镜像地址。**
+3. **`stores` 字段兼容性**：`tvbox_subscription.json` 原先只靠 `stores` 间接加载、自身没有 `sites`，部分 TVBox 分支不支持 `stores` → 必然或不稳定失败。**已修复：现改为自包含**（自带 14 站点 + 10 直播 + 解析 + 规则，不再依赖 `stores`）。
+
+**导入前先自检（成功/失败都有明确反馈）**：打开 <https://anbola.github.io/tvbox/status.html>，
+会逐项显示每个配置是否生效、能否解析、大小与更新时间。**全绿再导入**即可避开上述问题。
+
+**镜像备选**（整条填进「配置地址」，哪个快用哪个）：
+- jsDelivr：`https://cdn.jsdelivr.net/gh/anbola/tvbox@main/tvbox_curated.json`
+- fastly：`https://fastly.jsdelivr.net/gh/anbola/tvbox@main/tvbox_curated.json`
+- ghfast：`https://ghfast.top/https://raw.githubusercontent.com/anbola/tvbox/main/tvbox_curated.json`
+
+> 镜像同步有延迟；若镜像缺最新改动，回到 `anbola.github.io` 即可。
+
 ---
 
 ## 六、自动更新机制
