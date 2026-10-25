@@ -1,0 +1,41 @@
+name: 更新直播源（每日）
+
+on:
+  schedule:
+    # 每天 05:30 (UTC+8 13:30) 自动重跑
+    - cron: '30 21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: pip install opencc-python-reimplemented
+
+      - name: 抓取原始直播源
+        run: python tools/fetch_raw.py
+
+      - name: 清洗（台名中文化 + 分辨率统一）
+        run: python tools/clean_lives.py
+
+      - name: 提交更新
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add lives/
+          if git diff --staged --quiet; then
+            echo "无变化，跳过提交"
+          else
+            git commit -m "chore(auto): 每日刷新直播源（$(date +%Y-%m-%d)）"
+            git push
+          fi
