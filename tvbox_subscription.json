@@ -7,27 +7,27 @@
   ],
   "lives": [
     {
-      "name": "央视·卫视精选（149台·中文台名）",
+      "name": "① 央视·卫视（分类简洁·央视置顶）",
       "url": "https://weiyou777.github.io/tvbox/lives/cn_clean.m3u"
     },
     {
-      "name": "咪咕中转·央视卫视（338台·最稳）",
+      "name": "② 咪咕中转·央视卫视（338台·最稳）",
       "url": "https://weiyou777.github.io/tvbox/lives/yang_clean.m3u"
     },
     {
-      "name": "每日更新·央视卫视（620台）",
+      "name": "③ 每日更新·央视卫视（620台）",
       "url": "https://weiyou777.github.io/tvbox/lives/mzky_clean.m3u"
     },
     {
-      "name": "Guovin 中国IPTV（1618台）",
+      "name": "④ Guovin 中国IPTV（1618台·线路多）",
       "url": "https://weiyou777.github.io/tvbox/lives/guovin_clean.m3u"
     },
     {
-      "name": "4K·8K 超高清频道（120台）",
+      "name": "⑤ 4K·8K 超高清频道（120台）",
       "url": "https://weiyou777.github.io/tvbox/lives/kimentanm_clean.m3u"
     },
     {
-      "name": "联通组播·央视卫视（96台）",
+      "name": "⑥ 联通组播·央视卫视（96台）",
       "url": "https://weiyou777.github.io/tvbox/lives/yuechan_clean.m3u"
     }
   ],
