@@ -231,21 +231,10 @@ def main():
     print("=" * 68)
     print("逐个验证直播源（托管的清洗版 m3u）")
     print("=" * 68)
-    # ---- 直播源由自愈脚本 autoheal_lives.py 维护，这里只“沿用”，绝不覆盖 ----
-    # 读取即将写入的 tvbox_curated.json 里已有的 lives（自愈脚本每日刷新它），
-    # 使精选配置的直播源始终与自愈结果一致，且不会回退到旧账号域名。
-    existing_lives = []
-    out_preview = os.path.join(HERE, "tvbox_curated.json")
-    if os.path.basename(os.path.dirname(HERE)) == "tools":
-        out_preview = os.path.join(os.path.dirname(os.path.dirname(HERE)), "tvbox_curated.json")
-    if os.path.exists(out_preview):
-        try:
-            _cur = json.load(open(out_preview, encoding="utf-8"))
-            existing_lives = _cur.get("lives", []) or []
-        except Exception:
-            existing_lives = []
-
-    # 仅在全新仓库（尚无 tvbox_curated.json）时使用的回退直播源（anbola 域名）
+    # ---- 直播源：优先采用自愈脚本产出的最健康 10 源（tvbox_lives.json），
+    #      否则回退到内置 10 个清洗源。刻意“不再沿用”旧 curated 里的 lives，
+    #      以免失效文件名（如旧账号遗留的 cn.m3u，实际文件是 cn_clean.m3u，
+    #      直接 404）被每次 CI 反复带入，导致“配置地址”里自带直播源失效。 ----
     FALLBACK_LIVES = [
         ("央视·卫视精选", "cn_clean.m3u"),
         ("咪咕中转·央视卫视", "yang_clean.m3u"),
@@ -260,6 +249,18 @@ def main():
     ]
     fallback_lives = [{"name": n, "url": G + f} for n, f in FALLBACK_LIVES]
 
+    # 读取自愈脚本维护的 tvbox_lives.json（若存在则优先，确保与每日刷新一致）
+    lives_from_heal = []
+    lives_json_path = os.path.join(HERE, "tvbox_lives.json")
+    if os.path.basename(os.path.dirname(HERE)) == "tools":
+        lives_json_path = os.path.join(os.path.dirname(os.path.dirname(HERE)), "tvbox_lives.json")
+    if os.path.exists(lives_json_path):
+        try:
+            _lh = json.load(open(lives_json_path, encoding="utf-8"))
+            lives_from_heal = _lh.get("lives", []) or []
+        except Exception:
+            lives_from_heal = []
+
     # 组装配置（自包含，不依赖已有文件，便于在 CI 中独立运行）
     base = {
         "wallpaper": "https://www.loliapi.com/acg/",
@@ -272,8 +273,8 @@ def main():
         ],
     }
     base["sites"] = good_sites
-    # 沿用自愈直播源；若首次运行尚无 lives，则回退到内置 10 个
-    base["lives"] = existing_lives if existing_lives else fallback_lives
+    # 直播源：优先用自愈脚本的 10 源，否则回退内置 10 个（均为已验证存在的 *_clean.m3u）
+    base["lives"] = lives_from_heal if lives_from_heal else fallback_lives
     base["parses"] = [{"name": "阿雪解析", "type": 1, "url": "https://jx.xmflv.com/?url="}]
     base["spider"] = ""   # 全部使用明文 API，无需加密 jar
 
@@ -291,7 +292,7 @@ def main():
     print()
     print(f"→ 已生成 {os.path.basename(out)}（仓库根目录）")
     print(f"  点播源 {len(good_sites)} 个（全部实测可用）")
-    print(f"  直播源 {len(base['lives'])} 个（沿用自愈脚本结果）")
+    print(f"  直播源 {len(base['lives'])} 个（自愈脚本 10 源 / 回退内置 10 源）")
     print(f"  解析接口 {len(base['parses'])} 个（实测可解析）")
 
 
