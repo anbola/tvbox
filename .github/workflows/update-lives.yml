@@ -27,12 +27,15 @@ jobs:
       - name: 自愈式刷新直播源（探测 19 源 → 清洗 → 取最健康 10 源）
         run: python tools/autoheal_lives.py
 
+      - name: 合并 MyTV 订阅源（10 源 → mytv.m3u）
+        run: python tools/make_mytv.py
+
       - name: 提交更新
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config pull.rebase true
-          git add lives/ tools/lives/ tvbox_curated.json tvbox_multisource.json tvbox_subscription.json tvbox_lives.json
+          git add lives/ tools/lives/ tools/make_mytv.py tvbox_curated.json tvbox_multisource.json tvbox_subscription.json tvbox_lives.json mytv.m3u
           if git diff --staged --quiet; then
             echo "无变化，跳过提交"
           else
