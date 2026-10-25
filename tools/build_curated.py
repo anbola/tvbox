@@ -272,6 +272,11 @@ def main():
         out = os.path.join(os.path.dirname(os.path.dirname(HERE)), "tvbox_curated.json")
     with open(out, "w", encoding="utf-8") as f:
         json.dump(base, f, ensure_ascii=False, indent=2)
+    # 同步生成「点播专用」拆分文件（供没有订阅入口的 TVBox 直接粘进"点播源"框）
+    sites_cfg = {k: v for k, v in base.items() if k != "lives"}
+    with open(os.path.join(os.path.dirname(out), "tvbox_sites.json"), "w", encoding="utf-8") as f:
+        json.dump(sites_cfg, f, ensure_ascii=False, indent=2)
+    print(f"  已生成 tvbox_sites.json（点播专用，{len(base['sites'])} 源）")
     print()
     print(f"→ 已生成 {os.path.basename(out)}（仓库根目录）")
     print(f"  点播源 {len(good_sites)} 个（全部实测可用）")
