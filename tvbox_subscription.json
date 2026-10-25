@@ -7,44 +7,44 @@
   ],
   "lives": [
     {
-      "name": "央视·卫视精选（149台·中文台名）",
-      "url": "https://anbola.github.io/tvbox/lives/cn_clean.m3u"
-    },
-    {
-      "name": "咪咕中转·央视卫视（338台·实测最稳）",
-      "url": "https://anbola.github.io/tvbox/lives/yang_clean.m3u"
-    },
-    {
-      "name": "每日更新·央视卫视（620台·实测3/3可播）",
-      "url": "https://anbola.github.io/tvbox/lives/mzky_clean.m3u"
-    },
-    {
-      "name": "YangGather 咪咕移动（123台·3/3可播）",
-      "url": "https://anbola.github.io/tvbox/lives/yanggather_clean.m3u"
-    },
-    {
-      "name": "每日检测·央视卫视（104台·3/3可播）",
-      "url": "https://anbola.github.io/tvbox/lives/bestfan_clean.m3u"
-    },
-    {
-      "name": "Guovin 中国IPTV（1618台·线路多）",
-      "url": "https://anbola.github.io/tvbox/lives/guovin_clean.m3u"
-    },
-    {
-      "name": "BigBig 聚合源（1956台·2/3可播）",
-      "url": "https://anbola.github.io/tvbox/lives/bigbig_clean.m3u"
-    },
-    {
-      "name": "CCSH 自动采集（2811台·最多）",
+      "name": "CCSH 自动采集（2811台）",
       "url": "https://anbola.github.io/tvbox/lives/ccsh_clean.m3u"
     },
     {
-      "name": "4K·8K 超高清频道（120台）",
-      "url": "https://anbola.github.io/tvbox/lives/kimentanm_clean.m3u"
+      "name": "BigBig 聚合源（1956台）",
+      "url": "https://anbola.github.io/tvbox/lives/bigbig_clean.m3u"
     },
     {
-      "name": "联通组播·央视卫视（96台）",
-      "url": "https://anbola.github.io/tvbox/lives/yuechan_clean.m3u"
+      "name": "Guovin 中国IPTV（1618台）",
+      "url": "https://anbola.github.io/tvbox/lives/guovin_clean.m3u"
+    },
+    {
+      "name": "Vamoschuck·TV（896台）",
+      "url": "https://anbola.github.io/tvbox/lives/vamos_clean.m3u"
+    },
+    {
+      "name": "咪咕中转·央视卫视（620台）",
+      "url": "https://anbola.github.io/tvbox/lives/mzky_clean.m3u"
+    },
+    {
+      "name": "直播帝·IPV4（506台）",
+      "url": "https://anbola.github.io/tvbox/lives/zbds4_clean.m3u"
+    },
+    {
+      "name": "Yang·咪咕移动（338台）",
+      "url": "https://anbola.github.io/tvbox/lives/yang_clean.m3u"
+    },
+    {
+      "name": "央视·卫视精选（149台）",
+      "url": "https://anbola.github.io/tvbox/lives/cn_clean.m3u"
+    },
+    {
+      "name": "YangGather·聚合（123台）",
+      "url": "https://anbola.github.io/tvbox/lives/yanggather_clean.m3u"
+    },
+    {
+      "name": "Kimentanm·IPTV（120台）",
+      "url": "https://anbola.github.io/tvbox/lives/kimentanm_clean.m3u"
     }
   ],
   "parses": [
