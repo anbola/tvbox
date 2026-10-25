@@ -40,34 +40,5 @@
       "name": "Kimentanm·IPTV（120台）",
       "url": "https://anbola.github.io/tvbox/lives/kimentanm_clean.m3u"
     }
-  ],
-  "parses": [
-    {
-      "name": "阿雪解析",
-      "type": 1,
-      "url": "https://jx.xmflv.com/?url="
-    }
-  ],
-  "rules": [
-    "vip",
-    "tpl",
-    "ju",
-    "qb",
-    "iqiyi",
-    "qiyi",
-    "letv",
-    "sohu",
-    "qq",
-    "wetv",
-    "mgtv",
-    "bilibili",
-    "wasu",
-    "tvid",
-    "renrenmi",
-    "广告",
-    "最新",
-    "公益",
-    "排行",
-    "推荐"
   ]
 }
