@@ -4,18 +4,18 @@
   "parses": [],
   "flags": [],
   "stores": [
-    { "name": "qist(每日更新·★12k)", "url": "https://raw.githubusercontent.com/qist/tvbox/master/jsm.json" },
+    { "name": "qist(每日更新·★12k)", "url": "https://ghproxy.net/https://raw.githubusercontent.com/qist/tvbox/master/jsm.json" },
     { "name": "liucn(实测可用)", "url": "https://raw.liucn.cc/box/m.json" },
     { "name": "王小二(实测可用)", "url": "https://9280.kstore.space/wex.json" },
-    { "name": "南风yoursmile66(活跃)", "url": "https://raw.githubusercontent.com/yoursmile66/TVBox/main/XC.json" },
-    { "name": "TVboxorg官方聚合(每日)", "url": "https://raw.githubusercontent.com/TVboxorg/TVbox/main/dist/official.json" }
+    { "name": "南风yoursmile66(活跃)", "url": "https://ghproxy.net/https://raw.githubusercontent.com/yoursmile66/TVBox/main/XC.json" },
+    { "name": "TVboxorg官方聚合(每日)", "url": "https://ghproxy.net/https://raw.githubusercontent.com/TVboxorg/TVbox/main/dist/official.json" }
   ],
   "lives": [
     { "name": "iptv-org中国(实测149台·首选)", "url": "https://iptv-org.github.io/iptv/countries/cn.m3u" },
     { "name": "YanG-1989(实测338台·首选)", "url": "https://iptv.yang-1989.xyz/playlist.m3u" },
-    { "name": "Guovin中国IPTV(★25k·活跃)", "url": "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.m3u" },
-    { "name": "mzky-itvlist(每日自动·活跃)", "url": "https://raw.githubusercontent.com/mzky/checklist/master/itvlist.m3u" },
-    { "name": "YueChan国内(活跃)", "url": "https://raw.githubusercontent.com/YueChan/live/main/IPTV.m3u" },
+    { "name": "Guovin中国IPTV(★25k·活跃)", "url": "https://ghproxy.net/https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.m3u" },
+    { "name": "mzky-itvlist(每日自动·活跃)", "url": "https://ghproxy.net/https://raw.githubusercontent.com/mzky/checklist/master/itvlist.m3u" },
+    { "name": "YueChan国内(活跃)", "url": "https://ghproxy.net/https://raw.githubusercontent.com/YueChan/live/main/IPTV.m3u" },
     { "name": "iptv-org全球(实测11333台·太重,老电视慎选)", "url": "https://iptv-org.github.io/iptv/index.m3u" }
   ],
   "wallpaper": "",
