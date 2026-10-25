@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: 安装依赖
+        run: pip install opencc-python-reimplemented
+
       - name: 逐源验证并重建精选配置
         run: python tools/build_curated.py
 
