@@ -1,50 +1,41 @@
 {
   "stores": [
     {
-      "name": "王小二(kstore可达)",
-      "url": "https://9280.kstore.space/wex.json"
-    },
-    {
-      "name": "liucn(liucn.cc可达)",
-      "url": "https://raw.liucn.cc/box/m.json"
-    },
-    {
-      "name": "qist(★12k·ghproxy)",
-      "url": "https://ghproxy.net/https://raw.githubusercontent.com/qist/tvbox/master/jsm.json"
-    },
-    {
-      "name": "南风yoursmile66(ghproxy)",
-      "url": "https://ghproxy.net/https://raw.githubusercontent.com/yoursmile66/TVBox/main/XC.json"
-    },
-    {
-      "name": "TVboxorg官方聚合(ghproxy)",
-      "url": "https://ghproxy.net/https://raw.githubusercontent.com/TVboxorg/TVbox/main/dist/official.json"
+      "name": "🎬精选点播（已实测·8源可用）",
+      "url": "https://weiyou777.github.io/tvbox/tvbox_curated.json"
     }
   ],
   "lives": [
     {
-      "name": "① 央视·卫视精选（145台·可用45%·中文台名）",
+      "name": "央视·卫视精选（149台·中文台名）",
       "url": "https://weiyou777.github.io/tvbox/lives/cn_clean.m3u"
     },
     {
-      "name": "② 咪咕中转·央视卫视（338台·可用61%·实测最稳）",
+      "name": "咪咕中转·央视卫视（338台·最稳）",
       "url": "https://weiyou777.github.io/tvbox/lives/yang_clean.m3u"
     },
     {
-      "name": "③ 每日更新·央视卫视（620台·可用64%·台最多）",
+      "name": "每日更新·央视卫视（620台）",
       "url": "https://weiyou777.github.io/tvbox/lives/mzky_clean.m3u"
     },
     {
-      "name": "④ Guovin 中国IPTV（1618台·可用38%·线路多）",
+      "name": "Guovin 中国IPTV（1618台）",
       "url": "https://weiyou777.github.io/tvbox/lives/guovin_clean.m3u"
     },
     {
-      "name": "⑤ 4K·8K 超高清频道（120台·可用38%）",
+      "name": "4K·8K 超高清频道（120台）",
       "url": "https://weiyou777.github.io/tvbox/lives/kimentanm_clean.m3u"
     },
     {
-      "name": "⑥ 联通组播·央视卫视（96台·组播需同网段）",
+      "name": "联通组播·央视卫视（96台）",
       "url": "https://weiyou777.github.io/tvbox/lives/yuechan_clean.m3u"
+    }
+  ],
+  "parses": [
+    {
+      "name": "阿雪解析",
+      "type": 1,
+      "url": "https://jx.xmflv.com/?url="
     }
   ]
 }
