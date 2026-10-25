@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>配置自检 · 导入前先看这里</title>
+<style>
+  :root{--ok:#0a0;--bad:#c00;--warn:#c60}
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;font:14px/1.6 -apple-system,"Microsoft YaHei",sans-serif;background:#f6f7f9;color:#222}
+  h1{font-size:18px;margin:0 0 4px}
+  .sub{color:#666;font-size:12px;margin-bottom:14px}
+  .card{background:#fff;border:1px solid #e3e6ea;border-radius:10px;padding:12px;margin-bottom:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:7px 8px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
+  th{background:#fafbfc;color:#555;font-weight:600}
+  td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px;word-break:break-all}
+  .ok{color:var(--ok);font-weight:600}
+  .bad{color:var(--bad);font-weight:600}
+  .warn{color:var(--warn);font-weight:600}
+  code{background:#f2f4f6;padding:1px 5px;border-radius:4px;font-size:12px;word-break:break-all}
+  .tip{background:#fff8e6;border:1px solid #ffe0a3;border-radius:8px;padding:10px;margin-bottom:12px;font-size:13px}
+  button{background:#1677ff;color:#fff;border:0;border-radius:6px;padding:8px 14px;font-size:13px;cursor:pointer}
+  .grp{font-size:12px;color:#888;margin-top:2px}
+</style>
+</head>
+<body>
+<h1>配置自检 · 导入前先看这里</h1>
+<div class="sub">打开本页即自动检测各配置文件是否<strong>已生效</strong>、能否<strong>正常解析</strong>。全绿再导入，可避免「导入配置错误」。</div>
+
+<div class="tip">
+  <strong>为什么导入会「时好时坏」？</strong> 配置托管在 GitHub Pages，每次仓库更新后 Pages 需要
+  <strong>几十秒到几分钟</strong>重建并刷新 CDN。你若正好在这个窗口导入，就会拿到未就绪/旧内容而报错。
+  另外国内访问 <code>github.io</code> 本身时快时慢。<strong>建议：看到本页全绿后再导入；刚更新完请等 2–3 分钟。</strong>
+</div>
+
+<div class="card">
+  <button id="btn">重新检测</button>
+  <span id="stamp" class="grp"></span>
+  <table style="margin-top:10px">
+    <thead><tr><th style="width:20%">配置文件</th><th style="width:11%">状态</th><th style="width:9%">大小</th><th>解析结果</th><th style="width:16%">更新时间</th></tr></thead>
+    <tbody id="tb"><tr><td colspan="5">检测中…</td></tr></tbody>
+  </table>
+</div>
+
+<div class="card">
+  <strong>推荐填法（极速 + 学习导向）</strong>
+  <div class="grp">「配置地址」填 <code>tvbox_sites.json</code>（只带 14 个点播，不带 9000 台直播，秒开）</div>
+  <div class="grp">「直播源」框填 <code>lives/fast.m3u</code>（央视优先 + 动漫/电影/纪录片前置）</div>
+  <div class="grp">⚠️ 「直播源」框只放 .m3u 或纯直播 JSON，<strong>不要</strong>放完整配置 JSON，否则必弹「配置解析失败」。</div>
+</div>
+
+<div class="card">
+  <strong>若 <code>github.io</code> 在你那打不开/很慢，可换镜像（把下面的地址整条填进「配置地址」）</strong>
+  <div class="grp">jsDelivr：<code>https://cdn.jsdelivr.net/gh/anbola/tvbox@main/tvbox_curated.json</code></div>
+  <div class="grp">fastly：<code>https://fastly.jsdelivr.net/gh/anbola/tvbox@main/tvbox_curated.json</code></div>
+  <div class="grp">ghfast：<code>https://ghfast.top/https://raw.githubusercontent.com/anbola/tvbox/main/tvbox_curated.json</code></div>
+  <div class="grp">镜像同步有延迟，若镜像缺少最新改动，回到 <code>anbola.github.io</code> 即可。</div>
+</div>
+
+<script>
+const BASE="https://anbola.github.io/tvbox/";
+const ITEMS=[
+ {f:"tvbox_curated.json", d:"全量配置(点播+直播+解析)"},
+ {f:"tvbox_sites.json",   d:"点播专用(推荐极速组合)"},
+ {f:"tvbox_subscription.json", d:"订阅入口(已自包含,无 stores)"},
+ {f:"tvbox_lives.json",   d:"纯直播 JSON(直播源框)"},
+ {f:"lives/fast.m3u",     d:"极速直播源(央视优先)"},
+];
+const tb=document.getElementById("tb");
+function esc(s){return (s+"").replace(/[&<>]/g,c=>c==="&"?"&amp;":c==="<"?"&lt;":"&gt;");}
+async function one(it){
+  const url=BASE+it.f, noCache=url+(url.includes("?")?"&":"?")+"_t="+Date.now();
+  try{
+    const r=await fetch(noCache,{cache:"no-store"});
+    const txt=await r.text();
+    const lm=r.headers.get("last-modified")||"-";
+    let detail="", good=false;
+    if(!r.ok){ detail='<span class="bad">HTTP '+r.status+'</span>'; }
+    else if(it.f.endsWith(".json")){
+      try{ const j=JSON.parse(txt.replace(/^\uFEFF/,""));
+        const ns=(j.sites||[]).length, nl=(j.lives||[]).length;
+        detail='合法 JSON · 站点 '+(ns||'0')+' · 直播 '+(nl||'0')+
+               (j.stores?' · <span class="warn">含 stores(部分版本不兼容)</span>':'');
+        good=true;
+      }catch(e){ detail='<span class="bad">JSON 解析失败：'+esc(e.message)+'</span>'; }
+    }else{
+      const n=(txt.match(/#EXTINF/g)||[]).length;
+      if(txt.trimStart().startsWith("#EXTM3U")&&n>0){ detail='合法 m3u · '+n+' 个频道'; good=true; }
+      else detail='<span class="bad">非 m3u 或 0 频道</span>';
+    }
+    const kb=(new TextEncoder().encode(txt)).length;
+    return `<tr><td class="mono">${it.f}<div class="grp">${it.d}</div></td>
+      <td class="${good?'ok':'bad'}">${good?'✅ 正常':'❌ 异常'}</td>
+      <td>${(kb/1024).toFixed(1)} KB</td><td>${detail}</td><td class="grp">${esc(lm)}</td></tr>`;
+  }catch(e){
+    return `<tr><td class="mono">${it.f}</td><td class="bad">❌ 取不到</td><td>-</td>
+      <td class="bad">${esc(e.message)}（网络不通/被拦截）</td><td>-</td></tr>`;
+  }
+}
+async function run(){
+  tb.innerHTML='<tr><td colspan="5">检测中…</td></tr>';
+  const rows=await Promise.all(ITEMS.map(one));
+  tb.innerHTML=rows.join("");
+  document.getElementById("stamp").textContent="检测时间："+new Date().toLocaleString("zh-CN");
+}
+document.getElementById("btn").onclick=run;
+run();
+</script>
+</body>
+</html>
