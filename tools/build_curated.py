@@ -27,33 +27,46 @@ CAND_APIS = [
     ("apibdzy.com",  "https://api.apibdzy.com/api.php/provide/vod/?ac=list", "🎬百度┃采集"),
     ("bfzyapi.com",  "https://bfzyapi.com/api.php/provide/vod", "🎬暴風┃采集"),
     ("360zy.com",    "https://360zy.com/api.php/provide/vod?", "🎬360┃采集"),
+    ("rycjapi.com",  "https://cj.rycjapi.com/api.php/provide/vod", "🎬如意┃资源"),
+    ("ffzy1.tv",     "http://ffzy1.tv/api.php/provide/vod/", "🎬非凡2┃资源"),
     # 下面是实测已失效的，保留在列表里以证明筛选有效
     ("kekezy1.com",  "https://kekezy1.com/api.php/provide/vod/?ac=list", "✗可可"),
     ("49zy1.com",    "https://49zy1.com/api.php/provide/vod/?ac=list", "✗四九"),
     ("qhzyapi.com",  "https://caiji.qhzyapi.com/api.php/provide/vod/", "✗奇虎"),
-    ("rycjapi.com",  "https://cj.rycjapi.com/api.php/provide/vod", "✗如意"),
-    ("ffzy1.tv",     "http://ffzy1.tv/api.php/provide/vod/", "✗非凡1"),
     ("taopianapi.com", "https://taopianapi.com/cjapi/mc/vod/json.html", "✗淘片"),
     ("mv.wogg.link", "https://mv.wogg.link/mv/vod", "✗MTV"),
     ("feisuzyapi.com", "https://www.feisuzyapi.com/api.php/provide/vod/?ac=list", "✗飞速"),
     ("xiaohu.icu",   "http://c.xiaohu.icu/api.php/provide/vod/", "✗小胡"),
 ]
 
+# 有些采集站会校验 Referer/Origin，缺失时返回 403
+EXTRA_HEADERS = {
+    "apibdzy.com": {"Referer": "https://api.apibdzy.com/", "Origin": "https://api.apibdzy.com"},
+    "360zy.com":   {"Referer": "https://360zy.com/", "Origin": "https://360zy.com"},
+    "bfzyapi.com": {"Referer": "https://bfzyapi.com/", "Origin": "https://bfzyapi.com"},
+    "huyaapi.com": {"Referer": "https://www.huyaapi.com/", "Origin": "https://www.huyaapi.com"},
+}
+
 
 def verify_api(item):
     domain, url, label = item
-    try:
-        r = urllib.request.Request(url, headers=UA)
-        d = urllib.request.urlopen(r, timeout=25, context=CTX).read()
-        j = json.loads(d.decode("utf-8", "ignore"))
-        cls = j.get("class", [])
-        if "list" in j and len(cls) > 0:
-            return item, True, f"{len(cls)}个分类"
-        return item, False, "非标准结构"
-    except urllib.error.HTTPError as e:
-        return item, False, f"HTTP {e.code}"
-    except Exception as e:
-        return item, False, type(e).__name__
+    hdrs = dict(UA)
+    hdrs.update(EXTRA_HEADERS.get(domain, {}))
+    last = ""
+    for attempt in range(2):          # 重试一次，避开偶发 403
+        try:
+            r = urllib.request.Request(url, headers=hdrs)
+            d = urllib.request.urlopen(r, timeout=25, context=CTX).read()
+            j = json.loads(d.decode("utf-8", "ignore"))
+            cls = j.get("class", [])
+            if "list" in j and len(cls) > 0:
+                return item, True, f"{len(cls)}个分类"
+            return item, False, "非标准结构"
+        except urllib.error.HTTPError as e:
+            last = f"HTTP {e.code}"
+        except Exception as e:
+            last = type(e).__name__
+    return item, False, last
 
 
 def verify_m3u(url):
@@ -108,13 +121,21 @@ def main():
         if ok:
             good_lives.append({"name": name, "url": url})
 
-    # 组装配置
-    base = json.load(open(os.path.join(HERE, "tvbox_multisource.json"), encoding="utf-8"))
+    # 组装配置（自包含，不依赖已有文件，便于在 CI 中独立运行）
+    base = {
+        "wallpaper": "https://www.loliapi.com/acg/",
+        "logo": "https://storage.7x24cc.com/storage-server/presigned/ss1/a6-online-fileupload/newMediaFile/3CEAE9E_773_wexfnw_20250911190012684newMediaFile.gif",
+        "doh": ["https://1.12.12.12/dns-query", "https://doh.pub/dns-query"],
+        "ads": ["https://ads.cmc.cc/uu.php?type=hsdh"],
+        "rules": ["vip", "tpl", "ju", "qb", "iqiyi", "qiyi", "letv", "sohu", "qq", "wetv", "mgtv", "bilibili", "wasu", "tvid", "renrenmi"],
+        "headers": [
+            {"host": "hlsztemgsplive.miguvideo.com", "header": {"User-Agent": "bingcha/1.1 (mianfeifenxiang) "}}
+        ],
+    }
     base["sites"] = good_sites
     base["lives"] = good_lives
     base["parses"] = [{"name": "阿雪解析", "type": 1, "url": "https://jx.xmflv.com/?url="}]
-    base.pop("spider", None)          # 不再需要加密 jar
-    base["spider"] = ""
+    base["spider"] = ""   # 全部使用明文 API，无需加密 jar
 
     out = os.path.join(HERE, "tvbox_curated.json")
     with open(out, "w", encoding="utf-8") as f:
