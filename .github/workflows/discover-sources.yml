@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -25,19 +27,17 @@ jobs:
       - name: 探测候选源可用性
         run: python tools/probe_new_sources.py
 
-      - name: 抓取 + 清洗全部直播源
-        run: |
-          python tools/fetch_raw.py
-          python tools/clean_lives.py
+      - name: 自愈式刷新直播源
+        run: python tools/autoheal_lives.py
 
-      - name: 逐源验证并重建精选配置
+      - name: 逐源验证并重建精选点播配置（沿用自愈直播源）
         run: python tools/build_curated.py
 
       - name: 提交更新
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add lives/ tvbox_curated.json tools/ probe_new_sources.json
+          git add lives/ tools/ tvbox_curated.json tvbox_multisource.json tvbox_subscription.json probe_new_sources.json
           if git diff --staged --quiet; then
             echo "无变化"
           else
@@ -45,7 +45,7 @@ jobs:
             git push
           fi
 
-      - name: 上传到仓库
+      - name: 上传探测报告
         if: always()
         uses: actions/upload-artifact@v4
         with:
