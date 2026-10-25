@@ -62,6 +62,17 @@ EXTRA_HEADERS = {
 }
 
 
+def fix_api(api):
+    """统一把站点 api 末尾规范为 ?ac=videolist。
+
+    关键修复：TVBox 的 provide/vod 接口中，ac=list 只返回摘要（无 vod_pic 海报），
+    导致点播界面「列表能出、封面全是灰块」。ac=videolist 会在列表里直接带回 vod_pic，
+    且对分类(t)、搜索(wd)、详情(ids) 同样生效。详见 README「封面不显示」一节。
+    """
+    base = api.split("?")[0]
+    return base + "?ac=videolist"
+
+
 def verify_api(item):
     domain, url, label = item
     # 有些采集站会按 UA/Referer 拦截，多套组合轮着试
@@ -191,7 +202,7 @@ def main():
             "key": "sel_" + domain.replace(".", "_"),
             "name": label,
             "type": 1,
-            "api": url,
+            "api": fix_api(url),
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 1,
