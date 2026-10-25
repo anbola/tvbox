@@ -1,0 +1,414 @@
+{
+  "live": [
+    {
+      "name": "best-fan-cn_all",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/best-fan/iptv-sources/master/cn_all.m3u8",
+      "ok": true,
+      "msg": "104台/抽测3/3可播",
+      "ms": 678,
+      "n": 104
+    },
+    {
+      "name": "CCSH-live",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/CCSH/IPTV/refs/heads/main/live.m3u",
+      "ok": true,
+      "msg": "2812台/抽测2/3可播",
+      "ms": 2413,
+      "n": 2812
+    },
+    {
+      "name": "zbds-ipv6",
+      "url": "https://live.zbds.top/tv/iptv6.m3u",
+      "ok": true,
+      "msg": "1台/抽测1/3可播",
+      "ms": 262,
+      "n": 1
+    },
+    {
+      "name": "zbds-ipv4",
+      "url": "https://live.zbds.top/tv/iptv4.m3u",
+      "ok": true,
+      "msg": "357台/抽测2/3可播",
+      "ms": 966,
+      "n": 357
+    },
+    {
+      "name": "fanmingming-ipv6",
+      "url": "https://live.fanmingming.cn/tv/m3u/ipv6.m3u",
+      "ok": true,
+      "msg": "82台/抽测2/3可播",
+      "ms": 302,
+      "n": 82
+    },
+    {
+      "name": "fanmingming-ipv4",
+      "url": "https://live.fanmingming.cn/tv/m3u/ipv4.m3u",
+      "ok": false,
+      "msg": "HTTPError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "BurningC4-TV-IPV4",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/BurningC4/Chinese-IPTV/master/TV-IPV4.m3u",
+      "ok": false,
+      "msg": "58台/抽测0/3可播",
+      "ms": 22406,
+      "n": 58
+    },
+    {
+      "name": "vamoschuck-TV",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/vamoschuck/TV/main/M3U",
+      "ok": true,
+      "msg": "904台/抽测1/3可播",
+      "ms": 23387,
+      "n": 904
+    },
+    {
+      "name": "BigBigGrandG",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/BigBigGrandG/IPTV-URL/release/Gather.m3u",
+      "ok": true,
+      "msg": "1956台/抽测2/3可播",
+      "ms": 1395,
+      "n": 1956
+    },
+    {
+      "name": "niubihu1-live",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/niubihu1/tvbox/main/live.txt",
+      "ok": false,
+      "msg": "无频道",
+      "ms": 29590,
+      "n": 0
+    },
+    {
+      "name": "top-tv-iptv4",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/top/tv/iptv4.m3u",
+      "ok": false,
+      "msg": "HTTPError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "iptv-org-cn",
+      "url": "https://iptv-org.github.io/iptv/countries/cn.m3u",
+      "ok": true,
+      "msg": "149台/抽测1/3可播",
+      "ms": 89,
+      "n": 149
+    },
+    {
+      "name": "YanG",
+      "url": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "ok": true,
+      "msg": "338台/抽测3/3可播",
+      "ms": 107,
+      "n": 338
+    },
+    {
+      "name": "Guovin",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.m3u",
+      "ok": true,
+      "msg": "1619台/抽测1/3可播",
+      "ms": 1564,
+      "n": 1619
+    },
+    {
+      "name": "mzky",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/mzky/checklist/master/itvlist.m3u",
+      "ok": true,
+      "msg": "621台/抽测3/3可播",
+      "ms": 1100,
+      "n": 621
+    },
+    {
+      "name": "YueChan",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/YueChan/live/main/IPTV.m3u",
+      "ok": false,
+      "msg": "96台/抽测0/3可播",
+      "ms": 627,
+      "n": 96
+    },
+    {
+      "name": "Kimentanm",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u",
+      "ok": true,
+      "msg": "120台/抽测1/3可播",
+      "ms": 629,
+      "n": 120
+    },
+    {
+      "name": "gitee-zhiboyuan",
+      "url": "https://gitee.com/xxy002/zhiboyuan/raw/master/dsy",
+      "ok": false,
+      "msg": "HTTPError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "Yang-Gather",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/YanG-1989/m3u/main/Gather.m3u",
+      "ok": true,
+      "msg": "123台/抽测1/3可播",
+      "ms": 634,
+      "n": 123
+    },
+    {
+      "name": "ngo5-IPTV",
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/ngo5/IPTV/main/result.m3u",
+      "ok": false,
+      "msg": "HTTPError",
+      "ms": 0,
+      "n": 0
+    }
+  ],
+  "vod": [
+    {
+      "name": "量子lzi",
+      "url": "http://cj.lziapi.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "44分类/2有内容",
+      "ms": 106,
+      "n": 44
+    },
+    {
+      "name": "量子lzizy",
+      "url": "https://lzizy1.com/api.php/provide/vod/?ac=list",
+      "ok": true,
+      "msg": "44分类/2有内容",
+      "ms": 216,
+      "n": 44
+    },
+    {
+      "name": "非凡ffzyapi",
+      "url": "http://cj.ffzyapi.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "31分类/2有内容",
+      "ms": 641,
+      "n": 31
+    },
+    {
+      "name": "非凡ffzy5",
+      "url": "http://ffzy5.tv/api.php/provide/vod",
+      "ok": true,
+      "msg": "31分类/2有内容",
+      "ms": 49,
+      "n": 31
+    },
+    {
+      "name": "暴风bfzy",
+      "url": "https://bfzyapi.com/api.php/provide/vod",
+      "ok": true,
+      "msg": "49分类/2有内容",
+      "ms": 444,
+      "n": 49
+    },
+    {
+      "name": "光速guangsu",
+      "url": "https://api.guangsuapi.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "44分类/2有内容",
+      "ms": 95,
+      "n": 44
+    },
+    {
+      "name": "快车kczy",
+      "url": "https://caiji.kczyapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "JSONDecodeError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "天空tiankong",
+      "url": "http://m3u8.tiankongapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "JSONDecodeError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "红牛hongniu",
+      "url": "https://www.hongniuzy2.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "44分类/2有内容",
+      "ms": 50,
+      "n": 44
+    },
+    {
+      "name": "极速jszy",
+      "url": "https://jszyapi.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "48分类/2有内容",
+      "ms": 132,
+      "n": 48
+    },
+    {
+      "name": "索尼soni",
+      "url": "https://suoniapi.com/api.php/provide/vod/?ac=list",
+      "ok": true,
+      "msg": "61分类/2有内容",
+      "ms": 65,
+      "n": 61
+    },
+    {
+      "name": "火狐hhzy",
+      "url": "https://hhzyapi.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "48分类/2有内容",
+      "ms": 218,
+      "n": 48
+    },
+    {
+      "name": "百度apibdzy",
+      "url": "https://api.apibdzy.com/api.php/provide/vod/?ac=list",
+      "ok": false,
+      "msg": "HTTPError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "360zy",
+      "url": "https://360zy.com/api.php/provide/vod?",
+      "ok": true,
+      "msg": "51分类/2有内容",
+      "ms": 1130,
+      "n": 51
+    },
+    {
+      "name": "虎牙huya",
+      "url": "https://www.huyaapi.com/api.php/provide/vod/from/hym3u8",
+      "ok": true,
+      "msg": "44分类/2有内容",
+      "ms": 139,
+      "n": 44
+    },
+    {
+      "name": "如意rycj",
+      "url": "https://cj.rycjapi.com/api.php/provide/vod",
+      "ok": true,
+      "msg": "39分类/2有内容",
+      "ms": 1293,
+      "n": 39
+    },
+    {
+      "name": "非凡1ffzy",
+      "url": "http://ffzy1.tv/api.php/provide/vod/",
+      "ok": true,
+      "msg": "31分类/2有内容",
+      "ms": 49,
+      "n": 31
+    },
+    {
+      "name": "卧龙wolong",
+      "url": "https://collect.wolongzyw.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "JSONDecodeError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "糖糖tangs",
+      "url": "https://tangsangapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "闪电shandian",
+      "url": "https://sdzyapi.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "59分类/2有内容",
+      "ms": 177,
+      "n": 59
+    },
+    {
+      "name": "苹果cms-py",
+      "url": "https://api.ffzyapi.com/api.php/provide/vod/",
+      "ok": true,
+      "msg": "31分类/2有内容",
+      "ms": 444,
+      "n": 31
+    },
+    {
+      "name": "乐视leshi",
+      "url": "https://api.leshiapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "芒果mgtv",
+      "url": "https://mgtvapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "樱花yinghua",
+      "url": "https://api.yinghuaapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "星星star",
+      "url": "https://api.starapi.cc/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "天星tianxing",
+      "url": "https://api.tianxingapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "下一年xiaonian",
+      "url": "https://api.xiaonianapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "鸭鸭yaya",
+      "url": "https://api.yayacms.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "人人renren",
+      "url": "https://api.renrenapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "的卢delu",
+      "url": "https://api.deluapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    },
+    {
+      "name": "水果shuiguo",
+      "url": "https://api.shuiguoapi.com/api.php/provide/vod/",
+      "ok": false,
+      "msg": "URLError",
+      "ms": 0,
+      "n": 0
+    }
+  ]
+}
