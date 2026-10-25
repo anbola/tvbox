@@ -1,0 +1,34 @@
+name: 精选配置自动验证与更新（每日）
+
+on:
+  schedule:
+    - cron: '0 22 * * *'   # 每天 06:00 (UTC+8)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 逐源验证并重建精选配置
+        run: python tools/build_curated.py
+
+      - name: 提交（仅当有变化）
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tvbox_curated.json
+          if git diff --staged --quiet; then
+            echo "所有源仍然可用，配置无需变更"
+          else
+            git commit -m "chore(auto): 精选配置自动验证更新（$(date +%Y-%m-%d)）"
+            git push
+          fi
