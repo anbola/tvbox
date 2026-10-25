@@ -50,22 +50,34 @@ EXTRA_HEADERS = {
 
 def verify_api(item):
     domain, url, label = item
-    hdrs = dict(UA)
-    hdrs.update(EXTRA_HEADERS.get(domain, {}))
+    # 有些采集站会按 UA/Referer 拦截，多套组合轮着试
+    ua_list = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120.0 Mobile Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1",
+    ]
+    ref = EXTRA_HEADERS.get(domain, {})
     last = ""
-    for attempt in range(2):          # 重试一次，避开偶发 403
-        try:
-            r = urllib.request.Request(url, headers=hdrs)
-            d = urllib.request.urlopen(r, timeout=25, context=CTX).read()
-            j = json.loads(d.decode("utf-8", "ignore"))
-            cls = j.get("class", [])
-            if "list" in j and len(cls) > 0:
-                return item, True, f"{len(cls)}个分类"
-            return item, False, "非标准结构"
-        except urllib.error.HTTPError as e:
-            last = f"HTTP {e.code}"
-        except Exception as e:
-            last = type(e).__name__
+    for ua in ua_list:
+        for attempt in range(2):
+            hdrs = {"User-Agent": ua, "Accept": "application/json, text/plain, */*"}
+            hdrs.update(ref)
+            try:
+                r = urllib.request.Request(url, headers=hdrs)
+                d = urllib.request.urlopen(r, timeout=25, context=CTX).read()
+                j = json.loads(d.decode("utf-8", "ignore"))
+                cls = j.get("class", [])
+                if "list" in j and len(cls) > 0:
+                    return item, True, f"{len(cls)}个分类"
+                last = "非标准结构"
+                break
+            except urllib.error.HTTPError as e:
+                last = f"HTTP {e.code}"
+                if e.code in (403, 405, 406):
+                    break          # 换 UA 试
+            except Exception as e:
+                last = type(e).__name__
+                break
     return item, False, last
 
 
@@ -138,6 +150,9 @@ def main():
     base["spider"] = ""   # 全部使用明文 API，无需加密 jar
 
     out = os.path.join(HERE, "tvbox_curated.json")
+    # CI 中脚本位于 tools/ 下，需写回仓库根目录
+    if os.path.basename(os.path.dirname(HERE)) == "tools":
+        out = os.path.join(os.path.dirname(os.path.dirname(HERE)), "tvbox_curated.json")
     with open(out, "w", encoding="utf-8") as f:
         json.dump(base, f, ensure_ascii=False, indent=2)
     print()
