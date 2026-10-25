@@ -123,6 +123,8 @@ anbola/tvbox
    - 点播/配置地址填 `https://anbola.github.io/tvbox/tvbox_curated.json`
    - 直播源框单独填 `https://anbola.github.io/tvbox/mytv_lite.m3u`（直接填 m3u 最稳，比填 `tvbox_lives.json` 兼容性更好）
 
+> ⚠️ **「直播源」框只填 `.m3u` 或 `tvbox_lives.json`，绝不填完整配置 JSON**（如 `tvbox_curated.json`/`tvbox_subscription.json`）。把完整配置填进直播源框会弹「配置解析失败」且直播空白。若只想用一份配置搞定全部，直接把 `tvbox_subscription.json` 填进「配置地址」并**留空直播源框**即可。
+
 ### MyTV（我的电视 · 〇）
 1. 进入「自定义直播源 / 远程配置」。
 2. 填入 `https://anbola.github.io/tvbox/mytv_lite.m3u`（或全量 `mytv.m3u`）。
@@ -147,6 +149,18 @@ anbola/tvbox
 - **「识别出 10 个源，但点进去啥都没有」** → 多半是把 `tvbox_lives.json` 填进了 MyTV 或填错了位置。MyTV 请用 `mytv.m3u`/`mytv_lite.m3u`；TVBox 直播框请直接填 `mytv_lite.m3u`（单个 m3u 兼容性最好）。
 - **「直播页完全空白，连分组都没有」** → 检查直播地址是否以 `.m3u` 结尾、是否整行无空格；`tvbox_lives.json` 必须填进「直播源」框而非「配置地址」框。
 - **「有分组、频道列表空」** → 源站临时抽风，等次日自愈（每天 05:30 自动刷新）或换填另一个 `lives/*.m3u` 直链。
+
+### Q2-1. 每次弹「配置解析失败」，退出后点播正常、直播空白
+**这是把「完整配置 JSON」误填进「直播源」框导致的，不是软件 / 直播源 / 脚本的毛病。**
+- TVBox 的「**配置地址**」框才吃完整配置（`tvbox_curated.json` / `tvbox_subscription.json`，内含 点播+直播+解析）；
+- 「**直播源**」框只认**纯直播内容**：要么直接是 `.m3u`（如 `mytv_lite.m3u`），要么是 `{"lives":[...]}` 这种纯直播 JSON（如 `tvbox_lives.json`）。
+- 一旦把含 `sites`/`parses`/`rules` 的完整配置 JSON 塞进「直播源」框，TVBox 解析失败 → 弹「配置解析失败」；你点掉后，「配置地址」框里那份正确配置照常加载点播，但「直播源」框已经废了 → 直播空白。
+
+**正确导入直播源的两种方式（任选其一）：**
+1. **最省事（推荐）**：只填「配置地址」为 `tvbox_subscription.json`（或 `tvbox_curated.json`），**「直播源」框留空**。这两个完整配置已内置 10 个已验证可达的直播源，重启即见直播，且不会弹窗。
+2. **想要更大的直播列表**：「配置地址」填 `tvbox_curated.json`，「直播源」框填 `https://anbola.github.io/tvbox/mytv_lite.m3u`（一个干净自包含的 m3u，≈3800 台，比 JSON 兼容性更好，绝不弹「配置解析失败」）。
+
+> ⚠️ 切记：「直播源」框里只放 `.m3u` 或 `tvbox_lives.json` 这种纯直播 JSON，**不要放任何完整配置 JSON**（`tvbox_curated.json` / `tvbox_subscription.json` / `tvbox_sites.json` / `tvbox_multisource.json`），否则必弹「配置解析失败」。
 
 ### Q3. 配置地址填了但首页空白
 - 多半地址末尾多了空格，或填成了介绍页网页而非 `.json` 直链。请整行复制「一、源地址一览」里的地址。
