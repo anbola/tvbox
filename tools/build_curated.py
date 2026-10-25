@@ -15,7 +15,7 @@ CTX = ssl.create_default_context()
 CTX.check_hostname = False
 CTX.verify_mode = ssl.CERT_NONE
 UA = {"User-Agent": "Mozilla/5.0"}
-G = "https://weiyou777.github.io/tvbox/lives/"
+G = "https://anbola.github.io/tvbox/lives/"
 
 # ============ 候选点播 API（来自 TVboxorg 官方配置）============
 CAND_APIS = [
@@ -220,24 +220,34 @@ def main():
     print("=" * 68)
     print("逐个验证直播源（托管的清洗版 m3u）")
     print("=" * 68)
-    live_cands = [
-        ("央视·卫视精选（149台·中文台名）",       G + "cn_clean.m3u"),
-        ("咪咕中转·央视卫视（338台·实测最稳）",   G + "yang_clean.m3u"),
-        ("每日更新·央视卫视（620台·实测3/3可播）", G + "mzky_clean.m3u"),
-        ("YangGather 咪咕移动（123台·3/3可播）",  G + "yanggather_clean.m3u"),
-        ("每日检测·央视卫视（104台·3/3可播）",    G + "bestfan_clean.m3u"),
-        ("Guovin 中国IPTV（1618台·线路多）",      G + "guovin_clean.m3u"),
-        ("BigBig 聚合源（1956台·2/3可播）",       G + "bigbig_clean.m3u"),
-        ("CCSH 自动采集（2811台·最多）",          G + "ccsh_clean.m3u"),
-        ("4K·8K 超高清频道（120台）",              G + "kimentanm_clean.m3u"),
-        ("联通组播·央视卫视（96台）",              G + "yuechan_clean.m3u"),
+    # ---- 直播源由自愈脚本 autoheal_lives.py 维护，这里只“沿用”，绝不覆盖 ----
+    # 读取即将写入的 tvbox_curated.json 里已有的 lives（自愈脚本每日刷新它），
+    # 使精选配置的直播源始终与自愈结果一致，且不会回退到旧账号(weiyou777)域名。
+    existing_lives = []
+    out_preview = os.path.join(HERE, "tvbox_curated.json")
+    if os.path.basename(os.path.dirname(HERE)) == "tools":
+        out_preview = os.path.join(os.path.dirname(os.path.dirname(HERE)), "tvbox_curated.json")
+    if os.path.exists(out_preview):
+        try:
+            _cur = json.load(open(out_preview, encoding="utf-8"))
+            existing_lives = _cur.get("lives", []) or []
+        except Exception:
+            existing_lives = []
+
+    # 仅在全新仓库（尚无 tvbox_curated.json）时使用的回退直播源（anbola 域名）
+    FALLBACK_LIVES = [
+        ("央视·卫视精选", "cn_clean.m3u"),
+        ("咪咕中转·央视卫视", "yang_clean.m3u"),
+        ("每日更新·央视卫视", "mzky_clean.m3u"),
+        ("YangGather 咪咕移动", "yanggather_clean.m3u"),
+        ("每日检测·央视卫视", "bestfan_clean.m3u"),
+        ("Guovin 中国IPTV", "guovin_clean.m3u"),
+        ("BigBig 聚合源", "bigbig_clean.m3u"),
+        ("CCSH 自动采集", "ccsh_clean.m3u"),
+        ("4K·8K 超高清频道", "kimentanm_clean.m3u"),
+        ("联通组播·央视卫视", "yuechan_clean.m3u"),
     ]
-    good_lives = []
-    for name, url in live_cands:
-        ok, msg = verify_m3u(url)
-        print(f"  {'✓ 收录' if ok else '✗ 剔除'}  {name:<20} {msg}")
-        if ok:
-            good_lives.append({"name": name, "url": url})
+    fallback_lives = [{"name": n, "url": G + f} for n, f in FALLBACK_LIVES]
 
     # 组装配置（自包含，不依赖已有文件，便于在 CI 中独立运行）
     base = {
@@ -251,7 +261,8 @@ def main():
         ],
     }
     base["sites"] = good_sites
-    base["lives"] = good_lives
+    # 沿用自愈直播源；若首次运行尚无 lives，则回退到内置 10 个
+    base["lives"] = existing_lives if existing_lives else fallback_lives
     base["parses"] = [{"name": "阿雪解析", "type": 1, "url": "https://jx.xmflv.com/?url="}]
     base["spider"] = ""   # 全部使用明文 API，无需加密 jar
 
@@ -264,7 +275,7 @@ def main():
     print()
     print(f"→ 已生成 {os.path.basename(out)}（仓库根目录）")
     print(f"  点播源 {len(good_sites)} 个（全部实测可用）")
-    print(f"  直播源 {len(good_lives)} 个（全部实测可达）")
+    print(f"  直播源 {len(base['lives'])} 个（沿用自愈脚本结果）")
     print(f"  解析接口 {len(base['parses'])} 个（实测可解析）")
 
 
