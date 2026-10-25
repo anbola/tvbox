@@ -119,6 +119,24 @@ def main():
         json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
         print(f"  已更新 {cfg} 的 lives（{len(lives)} 个）")
 
+    # 同步生成「直播专用」拆分文件（供没有订阅入口的 TVBox 直接粘进"直播源"框）
+    parses, rules = [], []
+    curated_path = os.path.join(ROOT, "tvbox_curated.json")
+    if os.path.exists(curated_path):
+        try:
+            _c = json.load(open(curated_path, encoding="utf-8"))
+            parses, rules = _c.get("parses", []), _c.get("rules", [])
+        except Exception:
+            pass
+    if not parses:
+        parses = [{"name": "阿雪解析", "type": 1, "url": "https://jx.xmflv.com/?url="}]
+    if not rules:
+        rules = ["vip", "tpl", "ju", "qb", "iqiyi", "qiyi", "letv", "sohu", "qq",
+                 "wetv", "mgtv", "bilibili", "wasu", "tvid", "renrenmi"]
+    with open(os.path.join(ROOT, "tvbox_lives.json"), "w", encoding="utf-8") as fh:
+        json.dump({"lives": lives, "parses": parses, "rules": rules}, fh, ensure_ascii=False, indent=2)
+    print(f"  已生成 tvbox_lives.json（直播专用，{len(lives)} 源）")
+
     print("done")
 
 
