@@ -255,7 +255,7 @@ def main():
     with open(out, "w", encoding="utf-8") as f:
         json.dump(base, f, ensure_ascii=False, indent=2)
     print()
-    print(f"→ 已生成 {out}")
+    print(f"→ 已生成 {os.path.basename(out)}（仓库根目录）")
     print(f"  点播源 {len(good_sites)} 个（全部实测可用）")
     print(f"  直播源 {len(good_lives)} 个（全部实测可达）")
     print(f"  解析接口 {len(base['parses'])} 个（实测可解析）")
