@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -39,23 +41,3 @@ jobs:
             git commit -m "chore(auto): 每日刷新直播源（$(date +%Y-%m-%d)）"
             git push
           fi
-
-  mirror-to-gitee:
-    # 把配置与直播源同步到 Gitee（Gitee 用 TrustAsia 证书，
-    # 老旧 Android 5.x 的系统 CA 库能校验，而 Let's Encrypt 新链不能）
-    # 需要仓库 Secrets 里配置 GITEE_TOKEN
-    runs-on: ubuntu-latest
-    needs: update
-    if: ${{ secrets.GITEE_TOKEN != '' }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: 同步到 Gitee
-        env:
-          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
-          GITEE_USER: ${{ vars.GITEE_USER || 'weiyou777' }}
-        run: |
-          git config --global user.name  "github-actions[bot]"
-          git config --global user.email  "github-actions[bot]@users.noreply.github.com"
-          git remote add gitee "https://$GITEE_USER:$GITEE_TOKEN@gitee.com/$GITEE_USER/tvbox.git"
-          git push gitee HEAD:main --force
-          echo "已推送到 https://gitee.com/$GITEE_USER/tvbox/raw/main/"
