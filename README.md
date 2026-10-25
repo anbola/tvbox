@@ -98,10 +98,11 @@ anbola/tvbox
 ├── tvbox_lives.json          # 直播专用（TVBox 直播框）
 ├── mytv.m3u                  # MyTV 全量直播源（≈7900 台）
 ├── mytv_lite.m3u             # MyTV 精简直播源（≈3800 台，手机推荐）
-├── lives/                    # 10 个清洗后的直播源 m3u（被上面的地址引用）
+├── lives/                    # 清洗后的直播源 m3u（被上面的地址引用）
 │   ├── ccsh_clean.m3u
 │   ├── bigbig_clean.m3u
-│   └── ...（共 10 个）
+│   ├── ...（共 10 个聚合源）
+│   └── fast.m3u              # 极速版（国内 CDN 流 + 砍境外台标/境外流，≈1000 台，卡顿首选）
 ├── tools/                    # CI 脚本
 │   ├── autoheal_lives.py     # 直播源自愈（探测→清洗→取 TOP10）
 │   ├── build_curated.py      # 点播源实测收录 + 生成各配置文件
@@ -122,6 +123,10 @@ anbola/tvbox
 3. **想分开配**：
    - 点播/配置地址填 `https://anbola.github.io/tvbox/tvbox_curated.json`
    - 直播源框单独填 `https://anbola.github.io/tvbox/mytv_lite.m3u`（直接填 m3u 最稳，比填 `tvbox_lives.json` 兼容性更好）
+
+4. **想要极速、不卡（手机 / 老旧设备首选）**：
+   - 配置地址填 `https://anbola.github.io/tvbox/tvbox_sites.json`（只要 14 个点播 + 解析，**不含**那近 9000 台直播，列表秒开）
+   - 直播源框填 `https://anbola.github.io/tvbox/lives/fast.m3u`（约 1000 台，全是国内 CDN 流、台标只走国内 gitee、已剔除境外流，换台即播）
 
 > ⚠️ **「直播源」框只填 `.m3u` 或 `tvbox_lives.json`，绝不填完整配置 JSON**（如 `tvbox_curated.json`/`tvbox_subscription.json`）。把完整配置填进直播源框会弹「配置解析失败」且直播空白。若只想用一份配置搞定全部，直接把 `tvbox_subscription.json` 填进「配置地址」并**留空直播源框**即可。
 
@@ -161,6 +166,19 @@ anbola/tvbox
 2. **想要更大的直播列表**：「配置地址」填 `tvbox_curated.json`，「直播源」框填 `https://anbola.github.io/tvbox/mytv_lite.m3u`（一个干净自包含的 m3u，≈3800 台，比 JSON 兼容性更好，绝不弹「配置解析失败」）。
 
 > ⚠️ 切记：「直播源」框里只放 `.m3u` 或 `tvbox_lives.json` 这种纯直播 JSON，**不要放任何完整配置 JSON**（`tvbox_curated.json` / `tvbox_subscription.json` / `tvbox_sites.json` / `tvbox_multisource.json`），否则必弹「配置解析失败」。
+
+### Q2-2. 直播能出频道了，但**换台 / 播放特别卡、半天不动**
+这是「源太多 + 台标/流绕了境外」导致，**不是软件问题**：
+- 默认 `tvbox_curated.json` / `tvbox_subscription.json` 自带 10 个直播源、合计近 **9000 台**，直播页一打开要解析近万条，列表本身就卡；
+- 大量台标走境外图床（imgur、tvchinese、泽西岛 `.je` 等），划台时每个台都在等境外图；
+- 部分流地址本身是境外 IP，从国内连自然慢。
+
+**极速方案（已为你做好 `lives/fast.m3u`）**：
+- 配置地址填 `tvbox_sites.json`（只要 14 个点播 + 解析，**不带**那近 9000 台直播，列表秒开）；
+- 直播源框填 `https://anbola.github.io/tvbox/lives/fast.m3u`（约 1000 台，全是国内 CDN 流、台标只走国内 gitee、且已剔除境外流）。
+这样直播页秒开、换台即播。若个别台仍缓冲，是免费 IPTV 源本身过载，属正常，换个台即可。
+
+> 想要台多就填 `mytv_lite.m3u` 或用 `tvbox_curated.json`，但台越多越卡，自行取舍。
 
 ### Q3. 配置地址填了但首页空白
 - 多半地址末尾多了空格，或填成了介绍页网页而非 `.json` 直链。请整行复制「一、源地址一览」里的地址。
