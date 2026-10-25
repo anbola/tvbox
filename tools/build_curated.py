@@ -28,7 +28,7 @@ CAND_APIS = [
     ("bfzyapi.com",  "https://bfzyapi.com/api.php/provide/vod", "🎬暴風┃采集"),
     ("360zy.com",    "https://360zy.com/api.php/provide/vod?", "🎬360┃采集"),
     ("rycjapi.com",  "https://cj.rycjapi.com/api.php/provide/vod", "🎬如意┃资源"),
-    ("ffzy1.tv",     "http://ffzy1.tv/api.php/provide/vod/", "🎬非凡2┃资源"),
+    ("ffzy1.tv",     "http://ffzy1.tv/api.php/provide/vod/", "🎬非凡1┃资源"),
     # 实测新增：极速/闪电/苹果/光速/量子lzi/非凡ffzyapi
     ("jszyapi.com",    "https://jszyapi.com/api.php/provide/vod/",        "🎬极速┃资源"),
     ("shandianapi.com","https://sdzyapi.com/api.php/provide/vod/",         "🎬闪电┃资源"),
@@ -48,10 +48,17 @@ CAND_APIS = [
 
 # 有些采集站会校验 Referer/Origin，缺失时返回 403
 EXTRA_HEADERS = {
-    "apibdzy.com": {"Referer": "https://api.apibdzy.com/", "Origin": "https://api.apibdzy.com"},
+    "apibdzy.com": {"Referer": "https://api.apibdzy.com/", "Origin": "https://api.apibdzy.com",
+                    "Accept-Language": "zh-CN,zh;q=0.9"},
     "360zy.com":   {"Referer": "https://360zy.com/", "Origin": "https://360zy.com"},
     "bfzyapi.com": {"Referer": "https://bfzyapi.com/", "Origin": "https://bfzyapi.com"},
     "huyaapi.com": {"Referer": "https://www.huyaapi.com/", "Origin": "https://www.huyaapi.com"},
+    "suoniapi.com": {"Referer": "https://suoniapi.com/", "Origin": "https://suoniapi.com"},
+    "lzizy1.com":  {"Referer": "https://lzizy1.com/", "Origin": "https://lzizy1.com"},
+    "jszyapi.com": {"Referer": "https://jszyapi.com/", "Origin": "https://jszyapi.com"},
+    "sdzyapi.com": {"Referer": "https://sdzyapi.com/", "Origin": "https://sdzyapi.com"},
+    "ffzyapi.com": {"Referer": "https://api.ffzyapi.com/", "Origin": "https://api.ffzyapi.com"},
+    "guangsuapi.com": {"Referer": "https://api.guangsuapi.com/", "Origin": "https://api.guangsuapi.com"},
 }
 
 
