@@ -23,7 +23,12 @@
     "bilibili",
     "wasu",
     "tvid",
-    "renrenmi"
+    "renrenmi",
+    "广告",
+    "最新",
+    "公益",
+    "排行",
+    "推荐"
   ],
   "headers": [
     {
