@@ -29,6 +29,13 @@ CAND_APIS = [
     ("360zy.com",    "https://360zy.com/api.php/provide/vod?", "🎬360┃采集"),
     ("rycjapi.com",  "https://cj.rycjapi.com/api.php/provide/vod", "🎬如意┃资源"),
     ("ffzy1.tv",     "http://ffzy1.tv/api.php/provide/vod/", "🎬非凡2┃资源"),
+    # 实测新增：极速/闪电/苹果/光速/量子lzi/非凡ffzyapi
+    ("jszyapi.com",    "https://jszyapi.com/api.php/provide/vod/",        "🎬极速┃资源"),
+    ("shandianapi.com","https://sdzyapi.com/api.php/provide/vod/",         "🎬闪电┃资源"),
+    ("ffzyapi.com",    "https://api.ffzyapi.com/api.php/provide/vod/",     "🎬非凡2┃资源"),
+    ("guangsuapi.com", "https://api.guangsuapi.com/api.php/provide/vod/",  "🎬光速┃资源"),
+    ("lziapi.com",     "http://cj.lziapi.com/api.php/provide/vod/",        "🎬量子2┃资源"),
+    ("cjffzyapi.com",  "http://cj.ffzyapi.com/api.php/provide/vod/",       "🎬非凡3┃资源"),
     # 下面是实测已失效的，保留在列表里以证明筛选有效
     ("kekezy1.com",  "https://kekezy1.com/api.php/provide/vod/?ac=list", "✗可可"),
     ("49zy1.com",    "https://49zy1.com/api.php/provide/vod/?ac=list", "✗四九"),
@@ -207,12 +214,16 @@ def main():
     print("逐个验证直播源（托管的清洗版 m3u）")
     print("=" * 68)
     live_cands = [
-        ("央视·卫视精选",       G + "cn_clean.m3u"),
-        ("咪咕中转·央视卫视",   G + "yang_clean.m3u"),
-        ("每日更新·央视卫视",   G + "mzky_clean.m3u"),
-        ("Guovin 中国IPTV",     G + "guovin_clean.m3u"),
-        ("4K·8K 超高清频道",    G + "kimentanm_clean.m3u"),
-        ("联通组播·央视卫视",   G + "yuechan_clean.m3u"),
+        ("央视·卫视精选（149台·中文台名）",       G + "cn_clean.m3u"),
+        ("咪咕中转·央视卫视（338台·实测最稳）",   G + "yang_clean.m3u"),
+        ("每日更新·央视卫视（620台·实测3/3可播）", G + "mzky_clean.m3u"),
+        ("YangGather 咪咕移动（123台·3/3可播）",  G + "yanggather_clean.m3u"),
+        ("每日检测·央视卫视（104台·3/3可播）",    G + "bestfan_clean.m3u"),
+        ("Guovin 中国IPTV（1618台·线路多）",      G + "guovin_clean.m3u"),
+        ("BigBig 聚合源（1956台·2/3可播）",       G + "bigbig_clean.m3u"),
+        ("CCSH 自动采集（2811台·最多）",          G + "ccsh_clean.m3u"),
+        ("4K·8K 超高清频道（120台）",              G + "kimentanm_clean.m3u"),
+        ("联通组播·央视卫视（96台）",              G + "yuechan_clean.m3u"),
     ]
     good_lives = []
     for name, url in live_cands:
