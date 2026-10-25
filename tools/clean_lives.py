@@ -152,28 +152,95 @@ TR = {
     "FIGHT SPORTS": "格斗体育频道",
 }
 
-# ============ 分组对照表 ============
-# 键为"规范化后"的分组名（去 • 、去 「…」 后缀、大小写归一）
-GROUP_TR = {
-    # iptv-org（单标签与多标签组合都会用）
-    "General": "综合", "News": "新闻", "Religious": "宗教", "Kids": "少儿", "Movies": "电影",
-    "Sports": "体育", "Business": "财经", "Entertainment": "综艺", "Undefined": "其他",
-    "Music": "音乐", "Documentary": "纪实", "Education": "教育", "Lifestyle": "生活",
-    "Travel": "旅游", "Culture": "文化", "Animation": "动画", "Classic": "经典",
-    "Family": "家庭", "Legislative": "法治", "Science": "科教", "Shop": "购物",
-    "Weather": "天气", "Outdoor": "户外",
-    # mzky
-    "卫视频道": "卫视", "央视频道": "央视", "其他频道": "其他", "卡通频道": "卡通",
-    "体育频道": "体育", "影视频道": "影视", "科教频道": "科教", "娱乐综艺": "综艺",
-    # yuechan
-    "央视": "央视", "卫视": "卫视", "数字": "数字频道",
-    # kimentanm
-    "历年春晚": "历年春晚", "卫视IPV4": "卫视", "央视IPV4": "央视", "4K8K频道": "4K·8K",
-    # yang（繁体，规范化后）
-    "中國": "咪咕中转·中国", "咪視": "咪咕中转·咪视", "台灣": "咪咕中转·台湾",
-    "港澳台": "港澳台", "香港": "香港", "體育": "咪咕中转·体育",
-    "綜合": "咪咕中转·综合", "溫馨": "温馨提示",
+# ============ 统一分类体系（所有源共用，避免分组过碎）============
+# 顺序即 TVBox 里的显示顺序：央视永远第一
+CAT_ORDER = ["央视", "4K·8K", "卫视", "地方台", "影视剧场", "体育", "少儿动漫",
+             "综艺音乐", "资讯纪实", "购物生活", "港澳台", "国际", "其他"]
+
+# 各源原始分组 -> 统一大类
+GROUP_MAP = {
+    # --- 央视系：合并成一个"央视"，不再细分 ---
+    "央视": "央视", "央视频道": "央视", "央视IPV4": "央视",
+    "央视·综合": "央视", "央视·新闻": "央视", "央视·综艺": "央视", "央视·电视剧": "央视",
+    "央视·电影": "央视", "央视·体育": "央视", "央视·科教": "央视", "央视·少儿": "央视",
+    "央视·纪录": "央视", "央视·戏曲": "央视", "央视·军事": "央视", "央视·法治": "央视",
+    "央视·农业": "央视", "央视·奥运": "央视", "央视·国际": "央视", "央视·超高清": "央视",
+    "央视·高清": "央视", "央视·其他": "央视",
+    "教育": "央视",
+    "中国教育台·一套": "央视", "中国教育台·二套": "央视", "中国教育台·三套": "央视",
+    "中国教育台·四套": "央视",
+    "历年春晚": "央视",
+    # --- 4K/8K 独立 ---
+    "4K·8K": "4K·8K", "4K8K频道": "4K·8K", "高清频道": "4K·8K",
+    # --- 卫视 ---
+    "卫视": "卫视", "卫视频道": "卫视", "卫视IPV4": "卫视",
+    # --- 地方台（Guovin 按省份、mzky 地方频道等）---
+    "地方": "地方台", "地方频道": "地方台", "其他频道": "地方台", "数字频道": "地方台",
+    # --- 影视/剧场 ---
+    "影视": "影视剧场", "影视频道": "影视剧场", "电影": "影视剧场", "Movies": "影视剧场",
+    "Classic": "影视剧场", "家庭影院": "影视剧场", "剧集": "影视剧场",
+    "剧场": "影视剧场", "热播剧场": "影视剧场", "经典电影": "影视剧场", "IPTV经典电影": "影视剧场",
+    "CND电影中学频道": "影视剧场", "CND电影发现频道": "影视剧场",
+    "网络电视·经典电影": "影视剧场",
+    # --- 体育 ---
+    "体育": "体育", "体育频道": "体育", "Sports": "体育", "赛事": "体育",
+    # --- 少儿/动漫 ---
+    "少儿": "少儿动漫", "少儿动画": "少儿动漫", "卡通": "少儿动漫", "卡通频道": "少儿动漫",
+    "Kids": "少儿动漫", "Animation": "少儿动漫", "金鹰卡通": "少儿动漫",
+    "优漫卡通频道": "少儿动漫", "中国教育电视台·卡通": "少儿动漫",
+    # --- 综艺/音乐 ---
+    "综艺": "综艺音乐", "综艺频道": "综艺音乐", "Entertainment": "综艺音乐",
+    "Variety": "综艺音乐", "娱乐综艺": "综艺音乐", "Music": "综艺音乐",
+    "MTV综合台": "综艺音乐", "央视·综艺": "央视",
+    # --- 资讯/纪实 ---
+    "新闻": "资讯纪实", "资讯": "资讯纪实", "News": "资讯纪实",
+    "Documentary": "资讯纪实", "纪实": "资讯纪实", "纪实科教": "资讯纪实",
+    "求索纪录": "资讯纪实", "金鹰纪实": "资讯纪实", "中国天气": "资讯纪实",
+    "中国交通": "资讯纪实", "证券服务": "资讯纪实", "Weather": "资讯纪实",
+    # --- 购物/生活 ---
+    "生活": "购物生活", "Lifestyle": "购物生活", "综合": "购物生活",
+    "General": "购物生活", "购物": "购物生活", "Shop": "购物生活",
+    "风尚购物频道": "购物生活", "合家购物": "购物生活", "生活休闲": "购物生活",
+    # --- 港澳台 ---
+    "港澳台": "港澳台", "香港": "港澳台", "台湾": "港澳台", "港澳台频道": "港澳台",
+    "咪咕中转·中国": "央视", "咪咕中转·咪视": "综艺音乐", "咪咕中转·台湾": "港澳台",
+    "咪咕中转·体育": "体育", "咪咕中转·综合": "资讯纪实",
+    "温馨提示": "其他",
+    # --- 国际 ---
+    "国际": "国际", "CGTN": "国际", "China International Television": "国际",
+    # --- 其它 ---
+    "宗教": "其他", "Religious": "其他", "科学": "其他", "Science": "其他",
+    "Education": "其他", "Lifestyle;Science": "其他", "生活;科学": "其他",
+    "Weather;Outdoor": "资讯纪实", "自然": "其他", "Travel": "其他",
+    "Culture": "其他", "文化": "其他", "法治": "资讯纪实", "Legislative": "资讯纪实",
+    "家庭": "其他", "Family": "其他", "教育;生活;科学": "其他", "教育;户外": "其他",
+    "Outdoor": "其他", "Undefined": "其他", "其他": "其他",
+    "通用": "其他", "高清": "其他",
+    # --- Guovin 专用（去 emoji 后）---
+    "卫视频道": "卫视", "央视频道": "央视", "央视付费频道": "央视",
+    "其他频道": "地方台", "地方频道": "地方台", "数字频道": "地方台",
+    "电影频道": "影视剧场", "影视频道": "影视剧场", "剧场": "影视剧场",
+    "经典剧场": "影视剧场", "高清剧场": "影视剧场", "热播剧场": "影视剧场",
+    "体育频道": "体育", "动画频道": "少儿动漫", "卡通频道": "少儿动漫",
+    "少儿频道": "少儿动漫", "音乐频道": "综艺音乐", "综艺频道": "综艺音乐",
+    "新闻频道": "资讯纪实", "纪录频道": "资讯纪实", "纪实频道": "资讯纪实",
+    "教育频道": "央视", "科教频道": "央视", "生活频道": "购物生活",
+    "生活时尚": "购物生活", "购物频道": "购物生活", "美食频道": "购物生活",
+    "港·澳·台": "港澳台", "港澳台频道": "港澳台", "国际频道": "国际",
+    "游戏频道": "其他", "游戏": "其他", "宗教频道": "其他",
+    "4K频道": "4K·8K", "8K频道": "4K·8K", "超高清频道": "4K·8K",
+    "历年春晚": "央视", "春晚": "央视",
 }
+
+# 常见地方台前缀 -> 地方台（Guovin 省份频道等）
+_PROVINCES = [
+    "浙江", "河南", "江苏", "广东", "河北", "四川", "上海", "福建", "湖北", "安徽",
+    "黑龙江", "湖南", "广西", "海南", "山东", "北京", "青海", "陕西", "甘肃", "新疆",
+    "云南", "辽宁", "山西", "天津", "内蒙古", "吉林", "重庆", "贵州", "宁夏", "西藏",
+    "深圳", "厦门", "青岛", "大连", "苏州", "杭州", "宁波", "温州", "无锡", "济南",
+    "长春", "哈尔滨", "石家庄", "太原", "福州", "南昌", "昆明", "贵阳", "兰州", "西宁",
+    "银川", "乌鲁木齐", "呼和浩特", "拉萨", "海口", "三沙", "台北", "高雄",
+]
 
 DROP_NAME = re.compile(r'^\d{4}-\d{2}-\d{2}[_ ]\d{2}:\d{2}:\d{2}$')
 DROP_GROUP = {"更新时间"}
@@ -237,31 +304,31 @@ CGTN_LANG = {
 
 
 def translate_name(base):
-    """把基础台名翻成中文；返回 (中文名, 分类 或 None)"""
+    """把基础台名翻成中文；返回 (中文名, 分类 或 None)
+    分类只做粗分：央视 / 4K·8K / 卫视，其余靠 group-title 归类。"""
     s = base
 
     m = RE_CCTV_PLUS.match(s)
     if m:
-        return f"央视+{m.group(1)}", "央视·其他"
+        return f"央视+{m.group(1)}", "央视"
 
     # CCTV 4K / 8K / 2K（必须在普通数字之前匹配）
     m = RE_CCTV_K.match(s)
     if m:
         k = m.group(1).upper()
         label = {'4K': "央视·4K超高清", '8K': "央视·8K超高清", '2K': "央视·2K超高清"}[k]
-        cat = "央视·超高清" if k in ('4K', '8K') else "央视·高清"
-        return label, cat
+        return label, "4K·8K" if k in ('4K', '8K') else "央视"
 
     # 单独一个 CCTV（yang 的 "CCTV 超高清"）
     if RE_CCTV_PLAIN.match(s):
         if '超高清' in s:
-            return "央视·超高清", "央视·超高清"
-        return "央视一套·综合", "央视·综合"
+            return "央视·超高清", "4K·8K"
+        return "央视一套·综合", "央视"
 
     m = RE_CETV.match(s)
     if m:
         n = int(m.group(1))
-        return CETV_STD.get(n, f"中国教育台·{n}套"), "教育"
+        return CETV_STD.get(n, f"中国教育台·{n}套"), "央视"
 
     m = RE_CGTN.match(s)
     if m:
@@ -271,18 +338,23 @@ def translate_name(base):
     m = RE_CCTV.match(s)
     if m:
         num = int(m.group(1))
-        # CCTV5+ / CCTV 5+ 体育赛事
         tail = s[m.end():]
         if tail.lstrip().startswith('+') or re.match(r'^\s*\+', tail):
-            return "央视·体育赛事", "央视·体育"
-        # 台名尾部的中文属性（如 "CCTV 1 综合"）——标准名已含该属性则不重复追加
+            return "央视·体育赛事", "央视"
         std, cat = CCTV_STD.get(num, (None, None))
         if std:
-            return std, cat
-        return f"央视{num}套", "央视·其他"
+            return std, "央视"
+        return f"央视{num}套", "央视"
 
     if s in TR:
         return TR[s], None
+
+    # 名称里带 4K/8K 的卫视（如"东方卫视4K"）
+    if re.search(r'[248]K', s, re.I):
+        return s, "4K·8K"
+    # 名称里带"卫视"
+    if '卫视' in s:
+        return s, "卫视"
     return s, None
 
 
@@ -303,66 +375,108 @@ def process_name(name):
 
 
 def translate_group_name(raw):
-    """原始 group-title -> 中文分组。支持多标签(A;B)与 •xxx「Relay」 形式。"""
+    """原始 group-title -> 统一大类。支持多标签(A;B)与 •xxx「Relay」 形式。"""
     if not raw:
-        return raw
-    # 1) 拆多标签
+        return "其他"
+    # 1) 拆多标签：取第一个能识别的
     if ';' in raw:
         parts = [translate_group_name(p) for p in raw.split(';')]
-        parts = [p for p in parts if p]
-        return '·'.join(parts)
-    # 2) 规范化：去首部 •、去 「…」 后缀、去空格
+        parts = [p for p in parts if p and p != "其他"]
+        return parts[0] if parts else "其他"
+    # 2) 规范化：去首部 •、去 「…」 后缀、去空格、去 emoji 与装饰符号
     norm = raw.strip()
     norm = re.sub(r'^[•·\s]+', '', norm)
     norm = re.sub(r'[「『\[].*?[」』\]]\s*$', '', norm)
+    # 去掉任意 emoji / 装饰符（☘️🏀🎬🌊💰🪁🎮🏛🎵 等，含变体选择符 U+FE0F）
+    norm = re.sub(r'[\U0001F000-\U0001FAFF☀-➿️\U0001F1E6-\U0001F1FF\U00002700-\U000027BF\s]+', '', norm)
     norm = norm.strip()
     if not norm:
-        return raw
-    # 3) 查表（先试原样，再试简体化）
-    if norm in GROUP_TR:
-        return GROUP_TR[norm]
+        return "其他"
+    # 3) 繁体转简体后查表
     simp = t2s(norm)
-    if simp in GROUP_TR:
-        return GROUP_TR[simp]
-    # 4) 兜底：繁体转简体后直接用简体（若原文是繁体）
+    for key in (norm, simp):
+        if key in GROUP_MAP:
+            return GROUP_MAP[key]
+    # 4) 省份/地方台前缀
+    for p in _PROVINCES:
+        if norm.startswith(p) or simp.startswith(p):
+            return "地方台"
+    # 5) 名字里含"卫视"
+    if '卫视' in simp or '衛視' in norm:
+        return "卫视"
+    # 6) 名字里含"央视"/"CCTV"
+    if '央视' in simp or '央視' in norm or norm.upper().startswith('CCTV'):
+        return "央视"
+    # 7) 4K/8K
+    if '4K' in norm.upper() or '8K' in norm.upper():
+        return "4K·8K"
+    # 8) 兜底：繁体转简体，否则归"其他"
     if simp != norm and re.search(r'[一-鿿]', simp):
-        return simp
-    return norm
+        return "其他"
+    return "其他"
 
 
 def clean_m3u(text, group_map=True):
-    out = []
-    for line in text.splitlines():
-        if not line.startswith('#EXTINF'):
-            out.append(line)
+    """清洗并按分类重排：央视 -> 4K·8K -> 卫视 -> 其它，保证央视在最前。"""
+    # 1) 完整提取每个条目：EXTINF 行 + 中间附加行 + URL 行
+    lines = text.splitlines()
+    items = []
+    i = 0
+    while i < len(lines):
+        if not lines[i].startswith('#EXTINF'):
+            i += 1
             continue
-        idx = line.rfind(',')
+        j = i + 1
+        extra = []
+        while j < len(lines) and lines[j].startswith('#EXT') and not lines[j].startswith('#EXTINF'):
+            extra.append(lines[j])
+            j += 1
+        if j < len(lines) and not lines[j].startswith('#EXTINF'):
+            items.append((lines[i], extra, lines[j]))
+            i = j + 1
+        else:
+            i += 1
+
+    # 2) 逐条清洗
+    final = []
+    for ext, extra, url in items:
+        idx = ext.rfind(',')
         if idx == -1:
-            out.append(line)
             continue
-        head, disp = line[:idx], line[idx+1:]
-        disp = disp.strip()
+        head, disp = ext[:idx], ext[idx+1:].strip()
         if DROP_NAME.match(disp):
             continue
         newdisp, ccat = process_name(disp)
-
         gm = re.search(r'group-title="([^"]*)"', head)
         grp = gm.group(1) if gm else ""
         if grp in DROP_GROUP:
             continue
         newgrp = translate_group_name(grp) if group_map else grp
+        # 台名推断的分类优先级高于原始分组（央视台不管在哪个组都归央视）
         if ccat:
             newgrp = ccat
         if gm:
             head = head[:gm.start()] + f'group-title="{newgrp}"' + head[gm.end():]
-        out.append(head + ',' + newdisp)
-    return '\n'.join(out) + '\n'
+        final.append((newgrp, head + ',' + newdisp, extra, url))
+
+    # 3) 按分类顺序重排（央视最前）
+    def cat_key(item):
+        c = item[0]
+        return CAT_ORDER.index(c) if c in CAT_ORDER else len(CAT_ORDER)
+    final.sort(key=cat_key)
+
+    result = []
+    for cat, ext, extra, url in final:
+        result.append(ext)
+        result.extend(extra)
+        result.append(url)
+    return '\n'.join(result) + '\n'
 
 
 def main():
     jobs = [
         ("cn_raw.m3u",        "cn_clean.m3u",        True),
-        ("guovin_raw.m3u",    "guovin_clean.m3u",    False),
+        ("guovin_raw.m3u",    "guovin_clean.m3u",    True),
         ("mzky_raw.m3u",      "mzky_clean.m3u",      True),
         ("yuechan_raw.m3u",   "yuechan_clean.m3u",   True),
         ("yang_raw.m3u",      "yang_clean.m3u",      True),
