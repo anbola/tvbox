@@ -28,10 +28,12 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config pull.rebase true
           git add tvbox_curated.json
           if git diff --staged --quiet; then
             echo "所有源仍然可用，配置无需变更"
           else
             git commit -m "chore(auto): 精选配置自动验证更新（$(date +%Y-%m-%d)）"
+            git pull --rebase --autostash origin main
             git push
           fi
