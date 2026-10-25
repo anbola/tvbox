@@ -418,8 +418,19 @@ def translate_group_name(raw):
 
 def clean_m3u(text, group_map=True):
     """清洗并按分类重排：央视 -> 4K·8K -> 卫视 -> 其它，保证央视在最前。"""
-    # 1) 完整提取每个条目：EXTINF 行 + 中间附加行 + URL 行
     lines = text.splitlines()
+
+    # 0) 保留原始文件头（#EXTM3U 及其属性行）
+    header = []
+    for ln in lines:
+        if ln.startswith('#EXTM3U'):
+            header.append(ln)
+        elif ln.startswith('#EXT-X-') and not header:
+            header.append(ln)
+        else:
+            break
+
+    # 1) 完整提取每个条目：EXTINF 行 + 中间附加行 + URL 行
     items = []
     i = 0
     while i < len(lines):
@@ -466,6 +477,8 @@ def clean_m3u(text, group_map=True):
     final.sort(key=cat_key)
 
     result = []
+    for h in header:
+        result.append(h)
     for cat, ext, extra, url in final:
         result.append(ext)
         result.extend(extra)
