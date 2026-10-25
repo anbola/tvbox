@@ -81,14 +81,78 @@ def verify_api(item):
     return item, False, last
 
 
+# 常用分类优先级（数字越小越靠前）。用于把用户最常看的分类排到前面，
+# 避免 TVBox 展示前几项时点到冷门/空分类。
+CAT_PRIORITY = [
+    "动作片", "喜剧片", "爱情片", "科幻片", "悬疑片", "恐怖片", "剧情片", "战争片", "历史片",
+    "国产剧", "国产电影", "电影片", "电影", "连续剧", "电视剧", "影片", "国产动漫", "动画片", "动漫片", "动漫",
+    "纪录片", "记录片", "综艺片", "综艺", "体育", "体育赛事", "足球", "篮球", "台球",
+    "短剧", "预告片", "最新",
+    "欧美剧", "韩国剧", "香港剧", "台湾剧", "日本剧", "泰国剧", "海外剧",
+    "香港电影", "欧美电影", "日本电影", "韩国电影", "台湾电影",
+    "大陆综艺", "港台综艺", "日韩综艺", "欧美综艺", "音乐", "演唱会",
+    "少儿", "儿童", "有声动漫", "动漫短剧", "AI漫剧", "漫剧",
+    "欧美动漫", "日韩动漫", "港台动漫", "海外动漫",
+    "两性课堂", "伦理", "写真热舞", "斯诺克", "网球", "科普学习", "影视解说", "预告解说",
+    "女频恋爱", "反转爽剧", "古装仙侠", "年代穿越", "脑洞悬疑", "现代都市", "甜宠", "都市",
+    "邵氏电影", "Netflix电影", "Netflix自制剧", "4K电影", "高清电影", "热门短剧",
+]
+
+
+def sort_categories(cats):
+    """把常用分类排前面，其余保持原有相对顺序。"""
+    prio = {n: i for i, n in enumerate(CAT_PRIORITY)}
+    indexed = list(enumerate(cats))
+    indexed.sort(key=lambda it: (prio.get(it[1][0], 999), it[0]))
+    return [c for _, c in indexed]
+
+
+def fetch_categories(domain, url):
+    """逐个分类实测内容，返回 [(分类名, 类型ID, 部数), ...] 只含有内容的。
+    分类请求并发执行，否则 8 源 × 50 分类会超时。"""
+    hdrs = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*"}
+    hdrs.update(EXTRA_HEADERS.get(domain, {}))
+    try:
+        r = urllib.request.Request(url, headers=hdrs)
+        d = urllib.request.urlopen(r, timeout=25, context=CTX).read()
+        j = json.loads(d.decode("utf-8", "ignore"))
+    except Exception:
+        return []
+    cls = j.get("class", [])
+    sep = "&" if "?" in url else "?"
+
+    def probe(c):
+        cid = c.get("type_id") if isinstance(c, dict) else c
+        cname = c.get("type_name", str(cid)) if isinstance(c, dict) else str(cid)
+        try:
+            r2 = urllib.request.Request(f"{url}{sep}ac=videolist&t={cid}&pg=1", headers=hdrs)
+            d2 = urllib.request.urlopen(r2, timeout=20, context=CTX).read()
+            j2 = json.loads(d2.decode("utf-8", "ignore"))
+            n = len(j2.get("list", []))
+        except Exception:
+            n = 0
+        return (cname, cid, n)
+
+    good = []
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        for res in ex.map(probe, cls):
+            if res[2] > 0:
+                good.append(res)
+    return good
+
+
 def verify_m3u(url):
+    """验证托管的 m3u 可达且格式正确（以 #EXTM3U 开头且有频道）。"""
     try:
         r = urllib.request.Request(url, headers=UA)
         d = urllib.request.urlopen(r, timeout=30, context=CTX).read()
         n = d.count(b"#EXTINF")
         if n > 0 and d.startswith(b"#EXTM3U"):
             return True, f"{n}个台/{len(d)}字节"
-        return False, "非m3u"
+        # Pages 未重建时可能返回非 m3u 内容
+        head = d[:40].decode("utf-8", "ignore").replace("\n", " ")
+        return False, f"非m3u(首行:{head[:30]})"
     except Exception as e:
         return False, type(e).__name__
 
@@ -100,19 +164,43 @@ def main():
     with ThreadPoolExecutor(max_workers=8) as ex:
         api_res = list(ex.map(verify_api, CAND_APIS))
     good_sites = []
-    for (domain, url, label), ok, msg in api_res:
-        flag = "✓ 收录" if ok else "✗ 剔除"
-        print(f"  {flag}  {label:<16} {msg:<14} {url[:52]}")
-        if ok:
-            good_sites.append({
-                "key": "sel_" + domain.replace(".", "_"),
-                "name": label,
-                "type": 1,
-                "api": url,
-                "searchable": 1,
-                "quickSearch": 1,
-                "filterable": 1,
-            })
+    # 分类探测较慢，8 个源并行处理
+    def build_site(item):
+        domain, url, label = item
+        cats = fetch_categories(domain, url)
+        if not cats:
+            return None, f"      ✗ 所有分类均无内容，剔除该源"
+        cats = sort_categories(cats)
+        cat_names = [c[0] for c in cats]
+        tmap = ",".join(f"{c[0]}:{c[1]}" for c in cats)
+        site = {
+            "key": "sel_" + domain.replace(".", "_"),
+            "name": label,
+            "type": 1,
+            "api": url,
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "categories": cat_names,
+            "ext": {"t": tmap},
+        }
+        head = "、".join(cat_names[:6]) + ("..." if len(cat_names) > 6 else "")
+        return site, f"      ✓ 可用分类 {len(cat_names)} 个: {head}"
+
+    results = []
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        for (item, ok, msg), (site, note) in zip(api_res, ex.map(build_site, [i for i, _, _ in api_res])):
+            label = item[2]
+            if not ok:
+                print(f"  ✗ 剔除  {label:<16} {msg:<14} {item[1][:52]}")
+                continue
+            if site is None:
+                print(f"  ✗ 剔除  {label:<16} {msg:<14} {item[1][:52]}")
+                print(note)
+                continue
+            print(f"  ✓ 收录  {label:<16} {msg:<14} {item[1][:52]}")
+            print(note)
+            good_sites.append(site)
 
     print()
     print("=" * 68)
