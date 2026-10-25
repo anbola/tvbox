@@ -222,7 +222,7 @@ def main():
     print("=" * 68)
     # ---- 直播源由自愈脚本 autoheal_lives.py 维护，这里只“沿用”，绝不覆盖 ----
     # 读取即将写入的 tvbox_curated.json 里已有的 lives（自愈脚本每日刷新它），
-    # 使精选配置的直播源始终与自愈结果一致，且不会回退到旧账号(weiyou777)域名。
+    # 使精选配置的直播源始终与自愈结果一致，且不会回退到旧账号域名。
     existing_lives = []
     out_preview = os.path.join(HERE, "tvbox_curated.json")
     if os.path.basename(os.path.dirname(HERE)) == "tools":
