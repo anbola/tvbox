@@ -1,6 +1,38 @@
 {
   "wallpaper": "https://www.loliapi.com/acg/",
   "logo": "https://storage.7x24cc.com/storage-server/presigned/ss1/a6-online-fileupload/newMediaFile/3CEAE9E_773_wexfnw_20250911190012684newMediaFile.gif",
+  "doh": [
+    "https://1.12.12.12/dns-query",
+    "https://doh.pub/dns-query"
+  ],
+  "ads": [
+    "https://ads.cmc.cc/uu.php?type=hsdh"
+  ],
+  "rules": [
+    "vip",
+    "tpl",
+    "ju",
+    "qb",
+    "iqiyi",
+    "qiyi",
+    "letv",
+    "sohu",
+    "qq",
+    "wetv",
+    "mgtv",
+    "bilibili",
+    "wasu",
+    "tvid",
+    "renrenmi"
+  ],
+  "headers": [
+    {
+      "host": "hlsztemgsplive.miguvideo.com",
+      "header": {
+        "User-Agent": "bingcha/1.1 (mianfeifenxiang) "
+      }
+    }
+  ],
   "sites": [
     {
       "key": "sel_suoniapi_com",
@@ -75,163 +107,6 @@
       "filterable": 1
     }
   ],
-  "parses": [
-    {
-      "name": "阿雪解析",
-      "type": 1,
-      "url": "https://jx.xmflv.com/?url="
-    }
-  ],
-  "doh": [
-    {
-      "name": "Google",
-      "url": "https://dns.google/dns-query",
-      "ips": [
-        "8.8.4.4",
-        "8.8.8.8"
-      ]
-    },
-    {
-      "name": "Cloudflare",
-      "url": "https://cloudflare-dns.com/dns-query",
-      "ips": [
-        "1.1.1.1",
-        "1.0.0.1",
-        "2606:4700:4700::1111",
-        "2606:4700:4700::1001"
-      ]
-    },
-    {
-      "name": "AdGuard",
-      "url": "https://dns.adguard.com/dns-query",
-      "ips": [
-        "94.140.14.140",
-        "94.140.14.141"
-      ]
-    },
-    {
-      "name": "DNSWatch",
-      "url": "https://resolver2.dns.watch/dns-query",
-      "ips": [
-        "84.200.69.80",
-        "84.200.70.40"
-      ]
-    },
-    {
-      "name": "Quad9",
-      "url": "https://dns.quad9.net/dns-quer",
-      "ips": [
-        "9.9.9.9",
-        "149.112.112.112"
-      ]
-    }
-  ],
-  "rules": [
-    {
-      "name": "proxy",
-      "hosts": [
-        "hlsztemgsplive.miguvideo.com=hlsztemgsplive.188766.xyz",
-        "cache.ott.fifalive.itv.cmvideo.cn=fifalive.188766.xyz",
-        "iptv.huuc.edu.cn=huucv6.188766.xyz",
-        "raw.githubusercontent.com",
-        "googlevideo.com",
-        "cdn.v82u1l.com",
-        "cdn.iz8qkg.com",
-        "cdn.kin6c1.com",
-        "c.biggggg.com",
-        "c.olddddd.com",
-        "haiwaikan.com",
-        "www.histar.tv",
-        "youtube.com",
-        "uhibo.com",
-        ".*boku.*",
-        ".*nivod.*",
-        ".*ulivetv.*"
-      ]
-    },
-    {
-      "name": "海外看",
-      "hosts": [
-        "haiwaikan"
-      ],
-      "regex": [
-        "10.0099",
-        "10.3333",
-        "16.0599",
-        "8.1748",
-        "12.33",
-        "10.85"
-      ]
-    },
-    {
-      "name": "火山嗅探",
-      "hosts": [
-        "huoshan.com"
-      ],
-      "regex": [
-        "item_id="
-      ]
-    },
-    {
-      "name": "抖音嗅探",
-      "hosts": [
-        "douyin.com"
-      ],
-      "regex": [
-        "is_play_url="
-      ]
-    },
-    {
-      "name": "農民嗅探",
-      "hosts": [
-        "toutiaovod.com"
-      ],
-      "regex": [
-        "video/tos/cn"
-      ]
-    },
-    {
-      "name": "新视觉嗅探",
-      "hosts": [
-        "muzhi-video.bj.bcebos.com"
-      ],
-      "regex": [
-        "202403/"
-      ]
-    },
-    {
-      "name": "七新嗅探",
-      "hosts": [
-        "api.52wyb.com"
-      ],
-      "regex": [
-        "m3u8?pt=m3u8"
-      ]
-    },
-    {
-      "name": "夜市點擊",
-      "hosts": [
-        "yeslivetv.com"
-      ],
-      "script": [
-        "document.getElementsByClassName('vjs-big-play-button')[0].click()"
-      ]
-    },
-    {
-      "name": "毛驢點擊",
-      "hosts": [
-        "www.maolvys.com"
-      ],
-      "script": [
-        "document.getElementsByClassName('swal-button swal-button--confirm')[0].click()"
-      ]
-    }
-  ],
-  "ads": [
-    "mozai.4gtv.tv",
-    "pv.vipwm.cc",
-    "static-mozai.4gtv.tv"
-  ],
   "lives": [
     {
       "name": "央视·卫视精选",
@@ -258,12 +133,11 @@
       "url": "https://weiyou777.github.io/tvbox/lives/yuechan_clean.m3u"
     }
   ],
-  "headers": [
+  "parses": [
     {
-      "host": "hlsztemgsplive.miguvideo.com",
-      "header": {
-        "User-Agent": "bingcha/1.1 (mianfeifenxiang) "
-      }
+      "name": "阿雪解析",
+      "type": 1,
+      "url": "https://jx.xmflv.com/?url="
     }
   ],
   "spider": ""
