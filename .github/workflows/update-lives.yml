@@ -32,7 +32,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config pull.rebase true
-          git add lives/ tools/lives/ tvbox_curated.json tvbox_multisource.json tvbox_subscription.json
+          git add lives/ tools/lives/ tvbox_curated.json tvbox_multisource.json tvbox_subscription.json tvbox_lives.json
           if git diff --staged --quiet; then
             echo "无变化，跳过提交"
           else
