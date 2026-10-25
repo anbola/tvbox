@@ -14,6 +14,11 @@ SOURCES = {
     "yuechan_raw.m3u":   "https://ghproxy.net/https://raw.githubusercontent.com/YueChan/live/main/IPTV.m3u",
     "yang_raw.m3u":      "https://iptv.yang-1989.xyz/playlist.m3u",
     "kimentanm_raw.m3u": "https://ghproxy.net/https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/iptv.m3u",
+    # 新增：实测 3/3 可播
+    "yanggather_raw.m3u": "https://ghproxy.net/https://raw.githubusercontent.com/YanG-1989/m3u/main/Gather.m3u",
+    "bestfan_raw.m3u":    "https://ghproxy.net/https://raw.githubusercontent.com/best-fan/iptv-sources/master/cn_all.m3u8",
+    "bigbig_raw.m3u":    "https://ghproxy.net/https://raw.githubusercontent.com/BigBigGrandG/IPTV-URL/release/Gather.m3u",
+    "ccsh_raw.m3u":      "https://ghproxy.net/https://raw.githubusercontent.com/CCSH/IPTV/refs/heads/main/live.m3u",
 }
 
 CTX = ssl.create_default_context()
