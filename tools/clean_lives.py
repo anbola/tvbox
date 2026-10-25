@@ -155,7 +155,7 @@ TR = {
 # ============ 统一分类体系（所有源共用，避免分组过碎）============
 # 顺序即 TVBox 里的显示顺序：央视永远第一
 CAT_ORDER = ["央视", "4K·8K", "卫视", "地方台", "影视剧场", "体育", "少儿动漫",
-             "综艺音乐", "资讯纪实", "购物生活", "港澳台", "国际", "其他"]
+             "综艺音乐", "资讯纪实", "购物生活", "港澳台", "国际", "咪咕移动", "游戏赛事", "其他"]
 
 # 各源原始分组 -> 统一大类
 GROUP_MAP = {
@@ -206,6 +206,13 @@ GROUP_MAP = {
     "咪咕中转·中国": "央视", "咪咕中转·咪视": "综艺音乐", "咪咕中转·台湾": "港澳台",
     "咪咕中转·体育": "体育", "咪咕中转·综合": "资讯纪实",
     "温馨提示": "其他",
+    # --- yanggather（咪咕移动/影视轮播/游戏赛事）---
+    "咪咕「移动」": "咪咕移动", "咪咕": "咪咕移动",
+    "影视「轮播」": "影视剧场", "影视轮播": "影视剧场", "轮播": "影视剧场",
+    "游戏「赛事」": "游戏赛事", "游戏赛事": "游戏赛事",
+    # --- bestfan / 其他源的中文分组 ---
+    "央视台": "央视", "央视频道": "央视",
+    "卫视频道": "卫视", "其他频道": "地方台", "卡通频道": "少儿动漫",
     # --- 国际 ---
     "国际": "国际", "CGTN": "国际", "China International Television": "国际",
     # --- 其它 ---
@@ -271,6 +278,8 @@ def detect_and_strip(name):
     work = re.sub(r'[「『]\s*(Relay|Juli|relay|juli)\s*[」』]\s*$', '', work)
     # 去掉「ofiii」「WebVTT字幕」「字幕」等技术标记后缀
     work = re.sub(r'[「『]\s*(ofiii|WebVTT字幕|字幕|官方)\s*[」』]\s*$', '', work)
+    # 去掉「移动」「轮播」「赛事」等来源性质标记
+    work = re.sub(r'[「『]\s*(移动|轮播|赛事)\s*[」』]\s*$', '', work)
     m = PAREN.search(work)
     if m:
         r = map_res(m.group(1))
@@ -494,6 +503,10 @@ def main():
         ("yuechan_raw.m3u",   "yuechan_clean.m3u",   True),
         ("yang_raw.m3u",      "yang_clean.m3u",      True),
         ("kimentanm_raw.m3u", "kimentanm_clean.m3u", True),
+        ("yanggather_raw.m3u", "yanggather_clean.m3u", True),
+        ("bestfan_raw.m3u",    "bestfan_clean.m3u", True),
+        ("bigbig_raw.m3u",    "bigbig_clean.m3u", True),
+        ("ccsh_raw.m3u",      "ccsh_clean.m3u", True),
     ]
     for src, dst, gm in jobs:
         p = os.path.join(HERE, src)
