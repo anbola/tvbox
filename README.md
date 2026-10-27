@@ -10,26 +10,24 @@
 
 > 下面把**每一个源**的地址单独列清。复制时请整行复制，注意结尾不要带多余空格。
 
-### 1. 点播源（影视 · 14 个，粘贴进「点播源 / 配置地址」框）
+### 1. 点播源（影视 · **精选 5 个**，粘贴进「点播源 / 配置地址」框）
 
-| 序号 | 名称 | API 地址 |
-|------|------|----------|
-| VOD01 | 🎬索尼┃高清 | `https://suoniapi.com/api.php/provide/vod/?ac=videolist` |
-| VOD02 | 🎬量子┃资源 | `https://lzizy1.com/api.php/provide/vod/?ac=videolist` |
-| VOD03 | 🎬虎牙┃采集 | `https://www.huyaapi.com/api.php/provide/vod/from/hym3u8?ac=videolist` |
-| VOD04 | 🎬非凡┃资源 | `http://ffzy5.tv/api.php/provide/vod?ac=videolist` |
-| VOD05 | 🎬火狐┃采集 | `https://hhzyapi.com/api.php/provide/vod/?ac=videolist` |
-| VOD06 | 🎬百度┃采集 | `https://api.apibdzy.com/api.php/provide/vod/?ac=videolist` |
-| VOD07 | 🎬暴風┃采集 | `https://bfzyapi.com/api.php/provide/vod?ac=videolist` |
-| VOD08 | 🎬360┃采集 | `https://360zy.com/api.php/provide/vod?ac=videolist` |
-| VOD09 | 🎬极速┃资源 | `https://jszyapi.com/api.php/provide/vod/?ac=videolist` |
-| VOD10 | 🎬闪电┃资源 | `https://sdzyapi.com/api.php/provide/vod/?ac=videolist` |
-| VOD11 | 🎬非凡2┃资源 | `https://api.ffzyapi.com/api.php/provide/vod/?ac=videolist` |
-| VOD12 | 🎬光速┃资源 | `https://api.guangsuapi.com/api.php/provide/vod/?ac=videolist` |
-| VOD13 | 🎬量子2┃资源 | `http://cj.lziapi.com/api.php/provide/vod/?ac=videolist` |
-| VOD14 | 🎬非凡3┃资源 | `http://cj.ffzyapi.com/api.php/provide/vod/?ac=videolist` |
+| 序号 | 名称 | API 地址 | 实测（2026-10-27） |
+|------|------|----------|--------------------|
+| VOD01 | 🎬非凡┃极速·资源 | `https://ffzy5.tv/api.php/provide/vod?ac=videolist` | API **685ms** · 片库 9.9 万 |
+| VOD02 | 🎬火狐┃采集 | `https://hhzyapi.com/api.php/provide/vod/?ac=videolist` | API 1086ms · 片库 11.6 万 |
+| VOD03 | 🎬金鹰┃资源 | `https://jyzyapi.com/api.php/provide/vod?ac=videolist` | API 2470ms · **播放首字节 188ms** |
+| VOD04 | 🎬豆瓣┃资源 | `https://dbzy.tv/api.php/provide/vod?ac=videolist` | API 2841ms · 片库 14.8 万 · 响应最轻 |
+| VOD05 | 🎬暴风┃采集 | `https://bfzyapi.com/api.php/provide/vod?ac=videolist` | API 3158ms · **片库 16.7 万** |
 
-> 这 14 个源已经打包在下面的「完整配置 / 点播专用 / 订阅聚合」里，**无需逐个手动添加**；此处列出仅供核对出处。
+> **精选说明（宁精勿滥）**：原 14 源经实测**去重 + 剔慢源**后仅留 5 个，按 API 中位速度排序：
+> - **重复源剔除**：非凡/非凡2/非凡3 内容完全相同；量子/量子2 也相同（字节数与片库一致）。
+> - **慢源剔除**：量子 14.3s（响应 927KB 超重）、虎牙 9.3s、极速/闪电 7.7s、索尼/百度/360 5s 级。
+> - **失效剔除**：光速、卧龙、华为、哔嘀、快车、天空、无尽、红牛、影视工厂、超级（域名已死）。
+> - 5 源**总片库约 64.6 万部**，API 全部 ≤3.2s、封面 20/20 齐全、响应轻量（最快 60KB）。
+> - 全部为 `type:1` 纯采集接口、`spider` 留空 —— **不依赖加密 jar，从源头避免「导入报错」**。
+
+> 这 5 个源已经打包在下面的「完整配置 / 点播专用 / 订阅聚合」里，**无需逐个手动添加**；此处列出仅供核对出处。
 
 ### 2. 直播源（电视频道 · 10 个 .m3u，粘贴进「直播源」框）
 
@@ -59,7 +57,7 @@
 
 - `https://anbola.github.io/tvbox/tvbox_subscription.json`
 
-> 在 TVBox「设置 → 配置地址」填入这一个即可，会自动合并 14 个点播源 + 10 个直播源 + 解析接口。
+> 在 TVBox「设置 → 配置地址」填入这一个即可，会自动合并 5 个精选点播源 + 10 个直播源 + 解析接口。
 
 ### 5. 完整配置文件（按需直接粘贴）
 
@@ -80,7 +78,7 @@
 
 本仓库把「TVBox 点播接口 + IPTV 直播源 + 视频解析」三类资源做成**可自动维护**的配置：
 
-- **点播**：14 个国内采集站 API，逐个分类实测有内容才收录，封面/详情由源站直出。
+- **点播**：精选 **5 个**高速采集站 API（实测去重/剔慢源，总片库约 64.6 万部），逐个分类实测有内容才收录，封面/详情由源站直出。
 - **直播**：每日从 19 个公开 IPTV 源里探测、清洗、取最健康的 10 个，输出标准 `.m3u`。
 - **解析**：内置阿雪解析，配合 `rules` 自动识别各大平台 VIP 线路。
 - **自愈**：直播源每天 05:30（北京时间）自动重跑；点播配置每天 06:00 重新实测收录。
@@ -125,7 +123,7 @@ anbola/tvbox
    - 直播源框单独填 `https://anbola.github.io/tvbox/mytv_lite.m3u`（直接填 m3u 最稳，比填 `tvbox_lives.json` 兼容性更好）
 
 4. **想要极速、不卡（手机 / 老旧设备首选）**：
-   - 配置地址填 `https://anbola.github.io/tvbox/tvbox_sites.json`（只要 14 个点播 + 解析，**不含**那近 9000 台直播，列表秒开）
+   - 配置地址填 `https://anbola.github.io/tvbox/tvbox_sites.json`（只要 5 个精选点播 + 解析，**不含**那近 9000 台直播，列表秒开）
    - 直播源框填 `https://anbola.github.io/tvbox/lives/fast.m3u`（约 1000 台，全是国内 CDN 流、台标只走国内 gitee、已剔除境外流，换台即播）
 
 > ⚠️ **「直播源」框只填 `.m3u` 或 `tvbox_lives.json`，绝不填完整配置 JSON**（如 `tvbox_curated.json`/`tvbox_subscription.json`）。把完整配置填进直播源框会弹「配置解析失败」且直播空白。若只想用一份配置搞定全部，直接把 `tvbox_subscription.json` 填进「配置地址」并**留空直播源框**即可。
@@ -174,7 +172,7 @@ anbola/tvbox
 - 部分流地址本身是境外 IP，从国内连自然慢。
 
 **极速方案（已为你做好 `lives/fast.m3u`）**：
-- 配置地址填 `tvbox_sites.json`（只要 14 个点播 + 解析，**不带**那近 9000 台直播，列表秒开）；
+- 配置地址填 `tvbox_sites.json`（只要 5 个精选点播 + 解析，**不带**那近 9000 台直播，列表秒开）；
 - 直播源框填 `https://anbola.github.io/tvbox/lives/fast.m3u`（约 1000 台，全是国内 CDN 流、台标只走国内 gitee、且已剔除境外流）。
 这样直播页秒开、换台即播。若个别台仍缓冲，是免费 IPTV 源本身过载，属正常，换个台即可。
 
