@@ -7,8 +7,8 @@
   1) 探测候选池 POOL（现有 10 个 + 9 个备用，共 19 个）
   2) 用 clean_lives.clean_m3u 做中文化/分辨率/分组清洗（质量与原流程一致）
   3) 按台数排名，取最健康的 TOP_N 个；死源（台数过低/抓取失败）自动落选
-  4) 把选中的源写入 lives/<key>_clean.m3u（同时写 tools/lives/ 保持仓库结构一致）
-  5) 改写三个根配置（tvbox_curated / tvbox_multisource / tvbox_subscription）的 lives 数组
+  4) 把选中的源写入 lives/<key>_clean.m3u
+  5) 改写两个根配置（tvbox_curated / tvbox_subscription）的 lives 数组
      —— 只改 lives，点播/解析/规则等一律原样保留
   6) 健康源不足 TOP_N 时，用已抓到的（哪怕偏低）补齐，保证数量稳定
 
@@ -19,9 +19,7 @@ import os, sys, json, ssl, time, urllib.request, urllib.error
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)                      # 仓库根目录
 LIVES = os.path.join(ROOT, "lives")
-TOOLS_LIVES = os.path.join(HERE, "lives")
 os.makedirs(LIVES, exist_ok=True)
-os.makedirs(TOOLS_LIVES, exist_ok=True)
 
 sys.path.insert(0, HERE)
 import clean_lives                         # 复用现有清洗（台名中文化等）
@@ -102,15 +100,12 @@ def main():
     lives = []
     for key, name, url, cleaned, n in chosen:
         fn_root = os.path.join(LIVES, f"{key}_clean.m3u")
-        fn_tools = os.path.join(TOOLS_LIVES, f"{key}_clean.m3u")
         with open(fn_root, "w", encoding="utf-8") as fh:
-            fh.write(cleaned)
-        with open(fn_tools, "w", encoding="utf-8") as fh:
             fh.write(cleaned)
         lives.append({"name": f"{name}（{n}台）", "url": f"{BASE}/lives/{key}_clean.m3u"})
 
     # 改写三个根配置的 lives 数组（其余字段原样保留）
-    for cfg in ["tvbox_curated.json", "tvbox_multisource.json", "tvbox_subscription.json"]:
+    for cfg in ["tvbox_curated.json", "tvbox_subscription.json"]:
         p = os.path.join(ROOT, cfg)
         if not os.path.exists(p):
             continue

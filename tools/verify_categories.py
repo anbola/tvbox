@@ -13,7 +13,7 @@ ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 UA = {"User-Agent": "Mozilla/5.0 (Linux; Android 5) okhttp/3.12.1"}
 
-CFG = sys.argv[1] if len(sys.argv) > 1 else "tvbox_multisource.json"
+CFG = sys.argv[1] if len(sys.argv) > 1 else "tvbox_curated.json"
 
 
 def get(url, extra=None):

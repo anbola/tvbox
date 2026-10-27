@@ -12,7 +12,7 @@
 import os, re, io
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LIVES = os.path.join(HERE, "lives")
+LIVES = os.path.join(os.path.dirname(HERE), "lives")   # 统一写到仓库根 lives/
 os.makedirs(LIVES, exist_ok=True)
 
 # 候选源（本地优先，否则从 GitHub Pages 拉）

@@ -65,7 +65,6 @@
 |------|------|------|
 | 全量配置（点播+直播+解析） | `https://anbola.github.io/tvbox/tvbox_curated.json` | 一次性配置全部功能 |
 | 点播专用 | `https://anbola.github.io/tvbox/tvbox_sites.json` | 只要点播（无直播）的客户端 |
-| 多源配置 | `https://anbola.github.io/tvbox/tvbox_multisource.json` | 多源/多仓版本客户端 |
 | 直播专用（TVBox 直播框） | `https://anbola.github.io/tvbox/tvbox_lives.json` | 只填进「直播源」框，含 10 个 m3u |
 
 ### 6. 解析接口（看 VIP / 收费剧用）
@@ -92,7 +91,6 @@ anbola/tvbox
 ├── tvbox_subscription.json   # 订阅聚合入口（推荐）
 ├── tvbox_curated.json        # 全量配置（点播+直播+解析）
 ├── tvbox_sites.json          # 点播专用（仅 sites）
-├── tvbox_multisource.json    # 多源/多仓配置
 ├── tvbox_lives.json          # 直播专用（TVBox 直播框）
 ├── mytv.m3u                  # MyTV 全量直播源（≈7900 台）
 ├── mytv_lite.m3u             # MyTV 精简直播源（≈3800 台，手机推荐）
@@ -163,7 +161,7 @@ anbola/tvbox
 1. **最省事（推荐）**：只填「配置地址」为 `tvbox_subscription.json`（或 `tvbox_curated.json`），**「直播源」框留空**。这两个完整配置已内置 10 个已验证可达的直播源，重启即见直播，且不会弹窗。
 2. **想要更大的直播列表**：「配置地址」填 `tvbox_curated.json`，「直播源」框填 `https://anbola.github.io/tvbox/mytv_lite.m3u`（一个干净自包含的 m3u，≈3800 台，比 JSON 兼容性更好，绝不弹「配置解析失败」）。
 
-> ⚠️ 切记：「直播源」框里只放 `.m3u` 或 `tvbox_lives.json` 这种纯直播 JSON，**不要放任何完整配置 JSON**（`tvbox_curated.json` / `tvbox_subscription.json` / `tvbox_sites.json` / `tvbox_multisource.json`），否则必弹「配置解析失败」。
+> ⚠️ 切记：「直播源」框里只放 `.m3u` 或 `tvbox_lives.json` 这种纯直播 JSON，**不要放任何完整配置 JSON**（`tvbox_curated.json` / `tvbox_subscription.json` / `tvbox_sites.json`），否则必弹「配置解析失败」。
 
 ### Q2-2. 直播能出频道了，但**换台 / 播放特别卡、半天不动**
 这是「源太多 + 台标/流绕了境外」导致，**不是软件问题**：
@@ -215,7 +213,7 @@ anbola/tvbox
 |--------|------------------|------|
 | `update-lives.yml` | 每日 05:30 | 自愈直播源：探测 19 源 → 清洗 → 取最健康 10 源 → 重写 `lives/*.m3u` 与各配置 → 生成 `mytv.m3u`/`mytv_lite.m3u` |
 | `verify-curated.yml` | 每日 06:00 | 重新实测点播 API：分类有内容才收录，重建 `tvbox_curated.json`/`tvbox_sites.json` |
-| `discover-sources.yml` | 每周一 13:00 | 扫描新公开源，写入 `probe_new_sources.json` 供人工复核 |
+| `discover-sources.yml` | 每周一 13:00 | 扫描新公开源，探测结果作为 CI 产物（artifact）上传供人工复核，不入库 |
 
 所有工作流使用仓库 `GITHUB_TOKEN`（Workflow 权限已设为 read/write），无需任何手动干预。
 
