@@ -50,14 +50,14 @@ EXTRA_HEADERS = {
 
 
 def fix_api(api):
-    """统一把站点 api 末尾规范为 ?ac=videolist。
+    """把站点 api 规范为「裸地址」：去掉 ?ac=... 等查询串，由 App 自行拼接。
 
-    关键修复：TVBox 的 provide/vod 接口中，ac=list 只返回摘要（无 vod_pic 海报），
-    导致点播界面「列表能出、封面全是灰块」。ac=videolist 会在列表里直接带回 vod_pic，
-    且对分类(t)、搜索(wd)、详情(ids) 同样生效。详见 README「封面不显示」一节。
+    重要（2026-10-31 修正）：不要再焊死 ?ac=videolist。一旦焊死，App 就无法再请求
+    ac=list 获取分类树，结果就是「能出片子、但没有『电影/电视剧/纪录片/动漫』分类标签」。
+    标准写法（官方 official.json / qist 等成品配置均如此）：
+      api = .../provide/vod/     categories = ["电影",...]     ext = 无
     """
-    base = api.split("?")[0]
-    return base + "?ac=videolist"
+    return api.split("?")[0].rstrip("/")
 
 
 def verify_api(item):
@@ -225,9 +225,8 @@ def main():
             "api": fix_api(url),
             "searchable": 1,
             "quickSearch": 1,
-            "filterable": 1,
+            "filterable": 0,
             "categories": cat_names,
-            "ext": {"t": tmap},
         }
         head = "、".join(cat_names[:6]) + ("..." if len(cat_names) > 6 else "")
         return site, f"      ✓ 可用分类 {len(cat_names)} 个: {head}"
@@ -285,8 +284,9 @@ def main():
     base = {
         "wallpaper": "https://www.loliapi.com/acg/",
         "logo": "https://storage.7x24cc.com/storage-server/presigned/ss1/a6-online-fileupload/newMediaFile/3CEAE9E_773_wexfnw_20250911190012684newMediaFile.gif",
-        "doh": ["https://1.12.12.12/dns-query", "https://doh.pub/dns-query"],
-        "ads": ["https://ads.cmc.cc/uu.php?type=hsdh"],
+        # doh 改用实测可达的公共 DoH（原 1.12.12.12 / doh.pub 实测 502 已失效，会拖慢/干扰解析）
+        "doh": ["https://dns.alidns.com/dns-query", "https://doh.360.cn/dns-query"],
+        # ads 原链接 ads.cmc.cc 实测 000 死链，已移除（避免运行时反复请求失败）
         "rules": ["vip", "tpl", "ju", "qb", "iqiyi", "qiyi", "letv", "sohu", "qq", "wetv", "mgtv", "bilibili", "wasu", "tvid", "renrenmi"],
         "headers": [
             {"host": "hlsztemgsplive.miguvideo.com", "header": {"User-Agent": "bingcha/1.1 (mianfeifenxiang) "}}
