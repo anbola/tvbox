@@ -1,6 +1,7 @@
 {
   "sites": [
     {
+      "key": "360zyzz_9d48",
       "name": "360",
       "type": 1,
       "api": "https://360zyzz.com/api.php/provide/vod/",
@@ -25,9 +26,10 @@
       ]
     },
     {
+      "key": "cj_c8af",
       "name": "量子",
       "type": 1,
-      "api": "http://cj.lziapi.com/api.php/provide/vod/",
+      "api": "https://cj.lziapi.com/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -49,6 +51,7 @@
       ]
     },
     {
+      "key": "bfzyapi_740e",
       "name": "暴风",
       "type": 1,
       "api": "https://bfzyapi.com/api.php/provide/vod/",
@@ -73,9 +76,10 @@
       ]
     },
     {
+      "key": "cj_7b1d",
       "name": "非凡",
       "type": 1,
-      "api": "http://cj.ffzyapi.com/api.php/provide/vod/",
+      "api": "https://cj.ffzyapi.com/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0,
@@ -99,7 +103,7 @@
   ],
   "lives": [
     {
-      "name": "📺 央视·卫视·陕西本地（实测排序）",
+      "name": "央视·卫视·陕西本地（实测排序）",
       "url": "https://anbola.github.io/tvbox/lives/main.m3u"
     }
   ]
