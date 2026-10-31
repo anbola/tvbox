@@ -11,6 +11,7 @@ import json
 import os
 import re
 import ssl
+import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
@@ -36,10 +37,18 @@ PRIORITY = ["电影", "电影片", "电视剧", "连续剧", "动作片", "喜�
 BLOCK = ("伦理", "福利", "写真", "成人", "情色", "自拍", "偷拍", "里番", "无码")
 
 
-def api_get(url, timeout=12):
-    req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=timeout, context=CTX) as r:
-        return json.loads(r.read().decode("utf-8", "ignore"))
+def api_get(url, timeout=12, retries=3):
+    """带重试的请求：采集站偶发超时很常见，绝不能因此丢掉整个站点。"""
+    last = None
+    for i in range(retries):
+        try:
+            req = urllib.request.Request(url, headers=UA)
+            with urllib.request.urlopen(req, timeout=timeout, context=CTX) as r:
+                return json.loads(r.read().decode("utf-8", "ignore"))
+        except Exception as e:
+            last = e
+            time.sleep(1.5 * (i + 1))
+    raise last
 
 
 def canon(name):
@@ -90,13 +99,25 @@ def build_live():
     return len(chans), total
 
 
+PREV_SITES = []
+_prev_path = os.path.join(ROOT, "tvbox_clean.json")
+if os.path.exists(_prev_path):
+    try:
+        PREV_SITES = json.load(open(_prev_path, encoding="utf-8")).get("sites", []) or []
+    except Exception:
+        PREV_SITES = []
+
+
 def build_sites():
     out_sites = []
     for key, disp, base in SITES:
         try:
             classes = api_get(base + "?ac=list").get("class") or []
         except Exception as e:
-            print(f"  {key}: 取分类失败 {type(e).__name__}")
+            print(f"  {disp}: 取分类失败({type(e).__name__})，保留上一版条目")
+            prev = {s.get("key"): s for s in PREV_SITES}.get(key)
+            if prev:
+                out_sites.append(prev)
             continue
         cands = [c for c in classes
                  if c.get("type_name") and not any(b in c.get("type_name") for b in BLOCK)]
