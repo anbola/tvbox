@@ -1,6 +1,4 @@
 {
-  "spider": "",
-  "wallpaper": "https://www.loliapi.com/acg/",
   "sites": [
     {
       "key": "ffzy5",
@@ -17,8 +15,10 @@
         "科幻片",
         "爱情片",
         "恐怖片",
+        "战争片",
         "动漫片",
-        "记录片"
+        "记录片",
+        "国产剧"
       ]
     },
     {
@@ -30,33 +30,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "categories": [
-        "电影",
         "动作片",
         "喜剧片",
         "剧情片",
         "科幻片",
         "爱情片",
-        "综艺",
-        "动画片"
-      ]
-    },
-    {
-      "key": "jyzy",
-      "name": "🎬 金鹰",
-      "type": 1,
-      "api": "https://jyzyapi.com/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "categories": [
-        "电影",
-        "动作片",
-        "剧情片",
-        "科幻片",
-        "爱情片",
         "恐怖片",
+        "战争片",
         "动画片",
-        "记录片"
+        "记录片",
+        "香港剧"
       ]
     },
     {
@@ -68,14 +51,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "categories": [
-        "电影",
         "连续剧",
         "动作片",
         "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "战争片",
         "综艺片",
-        "动漫",
-        "纪录片",
-        "记录片"
+        "动漫"
       ]
     },
     {
@@ -87,11 +72,13 @@
       "quickSearch": 1,
       "filterable": 0,
       "categories": [
-        "电影片",
-        "连续剧",
         "动作片",
         "喜剧片",
-        "综艺片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "战争片",
         "动漫片",
         "动画片",
         "纪录片"
@@ -100,41 +87,8 @@
   ],
   "lives": [
     {
-      "name": "📺 极速直播·683台",
-      "url": "https://anbola.github.io/tvbox/lives/fast.m3u"
-    },
-    {
-      "name": "📺 央视卫视精选·149台",
-      "url": "https://anbola.github.io/tvbox/lives/cn_clean.m3u"
+      "name": "📺 央视·卫视 81 台（逐条实测可播）",
+      "url": "https://anbola.github.io/tvbox/lives/main.m3u"
     }
-  ],
-  "parses": [
-    {
-      "name": "阿雪解析",
-      "type": 1,
-      "url": "https://jx.xmflv.com/?url="
-    }
-  ],
-  "rules": [
-    "vip",
-    "tpl",
-    "ju",
-    "qb",
-    "iqiyi",
-    "qiyi",
-    "letv",
-    "sohu",
-    "qq",
-    "wetv",
-    "mgtv",
-    "bilibili",
-    "wasu",
-    "tvid",
-    "renrenmi",
-    "广告",
-    "最新",
-    "公益",
-    "排行",
-    "推荐"
   ]
 }
