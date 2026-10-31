@@ -1,13 +1,19 @@
-name: 直播源候选池更新（每日）
+name: 直播源候选池更新（每周六 21:30）
 
-# 云端做【抓取 + 结构校验 + 发布】
+# 云端只做【抓取 + 结构校验 + 提交候选池】。
 # ⚠️ 测速必须在你自己电脑上跑：GitHub 服务器在国外，测中国移动 IPTV 无意义。
-#    所以本工作流不会覆盖 lives/main.m3u 和 tvbox_clean.json，
-#    只把各社区源合并进候选池 lives/pool.m3u，供你本地测速时使用。
+#    所以本工作流**不会**覆盖 lives/main.m3u 和 tvbox_clean.json，
+#    只把各社区源合并进候选池 lives/pool.m3u，供本地 refresh.bat 测速时使用。
+#
+# 时间为什么改了：原来是每天 04:00。那个点抓下来的池子，要等到晚上你回家
+# 才有机会测速，等于白等一整天；而你白天上班、只有晚上和周末在家，凌晨那次
+# 更新对你没有任何可见收益。改成每周六 21:30 —— 周末全网最闲、你在家，
+# 抓完顺手跑一次 refresh.bat，周中不再打扰。候选池本来就是"只增不减"的，
+# 一周补一次完全够用。
 
 on:
   schedule:
-    - cron: "0 20 * * *"   # 每天 04:00（北京时间）
+    - cron: "30 13 * * 6"   # 每周六 21:30（北京时间 = UTC 13:30）
   workflow_dispatch:
   push:
     branches: [main]
@@ -48,8 +54,12 @@ jobs:
           assert cfg.get("sites"), "sites 不能为空"
           for s in cfg["sites"]:
               assert s.get("api", "").startswith("http"), "api 非法: %r" % s.get("api")
+              # key/type/api 缺任一，TVBoxOSC 会静默跳过该站（首页少站、不报错）
+              assert s.get("key"), "站点缺 key，TVBox 会静默跳过"
+              assert s.get("type") == 1, "站点 type 必须为 1（json 采集）"
               assert "ext" not in s, "不应有 ext 字段"
               assert "ac=videolist" not in s["api"], "api 不应焊死 ac=videolist"
+          assert cfg.get("lives"), "lives 不能为空"
           txt = open("lives/main.m3u", encoding="utf-8").read()
           assert txt.startswith("#EXTM3U"), "main.m3u 头非法"
           n = txt.count("#EXTINF")
@@ -58,6 +68,8 @@ jobs:
           bad = [l for l in txt.splitlines()
                  if l and not l.startswith("#") and not l.startswith("http")]
           assert not bad, "存在非法行: %r" % bad[:3]
+          # 非 BMP 字符（emoji）会让老版本 App 整段解析失败，必须拦住
+          assert not any(ord(c) > 0xFFFF for c in txt), "main.m3u 含 emoji"
           print("校验通过: sites=%d 频道=%d" % (len(cfg["sites"]), n))
           PY
 
