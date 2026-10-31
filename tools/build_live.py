@@ -20,6 +20,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MIN_KBPS = 700          # 低于此码率必然卡
 KEEP_PER_CHANNEL = 3    # 每台保留条数（第1条是默认）
 
+# 默认播放条目的"安全码率带"。
+# 实测这批移动源里有 81 条 >10Mbps（最高 48Mbps），多为 2K/HEVC。
+# 电视盒子自动播放第一条时若直接上 40Mbps+ 的 HEVC，老解码器极易花屏/闪退，
+# 所以第一条只从 1500~8000kbps 里选，超高的降级为备用线路。
+SAFE_MIN = 1500
+SAFE_MAX = 8000
+
 # ---------- 频道名归一化 ----------
 
 CCTV_MAP = {
@@ -126,10 +133,15 @@ def main():
             continue
         chans[std].append(r)
 
-    # 每台排序：**优先移动自家 CDN**（同网，稳定），同优先级内按码率降序。
-    # 只按码率排会让"外网偶发很快但会抖"的流排到第一个，反而更卡。
+    # 每台排序：**优先移动自家 CDN**（同网，稳定）；
+    # 其次只把 1500~8000kbps 的流放到第一条（电视盒子解码安全区），
+    # 超过 8000kbps 的 2K/HEVC 流降级为备用，避免一进直播就闪退。
     def prefer(it):
-        return (0 if "chinamobile" in it["url"] else 1, -it["kbps"], it["ttfb_ms"])
+        k = it["kbps"]
+        in_band = 0 if SAFE_MIN <= k <= SAFE_MAX else 1
+        over = 0 if k <= SAFE_MAX else 1
+        return (0 if "chinamobile" in it["url"] else 1, in_band, over,
+                -min(k, SAFE_MAX), it["ttfb_ms"])
 
     picked = {}
     for std, lst in chans.items():
