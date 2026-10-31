@@ -27,14 +27,22 @@ UA = "okhttp/3.15.0"
 MIN_VOD_KBPS = 1200     # 视频分片低于此值会卡
 MIN_TOTAL = 100         # 分类至少这么多片才算"有货"
 MAX_SITES = 4           # 站越多首页越慢
-MAX_CATS = 10
+MAX_CATS = 14
 
-PRIORITY = ["电影", "电影片", "电视剧", "连续剧", "国产剧", "港台剧", "日韩剧", "欧美剧",
-            "动作片", "喜剧片", "爱情片", "科幻片", "恐怖片", "剧情片", "战争片", "犯罪片",
-            "悬疑片", "冒险片", "奇幻片", "武侠片", "灾难片", "邵氏电影", "短剧",
-            "综艺", "综艺片", "大陆综艺", "港台综艺", "日韩综艺",
-            "动漫", "动漫片", "动画片", "国产动漫", "日韩动漫", "欧美动漫",
-            "纪录片", "记录片", "解说", "体育"]
+# 分类优先级：主分类 → 电影子类 → 剧集 → 综艺 → 动漫 → 纪录片 → 其它
+# 注意 1：实测这些采集站的"电影/电视剧"主分类服务器端普遍是 0 条，
+#         真正有货的是子分类（动作片/剧情片/国产剧…），所以子分类必须排在能入选的位置。
+# 注意 2：伦理片/理论片 属于成人内容，家用电视必须剔除，故不在列表中。
+PRIORITY = [
+    "电影", "电影片", "电视剧", "连续剧",
+    "动作片", "喜剧片", "剧情片", "科幻片", "爱情片", "恐怖片",
+    "国产剧", "欧美剧", "香港剧", "韩国剧",
+    "综艺", "综艺片", "大陆综艺",
+    "动画片", "动漫", "动漫片", "国产动漫",
+    "纪录片", "记录片",
+    "战争片", "犯罪片", "悬疑片", "冒险片", "奇幻片", "武侠片", "灾难片",
+    "短剧", "体育", "解说", "预告片", "其他",
+]
 
 
 def get_json(url, timeout=15):
@@ -60,27 +68,30 @@ def build_site(site, quick):
         return None
     idmap = {c["type_name"]: c["type_id"] for c in classes if c.get("type_name")}
     names = [n for n in PRIORITY if n in idmap]
-    # 候选不足时补其它分类
-    if len(names) < 8:
+    # 候选不足时补其它分类（保持服务器顺序）
+    if len(names) < 12:
         for c in classes:
             n = c.get("type_name")
             if n and n not in names:
                 names.append(n)
 
-    cand = [(n, idmap[n]) for n in names[:20]]
-    with ThreadPoolExecutor(max_workers=8) as ex:
-        totals = dict(zip([c[0] for c in cand], ex.map(lambda c: cat_total(api, c[1]), cand)))
+    # 关键：对【全部候选分类】查 total，而不是只查前 20 个，
+    # 否则"动画片/纪录片/短剧"这类排在后面但真有货的分类会被漏掉。
+    cand = [(n, idmap[n]) for n in names[:30]]
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        totals = dict(zip([c[0] for c in cand],
+                          ex.map(lambda c: cat_total(api, c[1]), cand)))
 
-    picked = [n for n in names[:20] if totals.get(n, 0) >= MIN_TOTAL]
+    picked = [n for n in names[:30] if totals.get(n, 0) >= MIN_TOTAL]
     if len(picked) < 6:
-        # 放宽阈值
-        picked = [n for n in names[:20] if totals.get(n, 0) >= 30][:8]
+        picked = [n for n in names[:30] if totals.get(n, 0) >= 30][:8]
     picked = sorted(picked, key=lambda n: PRIORITY.index(n) if n in PRIORITY else 99)[:MAX_CATS]
     if not picked:
         print(f"  {site['name']}: 无有货分类，丢弃")
         return None
 
-    print(f"  {site['name']:<8} 视频{site['vod_kbps']:>7.0f}kbps  分类{len(picked)}: {picked}")
+    detail = ", ".join(f"{n}{totals.get(n, 0)}" for n in picked)
+    print(f"  {site['name']:<8} 视频{site['vod_kbps']:>7.0f}kbps  分类{len(picked)}: [{detail}]")
     return {
         "name": site["name"],
         "type": 1,
@@ -93,7 +104,12 @@ def build_site(site, quick):
 
 
 def main():
-    rep = json.load(open(os.path.join(ROOT, "_probe", "vod_report.json"), encoding="utf-8"))
+    # 优先用"多次采样取中位数"的 vod_final.json（更稳），退回单次报告
+    p_final = os.path.join(ROOT, "_probe", "vod_final.json")
+    p_report = os.path.join(ROOT, "_probe", "vod_report.json")
+    src = p_final if os.path.exists(p_final) else p_report
+    rep = json.load(open(src, encoding="utf-8"))
+    print(f"数据来源: {os.path.basename(src)}")
     good = [r for r in rep if r.get("vod_kbps", 0) >= MIN_VOD_KBPS and not r.get("err")]
     good.sort(key=lambda r: (-r["vod_kbps"], r.get("list_ms") or 9999))
     good = good[:MAX_SITES]
