@@ -54,8 +54,14 @@ def main():
     # ② 真实测速（核心）
     run("② 逐条测速（下载真实分片算码率）", ["tools/speedtest.py"])
 
+    # ②.5 探测编码：HEVC 会让本机解码器崩，720x576 会显示成 4:3，两件事都靠这一步
+    run("②.5 探测视频编码与分辨率", ["tools/codec_probe.py"], optional=True)
+
+    # ②.6 补高清源：给还停在 720x576 的频道找 1080p 线路
+    run("②.6 补 1080p 备选线路", ["tools/live_expand.py"], optional=True)
+
     # ③ 按速度生成直播源
-    run("③ 生成 lives/main.m3u（按实测速度排序）", ["tools/build_live.py"])
+    run("③ 生成 lives/main.m3u（高清优先 + 多线路）", ["tools/build_live.py"])
 
     # ④ 点播站体检
     if not no_vod:
