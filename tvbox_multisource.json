@@ -104,7 +104,8 @@
   "lives": [
     {
       "name": "央视·卫视·陕西本地（实测排序）",
-      "url": "https://anbola.github.io/tvbox/lives/main.m3u"
+      "url": "https://anbola.github.io/tvbox/lives/main.m3u",
+      "playerType": "1"
     }
   ]
 }
