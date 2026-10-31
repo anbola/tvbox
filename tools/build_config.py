@@ -10,6 +10,7 @@
   3) 只有最快的 2 个站开 quickSearch（搜索时并发查询，站越多越慢）
   4) 配置只留 sites + lives 两项，无任何外部依赖（不会"配置解析失败"）
 """
+import hashlib
 import json
 import os
 import re
@@ -51,6 +52,22 @@ def get_json(url, timeout=15):
         return json.loads(r.read().decode("utf-8", "ignore"))
 
 
+def site_key(api):
+    """给每个站点生成稳定的 ASCII key。
+
+    TVBox 用 key 作为站点唯一标识（首页标签、搜索、历史记录都依赖它）。
+    v2.0 曾经漏掉这个字段，导致首页站点列表全部失效 —— 必须保留。
+    """
+    host = urllib.parse.urlparse(api).netloc.split(":")[0]
+    base = re.sub(r"[^a-z0-9]", "", host.split(".")[0].lower()) or "site"
+    return base + "_" + hashlib.md5(api.encode("utf-8")).hexdigest()[:4]
+
+
+def force_https(api):
+    """统一走 https：Android 9+ 默认禁止明文 http，混用会让部分站点直接空列表。"""
+    return re.sub(r"^http://", "https://", api, count=1)
+
+
 def cat_total(api, tid):
     try:
         d = get_json(f"{api}?ac=videolist&t={urllib.parse.quote(str(tid))}&pg=1", timeout=12)
@@ -60,7 +77,7 @@ def cat_total(api, tid):
 
 
 def build_site(site, quick):
-    api = site["api"]
+    api = force_https(site["api"])
     try:
         classes = get_json(api + "?ac=list").get("class") or []
     except Exception as e:
@@ -93,6 +110,7 @@ def build_site(site, quick):
     detail = ", ".join(f"{n}{totals.get(n, 0)}" for n in picked)
     print(f"  {site['name']:<8} 视频{site['vod_kbps']:>7.0f}kbps  分类{len(picked)}: [{detail}]")
     return {
+        "key": site_key(api),
         "name": site["name"],
         "type": 1,
         "api": api,
@@ -126,7 +144,7 @@ def main():
     cfg = {
         "sites": sites,
         "lives": [{
-            "name": "📺 央视·卫视·陕西本地（实测排序）",
+            "name": "央视·卫视·陕西本地（实测排序）",
             "url": "https://anbola.github.io/tvbox/lives/main.m3u",
         }],
     }
