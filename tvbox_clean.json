@@ -43,6 +43,27 @@
       ]
     },
     {
+      "key": "jyzy",
+      "name": "🎬 金鹰",
+      "type": 1,
+      "api": "https://jyzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "战争片",
+        "动画片",
+        "记录片",
+        "香港剧"
+      ]
+    },
+    {
       "key": "dbzy",
       "name": "🎬 豆瓣",
       "type": 1,
