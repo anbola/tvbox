@@ -1,0 +1,39 @@
+name: 直播源与配置体检（每周）
+
+on:
+  schedule:
+    - cron: '0 20 * * 0'   # 每周一 04:00 (UTC+8)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 逐条实测直播流
+        run: python tools/probe_streams.py
+
+      - name: 重建主配置与直播源
+        run: python tools/build_final.py
+
+      - name: 提交（仅当有变化）
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config pull.rebase true
+          git add tvbox_clean.json lives/main.m3u
+          if git diff --staged --quiet; then
+            echo "无变化"
+          else
+            git commit -m "chore(auto): 每周直播流体检与配置重建（$(date +%Y-%m-%d)）"
+            git pull --rebase --autostash origin main
+            git push
+          fi
