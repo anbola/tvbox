@@ -1,12 +1,28 @@
-name: 直播源与配置体检（每周）
+name: 直播源候选池更新（每日）
+
+# 云端做【抓取 + 结构校验 + 发布】
+# ⚠️ 测速必须在你自己电脑上跑：GitHub 服务器在国外，测中国移动 IPTV 无意义。
+#    所以本工作流不会覆盖 lives/main.m3u 和 tvbox_clean.json，
+#    只把各社区源合并进候选池 lives/pool.m3u，供你本地测速时使用。
 
 on:
   schedule:
-    - cron: '0 20 * * 0'   # 每周一 04:00 (UTC+8)
+    - cron: "0 20 * * *"   # 每天 04:00（北京时间）
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "tools/**"
+      - "lives/**"
+      - "tvbox_clean.json"
+      - ".github/workflows/refresh.yml"
 
 permissions:
   contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: true
 
 jobs:
   refresh:
@@ -16,24 +32,46 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
-      - name: 逐条实测直播流
-        run: python tools/probe_streams.py
+      # ① 抓取：各社区源 → 合并进候选池（只扩充，绝不覆盖 main.m3u）
+      - name: 抓取并合并候选池
+        continue-on-error: true
+        run: python tools/merge_pool.py
 
-      - name: 重建主配置与直播源
-        run: python tools/build_final.py
-
-      - name: 提交（仅当有变化）
+      # ② 筛选（结构级）：配置合法 + m3u 合法，防止把坏文件推上线
+      - name: 校验产物
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python - <<'PY'
+          import json
+          cfg = json.load(open("tvbox_clean.json", encoding="utf-8"))
+          assert cfg.get("sites"), "sites 不能为空"
+          for s in cfg["sites"]:
+              assert s.get("api", "").startswith("http"), "api 非法: %r" % s.get("api")
+              assert "ext" not in s, "不应有 ext 字段"
+              assert "ac=videolist" not in s["api"], "api 不应焊死 ac=videolist"
+          txt = open("lives/main.m3u", encoding="utf-8").read()
+          assert txt.startswith("#EXTM3U"), "main.m3u 头非法"
+          n = txt.count("#EXTINF")
+          assert n > 20, "频道太少: %d" % n
+          # 直播地址必须都是 http(s)
+          bad = [l for l in txt.splitlines()
+                 if l and not l.startswith("#") and not l.startswith("http")]
+          assert not bad, "存在非法行: %r" % bad[:3]
+          print("校验通过: sites=%d 频道=%d" % (len(cfg["sites"]), n))
+          PY
+
+      # ③ 更新：只在候选池有变化时提交
+      - name: 提交变更
+        run: |
+          git config user.name  "tvbox-bot"
+          git config user.email "bot@users.noreply.github.com"
           git config pull.rebase true
-          git add tvbox_clean.json lives/main.m3u
+          git add lives/pool.m3u
           if git diff --staged --quiet; then
-            echo "无变化"
+            echo "候选池无变化"
           else
-            git commit -m "chore(auto): 每周直播流体检与配置重建（$(date +%Y-%m-%d)）"
-            git pull --rebase --autostash origin main
+            git commit -m "chore(auto): 候选池更新 $(date +%Y-%m-%d)"
+            git pull --rebase --autostash origin main || true
             git push
           fi
