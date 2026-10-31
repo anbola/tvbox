@@ -184,11 +184,24 @@ tools/
 若连分类标签都没有，说明配置没加载成功：清 App 缓存 → 重新填一次地址 → 重载。
 
 **Q4. 点直播闪一下就退回首页**
-两种可能，按顺序排除：
-1. **解码器扛不住**：这批移动源 111 条里 81 条 >10Mbps（最高 48Mbps，2K/HEVC）。
-   v2.1 已把每个频道的第一条改成 1500~8000kbps 的安全流（CCTV-1 现在是 7909kbps）。
-   若仍闪退，在 App 设置里把播放器换成 **ExoPlayer / 系统解码** 再试。
-2. **App 本身太老**：换成 **FongMi（蜂蜜影视）** 或 **影视仓**，同样的源会明显更稳。
+
+v2.2 已定位并修好，根因跟分辨率、码率都无关：
+
+```
+E/OMXNodeInstance: getParameter(OMX_IndexParamAudioMp3) ERROR 0x8000101a
+F/ACodec: CHECK_EQ(mOMX->getParameter(...AudioMp3...)) failed
+F/libc  : Fatal signal 6 (SIGABRT) in tid MediaCodec_loop
+```
+
+这些移动源的**音频是 MP3**，而这台电视（微鲸 WTV55K1 / Android 5.0.2 / MStar）的 OMX 组件
+不支持 `OMX_IndexParamAudioMp3` 查询，Android 的 ACodec 里那句 `CHECK_EQ` 失败会直接
+`abort()` 掉整个进程。**EXO 硬解 + MP3 音频 = 必崩。**
+
+修法（已写进配置，无需手动设）：`lives` 里固定 `playerType` 为 `1`，让直播走 IJK 软解。
+点播仍然走 EXO 硬解，速度不受影响。
+
+如果换了别的设备/客户端又想手动确认：设置 → 播放器 → **IJK播放器**；
+设置 → IJK解码方式 → **软解码**。
 
 **Q5. 点播打开慢**
 首页列表本身要 1.4–2.2 秒（这是采集站的服务器速度，改不了）。能改的是：
@@ -205,5 +218,6 @@ tools/
 ## 七、版本
 
 变更记录见 `history/CHANGELOG.md`。
-v2.1（本次）= 修复站点 `key` 丢失（点播空白的主因）+ 直播改为「安全码率带优先」（首条不再上 40Mbps+ 的 2K 流）+ 全站 https + 去掉 emoji。
+v2.2（本次）= 直播根因修复：这批源音频是 MP3，本机 EXO 硬解会在 ACodec 里 CHECK_EQ(AudioMp3) 处 abort 掉进程，故 lives 固定 playerType=1（IJK 软解）。
+v2.1 = 修复站点 `key` 丢失（点播空白的主因）+ 直播改为「安全码率带优先」（首条不再上 40Mbps+ 的 2K 流）+ 全站 https + 去掉 emoji。
 v2.0 = 直播全量换陕西移动官方 CDN + 点播 35 站实测精选 4 站。
