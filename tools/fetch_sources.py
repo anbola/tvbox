@@ -20,6 +20,8 @@ SOURCES = [
     # 中国移动陕西 IPTV 官方 CDN（对陕西移动宽带最快）
     ("sx_mobile_1", "https://gh-proxy.com/https://raw.githubusercontent.com/yusanpiao/iptv/main/"
                     "%E9%99%95%E8%A5%BF%E7%A7%BB%E5%8A%A8%E7%9B%B4%E6%92%AD%E6%BA%90.txt"),
+    # vbskycn/iptv：服务器端每天自动扫描验证过的 iptv4，失效比例最低
+    ("zbds_iptv4", "https://live.zbds.top/tv/iptv4.m3u"),
     # 全国大合集（含各地移动源）
     ("qist_all", "https://gh-proxy.com/https://raw.githubusercontent.com/taomi/qist_tvbox/master/tvboxtv.txt"),
     # 牛虎直播（2000+ 频道）
