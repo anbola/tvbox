@@ -37,6 +37,12 @@ CCTV_MAP = {
     17: "CCTV-17 农业农村",
 }
 
+CN_NUM = {
+    "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8,
+    "九": 9, "十": 10, "十一": 11, "十二": 12, "十三": 13, "十四": 14,
+    "十五": 15, "十六": 16, "十七": 17, "十八": 18, "十九": 19,
+}
+
 # 常见别名 → 标准名
 ALIAS = {
     "央视一套": "CCTV-1 综合", "央视1套": "CCTV-1 综合", "CCTV1": "CCTV-1 综合",
@@ -75,10 +81,18 @@ def normalize(name):
             return v
 
     # CCTV-N 各种写法
-    m = re.match(r"^(CCTV|央视)[-－]?\s*(\d{1,2})(\s*\+)?$", core, re.I)
+    # 注意：源池里大量写作「央视十三套·新闻」「CCTV13新闻」，必须按【前缀】匹配，
+    # 否则这些条目全部归一到"央视十三套·新闻"，永远补不到高清源
+    # （v2.2 就是栽在这里：央视频道一条候选都没被探测过）。
+    m = re.match(r"^(?:CCTV|央视)[-－]?\s*(\d{1,2})(\s*\+)?", core, re.I)
+    if not m:
+        cn = re.match(r"^央视([一二三四五六七八九十]+)套", core)
+        if cn and CN_NUM.get(cn.group(1)):
+            num = CN_NUM[cn.group(1)]
+            return CCTV_MAP.get(num, f"CCTV-{num}")
     if m:
-        num = int(m.group(2))
-        plus = bool(m.group(3))
+        num = int(m.group(1))
+        plus = bool(m.group(2))
         if plus:
             return "CCTV-5+ 体育赛事" if num == 5 else f"CCTV-{num}+"
         if num in CCTV_MAP:
@@ -120,16 +134,46 @@ def should_skip(name, kbps):
 
 
 def load_codecs():
-    """读 codec_probe.py 的结果：url -> (codec, w, h)。缺失时返回空表（退化为只按码率排序）。"""
-    p = os.path.join(ROOT, "_probe", "codecs.json")
-    if not os.path.exists(p):
-        print("! 未找到 _probe/codecs.json，跳过编码过滤（建议先跑 tools/codec_probe.py）")
-        return {}
+    """合并所有探测结果：url -> (codec, w, h)。
+
+    来源：
+      _probe/codecs.json   codec_probe.py 对测速通过流的探测
+      _probe/codecs2.json  live_expand.py 补的高清备选
+      _probe/codecs3.json  针对缺高清频道的定向补源
+    """
     m = {}
-    for r in json.load(open(p, encoding="utf-8")):
-        if r.get("ok"):
-            m[r["url"]] = (r.get("codec"), r.get("w") or 0, r.get("h") or 0)
+    found = False
+    for fn in ("codecs.json", "codecs2.json", "codecs3.json"):
+        p = os.path.join(ROOT, "_probe", fn)
+        if not os.path.exists(p):
+            continue
+        found = True
+        for r in json.load(open(p, encoding="utf-8")):
+            if r.get("ok"):
+                m[r["url"]] = (r.get("codec"), r.get("w") or 0, r.get("h") or 0)
+    if not found:
+        print("! 未找到 _probe/codecs*.json，跳过编码过滤（建议先跑 tools/codec_probe.py）")
     return m
+
+
+def load_extra():
+    """补源探测出来、但没进过 speedtest 的线路，转成与 speeds.json 同结构的条目。
+
+    没有实测 ttfb，给 999 让它排在实测过的同分辨率线路之后。
+    """
+    out = []
+    for fn in ("codecs2.json", "codecs3.json"):
+        p = os.path.join(ROOT, "_probe", fn)
+        if not os.path.exists(p):
+            continue
+        for r in json.load(open(p, encoding="utf-8")):
+            if not r.get("ok") or not r.get("kbps"):
+                continue
+            if r.get("h") and r["h"] < 576:
+                continue        # 分辨率解析异常（如 10x60）直接丢
+            out.append(dict(name=r["name"], url=r["url"], kbps=r["kbps"],
+                            ttfb_ms=999, extra=True))
+    return out
 
 
 def main():
@@ -137,6 +181,13 @@ def main():
     data = json.load(open(path, encoding="utf-8"))
     ok = [r for r in data if r.get("ok")]
     codecs = load_codecs()
+
+    # 并入补源结果（去重：同一个 url 只留实测数据那条）
+    have = {r["url"] for r in ok}
+    extra = [e for e in load_extra() if e["url"] not in have]
+    if extra:
+        print(f"并入补源线路 {len(extra)} 条")
+    ok = ok + extra
 
     chans = defaultdict(list)
     skipped = 0
@@ -147,18 +198,27 @@ def main():
             continue
         chans[std].append(r)
 
-    # 每台排序：**优先移动自家 CDN**（同网，稳定）；
-    # 其次只把 1500~8000kbps 的流放到第一条（电视盒子解码安全区），
-    # 超过 8000kbps 的 2K/HEVC 流降级为备用，避免一进直播就闪退。
-    # 微鲸 WTV55K1（Android 5.0.2 / MStar）实测：解 HEVC 会 MediaCodec SIGABRT 直接崩App，
-    # 所以 HEVC 一律不用；同频道内优先 1080p AVC，其次标清 AVC；同类里优先 ≤9Mbps。
+    # 排序优先级（顺序即为"第一条播什么"）：
+    #   1) 编码：必须 AVC。本机（微鲸 WTV55K1 / Android 5.0.2 / MStar）解 HEVC 会
+    #      MediaCodec SIGABRT 直接崩进程，2K HEVC 更扛不住。
+    #   2) 分辨率：1080p > 720p > 576p。**这条是 4:3 的根治**——720x576 是 PAL 标清，
+    #      IJK 内核不认它的宽高比标记，一律按 4:3 显示，播放器里设 16:9 也压不平。
+    #   3) 同网优先：chinamobile 自家 CDN（陕西移动）比跨网的 CNTV/咪咕更稳。
+    #   4) 码率：同一档里优先 1500~9000kbps，太高说明是 2K 重编码，太低画质渣。
+    #   5) TTFB：越小换台越快。
     def prefer(it):
         k = it["kbps"]
         codec, w, h = codecs.get(it["url"], (None, 0, 0))
         avc = 0 if codec == "avc" else 1
-        hd = 0 if h >= 720 else 1
-        band = 0 if k <= 9000 else 1
-        return (avc, hd, band, -min(k, 9000), it["ttfb_ms"])
+        if h >= 1080:
+            res = 0
+        elif h >= 720:
+            res = 1
+        else:
+            res = 2
+        same_net = 0 if "chinamobile" in it["url"] else 1
+        band = 0 if 1200 <= k <= 9000 else 1
+        return (avc, res, same_net, band, -min(k, 9000), it.get("ttfb_ms") or 999)
 
     picked = {}
     dropped_hevc = []
