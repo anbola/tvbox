@@ -1,0 +1,110 @@
+{
+  "sites": [
+    {
+      "key": "360zyzz_9d48",
+      "name": "360",
+      "type": 1,
+      "api": "https://360zyzz.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "国产剧",
+        "欧美剧",
+        "香港剧",
+        "韩国剧",
+        "大陆综艺",
+        "动画片",
+        "国产动漫",
+        "纪录片"
+      ]
+    },
+    {
+      "key": "cj_c8af",
+      "name": "量子",
+      "type": 1,
+      "api": "https://cj.lziapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "国产剧",
+        "欧美剧",
+        "香港剧",
+        "韩国剧",
+        "大陆综艺",
+        "国产动漫",
+        "记录片",
+        "战争片"
+      ]
+    },
+    {
+      "key": "bfzyapi_740e",
+      "name": "暴风",
+      "type": 1,
+      "api": "https://bfzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "国产剧",
+        "欧美剧",
+        "香港剧",
+        "韩国剧",
+        "大陆综艺",
+        "动画片",
+        "国产动漫",
+        "纪录片"
+      ]
+    },
+    {
+      "key": "cj_7b1d",
+      "name": "非凡",
+      "type": 1,
+      "api": "https://cj.ffzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "国产剧",
+        "欧美剧",
+        "香港剧",
+        "韩国剧",
+        "大陆综艺",
+        "国产动漫",
+        "记录片",
+        "战争片"
+      ]
+    }
+  ],
+  "lives": [
+    {
+      "name": "央视·卫视·陕西本地（实测排序）",
+      "url": "https://anbola.github.io/tvbox/lives/main.m3u"
+    }
+  ]
+}
