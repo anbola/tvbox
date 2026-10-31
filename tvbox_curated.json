@@ -1,12 +1,119 @@
 {
+  "spider": "",
   "wallpaper": "https://www.loliapi.com/acg/",
-  "logo": "https://storage.7x24cc.com/storage-server/presigned/ss1/a6-online-fileupload/newMediaFile/3CEAE9E_773_wexfnw_20250911190012684newMediaFile.gif",
-  "doh": [
-    "https://1.12.12.12/dns-query",
-    "https://doh.pub/dns-query"
+  "sites": [
+    {
+      "key": "ffzy5",
+      "name": "🎬 非凡",
+      "type": 1,
+      "api": "https://ffzy5.tv/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "动漫片",
+        "记录片",
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片"
+      ]
+    },
+    {
+      "key": "hhzy",
+      "name": "🎬 火狐",
+      "type": 1,
+      "api": "https://hhzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "电影",
+        "综艺",
+        "动画片",
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片"
+      ]
+    },
+    {
+      "key": "jyzy",
+      "name": "🎬 金鹰",
+      "type": 1,
+      "api": "https://jyzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "电影",
+        "动画片",
+        "记录片",
+        "动作片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片"
+      ]
+    },
+    {
+      "key": "dbzy",
+      "name": "🎬 豆瓣",
+      "type": 1,
+      "api": "https://dbzy.tv/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "电影",
+        "连续剧",
+        "综艺片",
+        "动漫",
+        "纪录片",
+        "记录片",
+        "动作片",
+        "喜剧片"
+      ]
+    },
+    {
+      "key": "bfzy",
+      "name": "🎬 暴风",
+      "type": 1,
+      "api": "https://bfzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "电影片",
+        "连续剧",
+        "综艺片",
+        "动漫片",
+        "动画片",
+        "纪录片",
+        "动作片",
+        "喜剧片"
+      ]
+    }
   ],
-  "ads": [
-    "https://ads.cmc.cc/uu.php?type=hsdh"
+  "lives": [
+    {
+      "name": "📺 极速直播·683台",
+      "url": "https://anbola.github.io/tvbox/lives/fast.m3u"
+    },
+    {
+      "name": "📺 央视卫视精选·149台",
+      "url": "https://anbola.github.io/tvbox/lives/cn_clean.m3u"
+    }
+  ],
+  "parses": [
+    {
+      "name": "阿雪解析",
+      "type": 1,
+      "url": "https://jx.xmflv.com/?url="
+    }
   ],
   "rules": [
     "vip",
@@ -29,332 +136,5 @@
     "公益",
     "排行",
     "推荐"
-  ],
-  "headers": [
-    {
-      "host": "hlsztemgsplive.miguvideo.com",
-      "header": {
-        "User-Agent": "bingcha/1.1 (mianfeifenxiang) "
-      }
-    }
-  ],
-  "sites": [
-    {
-      "key": "sel_ffzy5_tv",
-      "name": "🎬非凡┃极速·资源",
-      "type": 1,
-      "api": "https://ffzy5.tv/api.php/provide/vod?ac=videolist",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "categories": [
-        "记录片",
-        "国产动漫",
-        "动漫片",
-        "日韩动漫",
-        "欧美动漫",
-        "港台动漫",
-        "海外动漫",
-        "科幻片",
-        "动作片",
-        "喜剧片",
-        "剧情片",
-        "爱情片",
-        "恐怖片",
-        "战争片",
-        "国产剧",
-        "香港剧",
-        "台湾剧",
-        "韩国剧",
-        "日本剧",
-        "欧美剧",
-        "泰国剧",
-        "海外剧",
-        "短剧",
-        "大陆综艺",
-        "港台综艺",
-        "日韩综艺",
-        "欧美综艺"
-      ],
-      "ext": {
-        "t": "记录片:20,国产动漫:29,动漫片:4,日韩动漫:30,欧美动漫:31,港台动漫:32,海外动漫:33,科幻片:9,动作片:6,喜剧片:7,剧情片:11,爱情片:8,恐怖片:10,战争片:12,国产剧:13,香港剧:14,台湾剧:21,韩国剧:15,日本剧:22,欧美剧:16,泰国剧:24,海外剧:23,短剧:36,大陆综艺:25,港台综艺:26,日韩综艺:27,欧美综艺:28"
-      }
-    },
-    {
-      "key": "sel_hhzyapi_com",
-      "name": "🎬火狐┃采集",
-      "type": 1,
-      "api": "https://hhzyapi.com/api.php/provide/vod/?ac=videolist",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "categories": [
-        "记录片",
-        "动画片",
-        "欧美动漫",
-        "AI漫剧",
-        "科幻片",
-        "动作片",
-        "奇幻片",
-        "喜剧片",
-        "剧情片",
-        "爱情片",
-        "恐怖片",
-        "战争片",
-        "悬疑片",
-        "犯罪片",
-        "灾难片",
-        "电影",
-        "香港剧",
-        "台湾剧",
-        "欧美剧",
-        "反转爽剧",
-        "古装仙侠",
-        "脑洞悬疑",
-        "现代都市",
-        "大陆综艺",
-        "港台综艺",
-        "日韩综艺",
-        "欧美综艺",
-        "综艺",
-        "预告片",
-        "足球",
-        "篮球",
-        "台球",
-        "韩剧",
-        "日剧",
-        "马泰剧",
-        "内地剧",
-        "中国动漫",
-        "日本动漫",
-        "其他赛事",
-        "穿越年代",
-        "言情总裁",
-        "重生民国"
-      ],
-      "ext": {
-        "t": "记录片:16,动画片:23,欧美动漫:26,AI漫剧:53,科幻片:12,动作片:9,奇幻片:37,喜剧片:11,剧情片:14,爱情片:10,恐怖片:13,战争片:15,悬疑片:35,犯罪片:36,灾难片:34,电影:2,香港剧:4,台湾剧:28,欧美剧:3,反转爽剧:50,古装仙侠:45,脑洞悬疑:51,现代都市:46,大陆综艺:30,港台综艺:32,日韩综艺:31,欧美综艺:33,综艺:27,预告片:39,足球:41,篮球:42,台球:43,韩剧:5,日剧:6,马泰剧:7,内地剧:20,中国动漫:24,日本动漫:25,其他赛事:44,穿越年代:47,言情总裁:48,重生民国:49"
-      }
-    },
-    {
-      "key": "sel_jyzyapi_com",
-      "name": "🎬金鹰┃资源",
-      "type": 1,
-      "api": "https://jyzyapi.com/api.php/provide/vod?ac=videolist",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "categories": [
-        "记录片",
-        "动画片",
-        "AI漫剧",
-        "科幻片",
-        "动作片",
-        "喜剧片",
-        "剧情片",
-        "爱情片",
-        "恐怖片",
-        "战争片",
-        "电影",
-        "香港剧",
-        "台湾剧",
-        "欧美剧",
-        "反转爽剧",
-        "古装仙侠",
-        "脑洞悬疑",
-        "现代都市",
-        "大陆综艺",
-        "港台综艺",
-        "日韩综艺",
-        "欧美综艺",
-        "预告片",
-        "足球",
-        "篮球",
-        "台球",
-        "韩剧",
-        "日剧",
-        "马泰剧",
-        "内地剧",
-        "中国动漫",
-        "日本动漫",
-        "其他赛事",
-        "穿越年代",
-        "言情总裁",
-        "重生民国"
-      ],
-      "ext": {
-        "t": "记录片:16,动画片:23,AI漫剧:48,科幻片:12,动作片:9,喜剧片:11,剧情片:14,爱情片:10,恐怖片:13,战争片:15,电影:2,香港剧:4,台湾剧:28,欧美剧:3,反转爽剧:45,古装仙侠:40,脑洞悬疑:46,现代都市:41,大陆综艺:36,港台综艺:38,日韩综艺:37,欧美综艺:39,预告片:31,足球:32,篮球:33,台球:34,韩剧:5,日剧:6,马泰剧:7,内地剧:20,中国动漫:24,日本动漫:25,其他赛事:35,穿越年代:42,言情总裁:43,重生民国:44"
-      }
-    },
-    {
-      "key": "sel_dbzy_tv",
-      "name": "🎬豆瓣┃资源",
-      "type": 1,
-      "api": "https://dbzy.tv/api.php/provide/vod?ac=videolist",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "categories": [
-        "纪录片",
-        "记录片",
-        "国产动漫",
-        "动漫",
-        "欧美动漫",
-        "海外动漫",
-        "科幻片",
-        "动作片",
-        "喜剧片",
-        "剧情片",
-        "爱情片",
-        "恐怖片",
-        "战争片",
-        "电影",
-        "国产剧",
-        "香港剧",
-        "台湾剧",
-        "日本剧",
-        "欧美剧",
-        "泰国剧",
-        "海外剧",
-        "连续剧",
-        "反转爽剧",
-        "古装仙侠",
-        "现代都市",
-        "大陆综艺",
-        "港台综艺",
-        "日韩综艺",
-        "欧美综艺",
-        "综艺片",
-        "演唱会",
-        "体育赛事",
-        "足球",
-        "篮球",
-        "斯诺克",
-        "网球",
-        "韩剧",
-        "动漫电影",
-        "日本动漫",
-        "短剧大全",
-        "重生民国",
-        "穿越现代",
-        "言情总裁",
-        "悬疑烧脑",
-        "惊悚片",
-        "AI短剧",
-        "AI动漫"
-      ],
-      "ext": {
-        "t": "纪录片:5,记录片:56,国产动漫:30,动漫:4,欧美动漫:32,海外动漫:33,科幻片:9,动作片:6,喜剧片:8,剧情片:11,爱情片:7,恐怖片:10,战争片:12,电影:1,国产剧:13,香港剧:14,台湾剧:23,日本剧:22,欧美剧:15,泰国剧:21,海外剧:24,连续剧:2,反转爽剧:45,古装仙侠:48,现代都市:47,大陆综艺:25,港台综艺:27,日韩综艺:26,欧美综艺:28,综艺片:3,演唱会:29,体育赛事:36,足球:39,篮球:38,斯诺克:41,网球:40,韩剧:16,动漫电影:20,日本动漫:31,短剧大全:37,重生民国:43,穿越现代:44,言情总裁:46,悬疑烧脑:49,惊悚片:50,AI短剧:53,AI动漫:55"
-      }
-    },
-    {
-      "key": "sel_bfzyapi_com",
-      "name": "🎬暴风┃采集",
-      "type": 1,
-      "api": "https://bfzyapi.com/api.php/provide/vod?ac=videolist",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "categories": [
-        "纪录片",
-        "国产动漫",
-        "动漫片",
-        "动画片",
-        "日韩动漫",
-        "欧美动漫",
-        "港台动漫",
-        "海外动漫",
-        "AI漫剧",
-        "科幻片",
-        "动作片",
-        "喜剧片",
-        "剧情片",
-        "爱情片",
-        "恐怖片",
-        "战争片",
-        "电影片",
-        "国产剧",
-        "香港剧",
-        "台湾剧",
-        "韩国剧",
-        "日本剧",
-        "欧美剧",
-        "泰国剧",
-        "海外剧",
-        "连续剧",
-        "古装仙侠",
-        "大陆综艺",
-        "日韩综艺",
-        "欧美综艺",
-        "综艺片",
-        "预告片",
-        "足球",
-        "篮球",
-        "斯诺克",
-        "网球",
-        "理论片",
-        "电影解说",
-        "重生民国",
-        "穿越年代",
-        "现代言情",
-        "反转爽文",
-        "女恋总裁",
-        "闪婚离婚",
-        "都市脑洞"
-      ],
-      "ext": {
-        "t": "纪录片:28,国产动漫:40,动漫片:39,动画片:50,日韩动漫:41,欧美动漫:42,港台动漫:43,海外动漫:44,AI漫剧:74,科幻片:24,动作片:21,喜剧片:22,剧情片:26,爱情片:25,恐怖片:23,战争片:27,电影片:20,国产剧:31,香港剧:33,台湾剧:35,韩国剧:34,日本剧:36,欧美剧:32,泰国剧:38,海外剧:37,连续剧:30,古装仙侠:72,大陆综艺:46,日韩综艺:48,欧美综艺:49,综艺片:45,预告片:52,足球:54,篮球:55,斯诺克:57,网球:56,理论片:29,电影解说:51,重生民国:65,穿越年代:66,现代言情:67,反转爽文:68,女恋总裁:69,闪婚离婚:70,都市脑洞:71"
-      }
-    }
-  ],
-  "lives": [
-    {
-      "name": "CCSH 自动采集（2416台）",
-      "url": "https://anbola.github.io/tvbox/lives/ccsh_clean.m3u"
-    },
-    {
-      "name": "BigBig 聚合源（1956台）",
-      "url": "https://anbola.github.io/tvbox/lives/bigbig_clean.m3u"
-    },
-    {
-      "name": "Guovin 中国IPTV（1618台）",
-      "url": "https://anbola.github.io/tvbox/lives/guovin_clean.m3u"
-    },
-    {
-      "name": "Vamoschuck·TV（896台）",
-      "url": "https://anbola.github.io/tvbox/lives/vamos_clean.m3u"
-    },
-    {
-      "name": "咪咕中转·央视卫视（621台）",
-      "url": "https://anbola.github.io/tvbox/lives/mzky_clean.m3u"
-    },
-    {
-      "name": "直播帝·IPV4（432台）",
-      "url": "https://anbola.github.io/tvbox/lives/zbds4_clean.m3u"
-    },
-    {
-      "name": "Yang·咪咕移动（338台）",
-      "url": "https://anbola.github.io/tvbox/lives/yang_clean.m3u"
-    },
-    {
-      "name": "央视·卫视精选（155台）",
-      "url": "https://anbola.github.io/tvbox/lives/cn_clean.m3u"
-    },
-    {
-      "name": "YangGather·聚合（123台）",
-      "url": "https://anbola.github.io/tvbox/lives/yanggather_clean.m3u"
-    },
-    {
-      "name": "Kimentanm·IPTV（120台）",
-      "url": "https://anbola.github.io/tvbox/lives/kimentanm_clean.m3u"
-    }
-  ],
-  "parses": [
-    {
-      "name": "阿雪解析",
-      "type": 1,
-      "url": "https://jx.xmflv.com/?url="
-    }
-  ],
-  "spider": ""
+  ]
 }
