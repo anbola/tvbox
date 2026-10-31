@@ -50,6 +50,7 @@ UPLOAD = [
     ("tools/speedtest.py", "tools/speedtest.py"),
     ("tools/build_live.py", "tools/build_live.py"),
     ("tools/vod_probe.py", "tools/vod_probe.py"),
+    ("tools/codec_probe.py", "tools/codec_probe.py"),
     ("tools/build_config.py", "tools/build_config.py"),
     ("tools/refresh_all.py", "tools/refresh_all.py"),
     ("tools/deploy_clean.py", "tools/deploy_clean.py"),
