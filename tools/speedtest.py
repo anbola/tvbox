@@ -250,16 +250,17 @@ def collect(paths):
 
 
 def main():
-    targets = sys.argv[1:]
-    if not targets:
-        targets = [
-            os.path.join(ROOT, "_r", "yusanpiao.txt"),
-            os.path.join(ROOT, "_r", "qist_sn.txt"),
-            os.path.join(ROOT, "_r", "niuhu.txt"),
-            os.path.join(ROOT, "_r", "iptvorg_cn.txt"),
-            os.path.join(ROOT, "lives", "pool.m3u"),
-        ]
-    items = collect(targets)
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    full = "--all" in sys.argv[1:]
+    if not args:
+        # 默认只测"值得测"的：陕西移动源优先，其余作为备份来源。
+        # pool.m3u 有近万条历史流，默认不参与（绝大多数已失效），需要时加 --all
+        order = ["sx_mobile_1", "yusanpiao", "qist_all", "qist_sn", "niuhu", "iptvorg_cn"]
+        args = [os.path.join(ROOT, "_r", n + ".txt") for n in order
+                if os.path.exists(os.path.join(ROOT, "_r", n + ".txt"))]
+        if full:
+            args.append(os.path.join(ROOT, "lives", "pool.m3u"))
+    items = collect(args)
     print(f"候选流总数: {len(items)}")
 
     # 只测央视/卫视/本地台，过滤购物、测试、点播轮播等
@@ -274,6 +275,12 @@ def main():
             continue
         if any(k.upper() in up for k in KEEP_KW) or any(k in g for k in ("央视", "卫视", "陕西", "地方")):
             filtered.append((n, g, u))
+    # 移动自家 CDN 的源优先测（对陕西移动最快），其余排后面
+    filtered.sort(key=lambda x: 0 if "chinamobile" in x[2] else 1)
+    CAP = 2000 if not full else 100000
+    if len(filtered) > CAP:
+        print(f"候选过多，保留前 {CAP} 条（移动源优先）。要全测请加 --all")
+        filtered = filtered[:CAP]
     print(f"核心频道候选: {len(filtered)}")
 
     os.makedirs(OUT_DIR, exist_ok=True)
