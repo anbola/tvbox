@@ -1,0 +1,10 @@
+{
+  "spider": "",
+  "stores": [
+    {
+      "name": "anbola 点播+直播 聚合(自包含)",
+      "url": "https://anbola.github.io/tvbox/tvbox_subscription.json",
+      "format": 1
+    }
+  ]
+}
