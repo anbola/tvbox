@@ -270,7 +270,7 @@
   ],
   "lives": [
     {
-      "name": "CCSH 自动采集（2380台）",
+      "name": "CCSH 自动采集（2416台）",
       "url": "https://anbola.github.io/tvbox/lives/ccsh_clean.m3u"
     },
     {
@@ -286,11 +286,11 @@
       "url": "https://anbola.github.io/tvbox/lives/vamos_clean.m3u"
     },
     {
-      "name": "咪咕中转·央视卫视（647台）",
+      "name": "咪咕中转·央视卫视（621台）",
       "url": "https://anbola.github.io/tvbox/lives/mzky_clean.m3u"
     },
     {
-      "name": "直播帝·IPV4（425台）",
+      "name": "直播帝·IPV4（432台）",
       "url": "https://anbola.github.io/tvbox/lives/zbds4_clean.m3u"
     },
     {
@@ -298,7 +298,7 @@
       "url": "https://anbola.github.io/tvbox/lives/yang_clean.m3u"
     },
     {
-      "name": "央视·卫视精选（150台）",
+      "name": "央视·卫视精选（155台）",
       "url": "https://anbola.github.io/tvbox/lives/cn_clean.m3u"
     },
     {
