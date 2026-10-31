@@ -143,9 +143,14 @@ def main():
 
     cfg = {
         "sites": sites,
+        # playerType：0 系统 / 1 IJK / 2 EXO（见 README「直播参数说明」）
+        # 必须钉死 1(IJK)：微鲸 WTV55K1 用 EXO 硬解这批源的 MP3 音频时，
+        # Android 5.0.2 的 ACodec 会在 OMX_IndexParamAudioMp3 上 CHECK 失败直接 abort，
+        # 表现为"点直播闪一下就退出"。IJK + 软解可绕开该平台缺陷。
         "lives": [{
             "name": "央视·卫视·陕西本地（实测排序）",
             "url": "https://anbola.github.io/tvbox/lives/main.m3u",
+            "playerType": "1",
         }],
     }
     out = os.path.join(ROOT, "tvbox_clean.json")
