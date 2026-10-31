@@ -126,10 +126,14 @@ def main():
             continue
         chans[std].append(r)
 
-    # 每台按码率降序，去重 URL，取前 N
+    # 每台排序：**优先移动自家 CDN**（同网，稳定），同优先级内按码率降序。
+    # 只按码率排会让"外网偶发很快但会抖"的流排到第一个，反而更卡。
+    def prefer(it):
+        return (0 if "chinamobile" in it["url"] else 1, -it["kbps"], it["ttfb_ms"])
+
     picked = {}
     for std, lst in chans.items():
-        lst.sort(key=lambda x: (-x["kbps"], x["ttfb_ms"]))
+        lst.sort(key=prefer)
         seen = set()
         out = []
         for it in lst:
