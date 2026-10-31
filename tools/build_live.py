@@ -119,10 +119,24 @@ def should_skip(name, kbps):
     return False
 
 
+def load_codecs():
+    """读 codec_probe.py 的结果：url -> (codec, w, h)。缺失时返回空表（退化为只按码率排序）。"""
+    p = os.path.join(ROOT, "_probe", "codecs.json")
+    if not os.path.exists(p):
+        print("! 未找到 _probe/codecs.json，跳过编码过滤（建议先跑 tools/codec_probe.py）")
+        return {}
+    m = {}
+    for r in json.load(open(p, encoding="utf-8")):
+        if r.get("ok"):
+            m[r["url"]] = (r.get("codec"), r.get("w") or 0, r.get("h") or 0)
+    return m
+
+
 def main():
     path = os.path.join(ROOT, "_probe", "speeds.json")
     data = json.load(open(path, encoding="utf-8"))
     ok = [r for r in data if r.get("ok")]
+    codecs = load_codecs()
 
     chans = defaultdict(list)
     skipped = 0
@@ -136,15 +150,25 @@ def main():
     # 每台排序：**优先移动自家 CDN**（同网，稳定）；
     # 其次只把 1500~8000kbps 的流放到第一条（电视盒子解码安全区），
     # 超过 8000kbps 的 2K/HEVC 流降级为备用，避免一进直播就闪退。
+    # 微鲸 WTV55K1（Android 5.0.2 / MStar）实测：解 HEVC 会 MediaCodec SIGABRT 直接崩App，
+    # 所以 HEVC 一律不用；同频道内优先 1080p AVC，其次标清 AVC；同类里优先 ≤9Mbps。
     def prefer(it):
         k = it["kbps"]
-        in_band = 0 if SAFE_MIN <= k <= SAFE_MAX else 1
-        over = 0 if k <= SAFE_MAX else 1
-        return (0 if "chinamobile" in it["url"] else 1, in_band, over,
-                -min(k, SAFE_MAX), it["ttfb_ms"])
+        codec, w, h = codecs.get(it["url"], (None, 0, 0))
+        avc = 0 if codec == "avc" else 1
+        hd = 0 if h >= 720 else 1
+        band = 0 if k <= 9000 else 1
+        return (avc, hd, band, -min(k, 9000), it["ttfb_ms"])
 
     picked = {}
+    dropped_hevc = []
     for std, lst in chans.items():
+        if codecs:
+            avc = [x for x in lst if codecs.get(x["url"], ("", 0, 0))[0] == "avc"]
+            if not avc:
+                dropped_hevc.append(std)
+                continue
+            lst = avc
         lst.sort(key=prefer)
         seen = set()
         out = []
@@ -199,6 +223,8 @@ def main():
         f.write("\n".join(lines) + "\n")
 
     print(f"频道数: {len(names)} | 流数: {total} | 跳过(低码率/购物等): {skipped}")
+    if dropped_hevc:
+        print(f"剔除纯 HEVC 频道 {len(dropped_hevc)} 个（本机解码器会崩）: {', '.join(dropped_hevc)}")
     print(f"分组: {stat}")
     print(f"已写入 {out}")
     print("\n=== 各台最快一条 ===")
