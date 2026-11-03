@@ -16,13 +16,13 @@
         "爱情片",
         "恐怖片",
         "国产剧",
-        "欧美剧",
         "香港剧",
         "韩国剧",
         "大陆综艺",
         "动画片",
         "国产动漫",
-        "纪录片"
+        "纪录片",
+        "战争片"
       ]
     },
     {
@@ -51,10 +51,10 @@
       ]
     },
     {
-      "key": "bfzyapi_740e",
-      "name": "暴风",
+      "key": "caiji_1fb1",
+      "name": "电影天堂",
       "type": 1,
-      "api": "https://bfzyapi.com/api.php/provide/vod/",
+      "api": "https://caiji.dyttzyapi.com/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0,
@@ -71,15 +71,15 @@
         "韩国剧",
         "大陆综艺",
         "动画片",
-        "纪录片",
-        "战争片"
+        "国产动漫",
+        "记录片"
       ]
     },
     {
-      "key": "cj_7b1d",
-      "name": "非凡",
+      "key": "ffzy5_8d21",
+      "name": "非凡5",
       "type": 1,
-      "api": "https://cj.ffzyapi.com/api.php/provide/vod/",
+      "api": "https://ffzy5.tv/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0,
@@ -90,14 +90,14 @@
         "科幻片",
         "爱情片",
         "恐怖片",
+        "国产剧",
         "欧美剧",
         "香港剧",
         "韩国剧",
         "大陆综艺",
         "国产动漫",
         "记录片",
-        "战争片",
-        "短剧"
+        "战争片"
       ]
     }
   ],
@@ -105,6 +105,7 @@
     {
       "name": "央视·卫视·陕西本地（实测排序）",
       "url": "https://anbola.github.io/tvbox/lives/main.m3u",
+      "url2": "https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/lives/main.m3u",
       "playerType": "1"
     }
   ]
