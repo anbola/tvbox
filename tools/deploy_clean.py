@@ -58,6 +58,8 @@ UPLOAD = [
     ("README.md", "README.md"),
     (".github/workflows/refresh.yml", ".github/workflows/refresh.yml"),
     (".nojekyll", ".nojekyll"),
+    # 跨电脑记忆：随流水线自动同步到仓库，clone 即加载（绝不进 DELETE）
+    (".workbuddy/skills/anbola-tvbox/SKILL.md", ".workbuddy/skills/anbola-tvbox/SKILL.md"),
 ]
 
 # 需要从仓库删除的旧文件
@@ -77,7 +79,6 @@ DELETE = [
     "lives/kimentanm_clean.m3u", "lives/mzky_clean.m3u", "lives/vamos_clean.m3u",
     "lives/yang_clean.m3u", "lives/yanggather_clean.m3u", "lives/yuechan_clean.m3u",
     "lives/zbds4_clean.m3u", "维护手册.md",
-    ".workbuddy/skills/anbola-tvbox/SKILL.md",
 ]
 
 
