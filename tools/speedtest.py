@@ -22,7 +22,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(ROOT, "_probe")
@@ -287,15 +287,34 @@ def main():
     results = []
     done = 0
     t0 = time.time()
-    with ThreadPoolExecutor(max_workers=48) as ex:
-        futs = {ex.submit(test_one, it): it for it in filtered}
-        for f in as_completed(futs):
+    # 全局兜底超时：DNS 解析在部分平台不受 urlopen(timeout) 约束，可能无限挂起。
+    # setdefaulttimeout 作为最后保险，确保任何网络调用不超过 20s（仅本进程生效）。
+    socket.setdefaulttimeout(20)
+    # 不用 `with ThreadPoolExecutor() as ex:`：个别流卡在 DNS 解析时对应 worker 线程
+    # 永不得结束，with 退出时的 shutdown(wait=True) 会永久阻塞，导致写 speeds.json /
+    # 生成 main.m3u 全被堵死（即"测完却没结果"）。改为显式管理并在落盘后 os._exit。
+    ex = ThreadPoolExecutor(max_workers=48)
+    futs = {ex.submit(test_one, it): it for it in filtered}
+    try:
+        for f in as_completed(futs, timeout=300):
             done += 1
-            r = f.result()
-            results.append(r)
-            if done % 200 == 0:
+            try:
+                results.append(f.result())
+            except Exception:
+                pass
+            if done % 50 == 0 or done == len(futs):
                 ok = sum(1 for x in results if x["ok"])
-                print(f"  进度 {done}/{len(filtered)}  可播 {ok}  用时 {time.time()-t0:.0f}s", flush=True)
+                print(f"  进度 {done}/{len(futs)}  可播 {ok}  用时 {time.time()-t0:.0f}s", flush=True)
+    except TimeoutError:
+        # 卡死兜底：超过 300s 仍有流无响应 → 强制收尾，已完成的照常入库
+        print(f"\n⚠ 测速总超时（部分流长时间无响应），停止等待，已测 {done}/{len(futs)} 条", flush=True)
+        for f in futs:
+            if f.done():
+                try:
+                    results.append(f.result())
+                except Exception:
+                    pass
+    print(f"  [实际完成 {len(results)}/{len(futs)} 条]", flush=True)
 
     ok = [r for r in results if r["ok"]]
     ok.sort(key=lambda x: -x["kbps"])
@@ -314,6 +333,14 @@ def main():
     print("\n最慢 8 条（可播但会卡）:")
     for r in ok[-8:]:
         print(f"  {r['kbps']:7.0f}kbps  {r['name'][:22]}")
+
+    # 强制退出：残留的 DNS 挂起线程会阻止进程正常结束，先落盘再 os._exit 确保父进程继续。
+    sys.stdout.flush(); sys.stderr.flush()
+    try:
+        ex.shutdown(wait=False, cancel_futures=True)
+    except Exception:
+        pass
+    os._exit(0)
 
 
 if __name__ == "__main__":
