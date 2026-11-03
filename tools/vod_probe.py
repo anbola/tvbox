@@ -14,13 +14,14 @@
 import json
 import os
 import re
+import socket
 import ssl
 import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 
 # Windows 控制台默认 GBK，打印中文数据会抛 UnicodeEncodeError，这里强制 UTF-8
 try:
@@ -262,14 +263,27 @@ def check(site):
 def main():
     os.makedirs(os.path.join(ROOT, "_probe"), exist_ok=True)
     print(f"待测采集站: {len(CANDIDATES)} 个（从陕西移动宽带实测）\n")
+    # 全局兜底超时：DNS 解析在部分平台不受 urlopen(timeout) 约束，可能无限挂起。
+    socket.setdefaulttimeout(30)
     results = []
-    with ThreadPoolExecutor(max_workers=8) as ex:
-        for r in ex.map(check, CANDIDATES):
+    ex = ThreadPoolExecutor(max_workers=8)
+    futs = [ex.submit(check, c) for c in CANDIDATES]
+    try:
+        for f in as_completed(futs, timeout=300):
+            r = f.result()
             results.append(r)
             e = ("  ERR:" + r["err"]) if r["err"] else ""
             print(f"  {r['name']:<8} 分类{r['cats']:>3}个 {str(r['class_ms']):>5}ms "
                   f"列表{str(r['list_ms']):>5}ms 详情{str(r['detail_ms']):>5}ms "
                   f"视频{r['vod_kbps']:>8}kbps 共{r['total']:>7}条{e}", flush=True)
+    except TimeoutError:
+        print("\n⚠ 点播体检超时（部分站点长时间无响应），仅收录已完成结果", flush=True)
+        for f in futs:
+            if f.done():
+                try:
+                    results.append(f.result())
+                except Exception:
+                    pass
 
     json.dump(results, open(os.path.join(ROOT, "_probe", "vod_report.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)
@@ -287,6 +301,13 @@ def main():
     print(f"\n淘汰 {len(bad)} 个:")
     for r in bad:
         print(f"  {r['name']:<8} {r['err'] or ('慢:%dkbps' % r['vod_kbps'])}")
+
+    sys.stdout.flush(); sys.stderr.flush()
+    try:
+        ex.shutdown(wait=False, cancel_futures=True)
+    except Exception:
+        pass
+    os._exit(0)
 
 
 if __name__ == "__main__":
