@@ -153,7 +153,7 @@ TVBox 的 m3u 解析器（`TxtSubscribe.addChannel` → `mergeUrls`）**按频�
 │   ① fetch_sources  抓取候选源                                                 │
 │   ② speedtest      逐条下载真实分片算码率（48 并发）                            │
 │   ②.5 codec_probe  解析 PAT/PMT/SPS：视频编码 + 分辨率（HEVC 会崩、576p 是 4:3） │
-│   ②.6 live_expand  给还停在 720x576 的频道补 1080p 备选线路                     │
+│   ②.6 live_expand  给还停在 720x576 的频道补 1080p 备选线路（可选，仓库未含则跳过）│
 │   ③ build_live     1080p 优先 + 同网优先 + 每台多条 → lives/main.m3u           │
 │   ④ vod_probe      35 个采集站体检（API 延迟 + 视频分片速度）                    │
 │   ⑤ build_config   只保留达标站 + 有货分类 → tvbox_clean.json                  │
@@ -197,6 +197,7 @@ tools/
   fetch_sources.py         # 抓取 6 个社区候选源
   merge_pool.py            # 候选源去重合并进 pool.m3u（云端用）
   speedtest.py             # ★ 直播测速：下载真实 TS 分片算码率
+  codec_probe.py           # 解析编码+分辨率（HEVC 会崩 / 576p 是 4:3，§四②.5）
   build_live.py            # 按码率排序生成 main.m3u（台名归一化 + 分组）
   vod_probe.py             # ★ 点播体检：35 站 × 4 项指标
   build_config.py          # 生成 tvbox_clean.json
@@ -257,7 +258,7 @@ F/libc  : Fatal signal 6 (SIGABRT) in tid MediaCodec_loop
 
 ## 七、版本
 
-变更记录见 `history/CHANGELOG.md`。
+变更记录见本文件第七节（下方）。
 v2.2（本次）= 直播根因修复：这批源音频是 MP3，本机 EXO 硬解会在 ACodec 里 CHECK_EQ(AudioMp3) 处 abort 掉进程，故 lives 固定 playerType=1（IJK 软解）。
 v2.1 = 修复站点 `key` 丢失（点播空白的主因）+ 直播改为「安全码率带优先」（首条不再上 40Mbps+ 的 2K 流）+ 全站 https + 去掉 emoji。
 v2.0 = 直播全量换陕西移动官方 CDN + 点播 35 站实测精选 4 站。
