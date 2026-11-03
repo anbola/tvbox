@@ -9,7 +9,7 @@ description: 维护 GitHub 仓库 anbola/tvbox（TVBox / MyTV 自维护「直播
 > 让新会话立刻知道「在干嘛、连哪个仓库、怎么操作」。最后更新：2026-11-03。
 
 ## 0. 一句话定位
-为「陕西商洛 · 中国移动宽带 · 电视端 TVBox」定制的影视源。直播全部走**陕西移动 IPTV 官方 CDN**（`dbiptv.sn.chinamobile.com`），按用户自家宽带实测码率排序；点播是 35 个采集站里实测挑出、最多保留 6 个（MAX_SITES=6，2026-11-03 由 4 提至 6，更抗单站失效）。
+为「陕西商洛 · 中国移动宽带 · 电视端 TVBox」定制的影视源。直播全部走**陕西移动 IPTV 官方 CDN**（`dbiptv.sn.chinamobile.com`），按用户自家宽带实测码率排序；点播是 35 个采集站里实测挑出、上限 6 个（MAX_SITES=6，2026-11-03 由 4 提至 6）；但 2026-11-03 实测仅 4 个站越过质量线（视频≥1500kbps），故实际入选 4 个（360、量子、电影天堂、非凡5），剩下 2 个名额需**扩充候选池**才能填（见 §7 末尾）。
 
 ## 1. 关键地址（写死，别猜）
 | 项 | 值 |
@@ -18,15 +18,14 @@ description: 维护 GitHub 仓库 anbola/tvbox（TVBox / MyTV 自维护「直播
 | 页面 | `https://anbola.github.io/tvbox/` |
 | **用户唯一订阅入口（主用）** | `https://anbola.github.io/tvbox/tvbox_clean.json`（GitHub Pages，稳定长期） |
 | 订阅备用 | `https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/tvbox_clean.json`（国内加速镜像，实测 ~2s）、`https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json` |
-| 直播内嵌在上面的 json 里（`lives` 主 `url`=github.io，`url2`=镜像自动回退），TVBox「直播源」框**留空** |
-| 直播内嵌在上面的 json 里（`lives` 指向 `lives/main.m3u`），TVBox「直播源」框**留空** |
+| 直播内嵌在上面的 json 里（`lives` 主 `url`=github.io，`url2`=镜像自动回退，`lives` 指向 `lives/main.m3u`），TVBox「直播源」框**留空** |
 | GitHub 令牌 | 本地 `~/.workbuddy/secrets/anbola_github_token.txt`（PAT，`ghp_` 开头）；仓库内另有 `anbola_token.txt` 也被 .gitignore 屏蔽。**绝不入库** |
 | 历史变更日志 | **不存在**（README §7 写的 `history/CHANGELOG.md` 是悬空引用，目前没有这个文件——别去找） |
 
 ## 2. 当前架构快照（2026-11-03 更新，仓库约 24 个文件：根配置+文档+脚本+3 个兼容镜像）
 ```
 tvbox_clean.json          ★唯一配置（最多 6 个点播站 + 1 个直播）
-lives/main.m3u            ★直播源：88 频道 / 154 线路，100% 移动 CDN（约 22KB）
+lives/main.m3u            ★直播源：103 频道 / 170 线路，100% 移动 CDN（约 25KB，死链已剔除、纯 HEVC 台已剥离防微鲸盒子崩）
 lives/pool.m3u            候选池（1.3MB，云端每周扩充，本地测速从这里挑）
 refresh.bat               ★一键刷新（双击，本地跑）
 README.md                 用户手册（详尽，给人看的）
@@ -44,7 +43,7 @@ tools/ (9):
 # 兼容镜像层（deploy 自动同步为相同内容，防老客户端 404，勿单独删）：
 #   lives/fast.m3u = lives/main.m3u ; lives/cn_clean.m3u = lives/main.m3u ; tvbox_multisource.json = tvbox_clean.json
 ```
-**最多 6 个点播站（type:1，api 裸地址，无 ext，ac=videolist 不焊死；build_config.py 按 vod_kbps≥1200 取前 MAX_SITES=6）**：已知稳定 4 个——360（360zyzz.com）、量子（cj.lziapi.com）、暴风（bfzyapi.com）、非凡（cj.ffzyapi.com）；其余从 35 候选里按速度补满到 6。
+**最多 6 个点播站（type:1，api 裸地址，无 ext，ac=videolist 不焊死；build_config.py 按 vod_kbps 排序取前 MAX_SITES=6）**：2026-11-03 实测 35 站里**仅 4 个越过质量线（视频≥1500kbps 且无错）**——360（360zyzz.com，7290kbps）、量子（cj.lziapi.com，2852kbps）、电影天堂（caiji.dyttzyapi.com，1862kbps）、非凡5（ffzy5.tv，1561kbps）。其余 31 站被淘汰（连接失败/超时/码率过低，暴风本轮直接 TimeoutError）。**剩下 2 个名额想填，必须扩充候选池**（见 §7）。
 
 ## 3. 怎么操作（两套路径，别混）
 ### 3.1 本地刷新（必须在本机/电视同网下跑，测速才有意义）
@@ -110,13 +109,15 @@ PY
 - **采集站「电影/电视剧」主分类服务器端是 0 条**，片源都在子分类。配置列的是真有货的分类（每站 14 个），播放器默认开第一个分类会空白——点一下标签就有。
 - **移动源 720×576 标清流**靠 VUI/DAR 标 16:9，但 IJK 不读该标记会铺成 4:3 方屏。根治：给频道排一条真 1080p 线路（main.m3u 排序规则已 1080p 优先）。
 - ⚠️ README 小矛盾（待修）：① 目录结构漏列已存在的 `codec_probe.py`，却列了仓库里**不存在**的 `live_expand.py`（refresh_all.py 里它 `optional=True`，缺失会被跳过）；② §7 引用了不存在的 `history/CHANGELOG.md`。
-- **「CDN加载失败，请检查网络」根因（2026-11-03 确诊）**：配置 JSON 与内嵌 `lives/main.m3u` 原先都挂在 GitHub 设施上，而 GitHub 系在大陆要么被墙（`cdn.jsdelivr.net` 主域、`raw.githubusercontent.com` 连接重置）要么慢到触发 TVBox 加载超时（`anbola.github.io` 高峰家宽超时、`fastly/gcore.jsdelivr.net` 实测 13~16s）。**直播流本身是国内地址**（`dbiptv.sn.chinamobile.com` 陕西移动 IPTV 官方 CDN + 直连 IP），不依赖 GitHub——所以这是"取配置的门"单点故障，换地址即让 4 站点播 + 88 台直播全恢复。修复已落地：订阅入口改 `testingcf.jsdelivr.net` 镜像主用、`build_config.py` 给直播源加 `url2` 备用（github.io）、详见仓库根 `TVBox_CDN与部署修复方案.md`。**永久根治**= 把配置+直播源部署到国内托管（七牛/又拍云对象存储+CDN 实名永久免费额度，或 Cloudflare Pages 自动部署），已有 `tools/deploy_qiniu.py` 一键推送七牛。
+- **「CDN加载失败，请检查网络」根因（2026-11-03 确诊）**：配置 JSON 与内嵌 `lives/main.m3u` 原先都挂在 GitHub 设施上，而 GitHub 系在大陆要么被墙（`cdn.jsdelivr.net` 主域、`raw.githubusercontent.com` 连接重置）要么慢到触发 TVBox 加载超时（`anbola.github.io` 高峰家宽超时、`fastly/gcore.jsdelivr.net` 实测 13~16s）。**直播流本身是国内地址**（`dbiptv.sn.chinamobile.com` 陕西移动 IPTV 官方 CDN + 直连 IP），不依赖 GitHub——所以这是"取配置的门"单点故障，换地址即让 4 站点播 + 88 台直播全恢复。修复已落地：订阅入口**维持 `anbola.github.io` 主用**（2026-11-03 用户拍板，更稳更熟悉），`build_config.py` 给直播源加 `url2` 备用=testingcf 镜像（主用偶发慢/超时自动回退），详见仓库根 `TVBox_CDN与部署修复方案.md`。**永久根治**= 把配置+直播源部署到国内托管（七牛/又拍云对象存储+CDN 实名永久免费额度，或 Cloudflare Pages 自动部署），已有 `tools/deploy_qiniu.py` 一键推送七牛。
 
-- ⚠️ **refresh.bat「卡住」根因与修复（2026-11-03 确诊+已修）**：① 进度盲区——`speedtest.py` 原只在「每 200 条」打印一次，最后 <200 条不再打印，看着像死机，其实在跑；② 真卡死风险——最后一批是非移动 CDN 外部源，碰到「失效域名 + DNS 解析挂起」时，Python `urlopen(timeout)` **拦不住 DNS 阶段**，线程无限阻塞 → 窗口真死。已修：`speedtest.py`/`vod_probe.py` 改为进度**每 50 条**打印 + `socket.setdefaulttimeout` 全局兜底 + `as_completed(timeout=300)` **强制收尾**（超时就只收已测完的、不再等）。下次运行**绝不会再无限卡**。当前若卡在 ② 测速：再等 1~2 分钟，若蹦「测速完成」就是盲区（让它跑完即可，会顺带把 url2/镜像修复部署上去）；超过 2 分钟纹丝不动就是真卡死 → `Ctrl+C` 重跑 `refresh.bat`（候选已缓存到 `_r`，更快，且用修好的脚本）。
+- ⚠️ **refresh.bat「卡住」根因与修复（2026-11-03 确诊+已修+本轮验证通过）**：① 进度盲区——`speedtest.py` 原只在「每 200 条」打印一次，最后 <200 条不再打印，看着像死机，其实在跑；② 真卡死风险——最后一批是非移动 CDN 外部源，碰到「失效域名 + DNS 解析挂起」时，Python `urlopen(timeout)` **拦不住 DNS 阶段**，线程无限阻塞 → 窗口真死。已修：`speedtest.py`/`vod_probe.py`/`codec_probe.py`/`build_config.py`/`live_expand.py` 全部去掉 `with ThreadPoolExecutor` 的隐式 `shutdown(wait=True)`，改为 `socket.setdefaulttimeout` 全局兜底 + `as_completed(timeout=300)` 强制收尾 + `os._exit(0)` 利落退出；`refresh_all.py` 的 `print("▶")` 改 `sys.stdout.reconfigure(encoding='utf-8')` 避开 GBK 崩溃。**2026-11-03 重跑验证：总用时 1124s 全程跑完、未挂起，超时兜底在第 ② 步优雅触发（1249/1256 条后停止等待，已测照常入库），证明卡死已根治。**
 
-## 8. 当前健康度（2026-11-03 复测）
-- 点播 API（入选站）全部 200，返回真实数据（分类 31~51 个）。
-- `lives/main.m3u`、`pool.m3u`、`tvbox_clean.json` 全部 200。
+## 8. 当前健康度（2026-11-03 深夜跑完，已部署验证）
+- **直播**：1256 条核心候选实测 → 7 条无响应（死链）自动剔除；生成 `main.m3u`=**103 频道 / 170 线路**（含多线路备份），并剥离 13 个纯 HEVC 频道（防微鲸盒子解码崩）。已部署，`anbola.github.io/tvbox/lives/main.m3u` 实测 200/25136B。
+- **点播**：35 站实测，仅 4 站越过质量线（≥1500kbps）：360/量子/电影天堂/非凡5。其余 31 站淘汰。配置 `tvbox_clean.json` 已部署（4 站），实测 200/2441B。
+- **卡死已根治并验证**：本轮 1124s 全程跑完未挂起（见 §7）。
+- ⚠️ **想凑满 6 站点播**：当前候选池（35 站）只够 4 个优质站。要真·6 个优质站，需在 `vod_probe.py` 的 `CANDIDATES` 里**扩充候选池到 ~45 站**（补几个公开采集站），让前 6 名质量更高。这属于加范围，需用户点头再做。
 - **3 个「兼容镜像」文件** `lives/fast.m3u`、`lives/cn_clean.m3u`、`tvbox_multisource.json` 由 `deploy_clean.py` 第 45–47 行**自动同步成 `main.m3u` / `tvbox_clean.json` 的相同内容**（别名层，防老客户端 404）。它们不是独立冗余——想彻底去掉要改 pipeline 的 UPLOAD 列表，别单独删（删了下次 refresh 又会被复活）。
 - 工作流 `refresh.yml` 状态 active。
 
