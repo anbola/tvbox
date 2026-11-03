@@ -21,7 +21,7 @@ description: 维护 GitHub 仓库 anbola/tvbox（TVBox / MyTV 自维护「直播
 | GitHub 令牌 | 本地 `~/.workbuddy/secrets/anbola_github_token.txt`（PAT，`ghp_` 开头）；仓库内另有 `anbola_token.txt` 也被 .gitignore 屏蔽。**绝不入库** |
 | 历史变更日志 | **不存在**（README §7 写的 `history/CHANGELOG.md` 是悬空引用，目前没有这个文件——别去找） |
 
-## 2. 当前架构快照（2026-11-03，仓库共 21 个文件）
+## 2. 当前架构快照（2026-11-03 更新，仓库约 24 个文件：根配置+文档+脚本+3 个兼容镜像）
 ```
 tvbox_clean.json          ★唯一配置（4 个点播站 + 1 个直播）
 lives/main.m3u            ★直播源：88 频道 / 154 线路，100% 移动 CDN（约 22KB）
@@ -39,6 +39,8 @@ tools/ (9):
   build_config.py   生成 tvbox_clean.json
   refresh_all.py    串起全流程
   deploy_clean.py   发布到 GitHub（令牌只从环境变量/本地文件读）
+# 兼容镜像层（deploy 自动同步为相同内容，防老客户端 404，勿单独删）：
+#   lives/fast.m3u = lives/main.m3u ; lives/cn_clean.m3u = lives/main.m3u ; tvbox_multisource.json = tvbox_clean.json
 ```
 **4 个点播站（type:1，api 裸地址，无 ext，ac=videolist 不焊死）**：360（360zyzz.com）、量子（cj.lziapi.com）、暴风（bfzyapi.com）、非凡（cj.ffzyapi.com）。
 
@@ -52,6 +54,8 @@ GitHub 服务器在国外，从那边测中国移动 IPTV 毫无意义，所以*
 # 不重新抓取：python tools/refresh_all.py --skip-fetch --deploy
 ```
 `refresh.bat` 默认带 `--deploy`，会自动推 GitHub。
+
+> ⚠️ **开局会"卡"住几分钟是正常的，不是死机**：第 ① 步抓取候选源（`fetch_sources.py`）要从 7 个上游拉清单，多个走 `gh-proxy.com`，每个 `timeout=35s × 2 次重试`，且**只有失败才打印**。前几个上游若慢/不通，cmd 窗口会长时间无输出——等它过了抓取阶段就会开始逐条打印「✓/✗ 源名」和测速进度。总流程约 5–15 分钟（② 逐条测速最久）。
 
 ### 3.2 云端 CI（GitHub Actions，不用管）
 `refresh.yml` 每周六 21:30（北京时间 UTC 13:30）+ push 触发。**只**抓候选池进 `pool.m3u` + 校验结构，**绝不**改 `main.m3u` / `tvbox_clean.json` / 不测速。状态查：`https://github.com/anbola/tvbox/actions`。
@@ -108,7 +112,7 @@ PY
 ## 8. 当前健康度（2026-11-03 复测）
 - 4 个点播 API 全部 200，返回真实数据（360/量子/暴风/非凡，分类 31~51 个）。
 - `lives/main.m3u`、`pool.m3u`、`tvbox_clean.json` 全部 200。
-- 已去重：删掉 `lives/fast.m3u`、`lives/cn_clean.m3u`（与 main.m3u 同 MD5）、`tvbox_multisource.json`（与 tvbox_clean.json 完全相同）。
+- **3 个「兼容镜像」文件** `lives/fast.m3u`、`lives/cn_clean.m3u`、`tvbox_multisource.json` 由 `deploy_clean.py` 第 45–47 行**自动同步成 `main.m3u` / `tvbox_clean.json` 的相同内容**（别名层，防老客户端 404）。它们不是独立冗余——想彻底去掉要改 pipeline 的 UPLOAD 列表，别单独删（删了下次 refresh 又会被复活）。
 - 工作流 `refresh.yml` 状态 active。
 
 ## 9. 接手清单（换电脑/新会话第一件事）
