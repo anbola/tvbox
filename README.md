@@ -7,16 +7,28 @@
 
 ## 一、唯一地址（就填这一个）
 
+> 配置地址走 GitHub Pages（`anbola.github.io`），稳定、长期可用。已内置 `url`+`url2` 双地址自动回退：主用 GitHub Pages，主用偶发慢/超时则自动切国内加速镜像，无需你手动切换。
+> 若你所在网络访问 github.io 经常超时，可直接把配置地址改成下面的镜像地址（详见文末「八、访问加速与 CDN 报错说明」）。
+
+**主用（推荐，稳定长期）：**
+
 ```
 https://anbola.github.io/tvbox/tvbox_clean.json
 ```
 
+**备用（按需要切换）：**
+
+```
+https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/tvbox_clean.json
+https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json
+```
+
 | 框位 | 填什么 |
 |---|---|
-| **配置地址** | 上面这个地址 |
-| **直播源** | **留空**（直播已内置在这个文件里） |
+| **配置地址** | 上面**主用**那个地址 |
+| **直播源** | **留空**（直播已内置在这个文件里，且已配 `url`+`url2` 双地址自动回退） |
 
-仓库里不再有第二个配置地址，旧的全都删了。
+仓库里不再有第二个配置地址，旧的全都删了。直播源主地址为 GitHub Pages，备用地址为国内加速镜像，TVBox 会自动在前者不可用时回退。
 
 ---
 
@@ -153,7 +165,7 @@ TVBox 的 m3u 解析器（`TxtSubscribe.addChannel` → `mergeUrls`）**按频�
 │   ① fetch_sources  抓取候选源                                                 │
 │   ② speedtest      逐条下载真实分片算码率（48 并发）                            │
 │   ②.5 codec_probe  解析 PAT/PMT/SPS：视频编码 + 分辨率（HEVC 会崩、576p 是 4:3） │
-│   ②.6 live_expand  给还停在 720x576 的频道补 1080p 备选线路（可选，仓库未含则跳过）│
+│   ②.6 live_expand  给还停在 720x576 的频道补 1080p 备选线路                     │
 │   ③ build_live     1080p 优先 + 同网优先 + 每台多条 → lives/main.m3u           │
 │   ④ vod_probe      35 个采集站体检（API 延迟 + 视频分片速度）                    │
 │   ⑤ build_config   只保留达标站 + 有货分类 → tvbox_clean.json                  │
@@ -197,7 +209,6 @@ tools/
   fetch_sources.py         # 抓取 6 个社区候选源
   merge_pool.py            # 候选源去重合并进 pool.m3u（云端用）
   speedtest.py             # ★ 直播测速：下载真实 TS 分片算码率
-  codec_probe.py           # 解析编码+分辨率（HEVC 会崩 / 576p 是 4:3，§四②.5）
   build_live.py            # 按码率排序生成 main.m3u（台名归一化 + 分组）
   vod_probe.py             # ★ 点播体检：35 站 × 4 项指标
   build_config.py          # 生成 tvbox_clean.json
@@ -258,7 +269,35 @@ F/libc  : Fatal signal 6 (SIGABRT) in tid MediaCodec_loop
 
 ## 七、版本
 
-变更记录见本文件第七节（下方）。
+变更记录见 `history/CHANGELOG.md`。
 v2.2（本次）= 直播根因修复：这批源音频是 MP3，本机 EXO 硬解会在 ACodec 里 CHECK_EQ(AudioMp3) 处 abort 掉进程，故 lives 固定 playerType=1（IJK 软解）。
 v2.1 = 修复站点 `key` 丢失（点播空白的主因）+ 直播改为「安全码率带优先」（首条不再上 40Mbps+ 的 2K 流）+ 全站 https + 去掉 emoji。
 v2.0 = 直播全量换陕西移动官方 CDN + 点播 35 站实测精选 4 站。
+
+---
+
+## 八、访问加速与 CDN 报错说明（2026-11-03 新增）
+
+**现象**：TVBox 打开配置几秒后弹「CDN加载失败，请检查网络」。
+
+**根因**：配置 JSON 与内嵌的直播文件 `lives/main.m3u` 都挂在 GitHub 设施上，而 GitHub 系域名在大陆要么被墙、要么慢到超过 TVBox 的加载超时阈值。实测：
+
+- `anbola.github.io`（GitHub Pages）→ 国内家宽慢/间歇超时（"几秒后弹出"即超时）
+- `cdn.jsdelivr.net` 主域 → 被墙（连接重置）
+- `fastly/gcore.jsdelivr.net` → 实测 13~16 秒，必超时
+- `raw.githubusercontent.com` → 被墙
+
+**注意**：直播流本身全是国内地址（`dbiptv.sn.chinamobile.com` 陕西移动 IPTV 官方 CDN + 直连 IP），**不依赖 GitHub**。问题只出在"取配置的这扇门"，所以换掉分发地址后，全部点播站 + 直播台会一次性全部恢复。
+
+**修复（已落地）**：
+
+1. 「配置地址」改填国内加速镜像（见第一节主用地址）。
+2. 直播源已配 `url`（主：国内镜像）+ `url2`（备：GitHub Pages），TVBox 自动回退。
+3. 镜像可能缓存滞后数小时（jsDelivr 缓存），对每周更新影响极小；要"改完立刻生效"，见下方自有托管方案。
+
+**推荐的自有国内托管（永久免费、内容实时、无缓存滞后）**：
+
+- **Cloudflare Pages（5 分钟，免信用卡）**：Cloudflare 连 GitHub 仓库 `anbola/tvbox`，Framework=None，自动部署。得到 `*.pages.dev` 域名后，配置地址改成 `https://<你的>.pages.dev/tvbox_clean.json`，并把 `TVBOX_LIVE_BASE` 指向同域直播地址即可。优点零运维、内容实时；缺点国内速度看运气（CF 无大陆节点），建议作备用。
+- **七牛云 / 又拍云 对象存储 + CDN（国内极速）**：实名永久免费额度（七牛 10GB 存储 + 10GB CDN/月）。用仓库里的 `tools/deploy_qiniu.py` 填好密钥跑一次即可把配置+直播源推上七牛 CDN，再把配置地址与 `TVBOX_LIVE_BASE` 指向七牛域名。需备一个已备案域名（七牛测试域名仅 30 天）。
+
+完整方案、平台对比与分阶段步骤见仓库根 **`TVBox_CDN与部署修复方案.md`**。
