@@ -17,7 +17,7 @@ import re
 import ssl
 import urllib.parse
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CTX = ssl.create_default_context()
@@ -27,7 +27,7 @@ UA = "okhttp/3.15.0"
 
 MIN_VOD_KBPS = 1200     # 视频分片低于此值会卡
 MIN_TOTAL = 100         # 分类至少这么多片才算"有货"
-MAX_SITES = 4           # 站越多首页越慢
+MAX_SITES = 6           # 站越多首页标签越多，但只前 2 个开 quickSearch，故 6 个也流畅且更抗单站失效
 MAX_CATS = 14
 
 # 分类优先级：主分类 → 电影子类 → 剧集 → 综艺 → 动漫 → 纪录片 → 其它
@@ -95,9 +95,24 @@ def build_site(site, quick):
     # 关键：对【全部候选分类】查 total，而不是只查前 20 个，
     # 否则"动画片/纪录片/短剧"这类排在后面但真有货的分类会被漏掉。
     cand = [(n, idmap[n]) for n in names[:30]]
-    with ThreadPoolExecutor(max_workers=10) as ex:
-        totals = dict(zip([c[0] for c in cand],
-                          ex.map(lambda c: cat_total(api, c[1]), cand)))
+    ex = ThreadPoolExecutor(max_workers=10)
+    futs = {ex.submit(cat_total, api, c[1]): c[0] for c in cand}
+    totals = {}
+    try:
+        for f in as_completed(futs, timeout=300):
+            totals[futs[f]] = f.result()
+    except TimeoutError:
+        for f in futs:
+            if f.done():
+                try:
+                    totals[futs[f]] = f.result()
+                except Exception:
+                    pass
+    finally:
+        try:
+            ex.shutdown(wait=False, cancel_futures=True)
+        except Exception:
+            pass
 
     picked = [n for n in names[:30] if totals.get(n, 0) >= MIN_TOTAL]
     if len(picked) < 6:
@@ -141,15 +156,30 @@ def main():
         if s:
             sites.append(s)
 
+    # 直播源主用地址：用户熟悉的 GitHub Pages（稳定、长期可用）。
+    # 想换成自己的真·国内托管（Cloudflare Pages / 七牛 / 又拍云）时，
+    # 设环境变量 TVBOX_LIVE_BASE 即可，无需改代码；例如：
+    #   TVBOX_LIVE_BASE=https://anbola-tvbox.pages.dev/lives/main.m3u
+    #   TVBOX_LIVE_BASE=https://<你的七牛CDN域名>/lives/main.m3u
+    LIVE_PRIMARY = os.environ.get(
+        "TVBOX_LIVE_BASE",
+        "https://anbola.github.io/tvbox/lives/main.m3u",
+    )
+    # 备用：国内加速镜像。主用偶发慢/超时时，TVBox 自动回退到这一条（详见仓库根 TVBox_CDN与部署修复方案.md）。
+    LIVE_BACKUP = "https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/lives/main.m3u"
+
     cfg = {
         "sites": sites,
         # playerType：0 系统 / 1 IJK / 2 EXO（见 README「直播参数说明」）
         # 必须钉死 1(IJK)：微鲸 WTV55K1 用 EXO 硬解这批源的 MP3 音频时，
         # Android 5.0.2 的 ACodec 会在 OMX_IndexParamAudioMp3 上 CHECK 失败直接 abort，
         # 表现为"点直播闪一下就退出"。IJK + 软解可绕开该平台缺陷。
+        # url / url2：TVBox 原生支持直播源双地址，主地址失败自动切备用，
+        # 专治"CDN加载失败"（GitHub 系在大陆慢/被墙，详见仓库根 TVBox_CDN与部署修复方案.md）。
         "lives": [{
             "name": "央视·卫视·陕西本地（实测排序）",
-            "url": "https://anbola.github.io/tvbox/lives/main.m3u",
+            "url": LIVE_PRIMARY,
+            "url2": LIVE_BACKUP,
             "playerType": "1",
         }],
     }
