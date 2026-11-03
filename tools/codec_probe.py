@@ -16,10 +16,12 @@ stream_type（0x1B=H.264, 0x24=H.265）→ 对 H.264 再解 SPS 拿分辨率。
 import json
 import os
 import re
+import socket
 import ssl
 import struct
+import sys
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CTX = ssl.create_default_context()
@@ -259,11 +261,23 @@ def main():
     speed = json.load(open(os.path.join(ROOT, "_probe", "speeds.json"), encoding="utf-8"))
     items = [r for r in speed if r.get("ok")]
     print(f"待探测 {len(items)} 条流…")
-    with ThreadPoolExecutor(max_workers=24) as ex:
-        res = list(ex.map(probe, items))
+    socket.setdefaulttimeout(20)
+    ex = ThreadPoolExecutor(max_workers=24)
+    futs = [ex.submit(probe, it) for it in items]
+    res = []
+    try:
+        for f in as_completed(futs, timeout=300):
+            res.append(f.result())
+    except TimeoutError:
+        print("⚠ 编码探测超时，仅保留已完成结果", flush=True)
+        for f in futs:
+            if f.done():
+                try:
+                    res.append(f.result())
+                except Exception:
+                    pass
     out = os.path.join(ROOT, "_probe", "codecs.json")
-    with open(out, "w", encoding="utf-8") as f:
-        json.dump(res, f, ensure_ascii=False, indent=1)
+    json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = [r for r in res if r["ok"]]
     print(f"识别成功 {len(ok)}/{len(res)}")
     stat = {}
@@ -273,6 +287,12 @@ def main():
     for k, v in sorted(stat.items(), key=lambda x: -x[1]):
         print(f"  {k:<20} {v} 条")
     print(f"已写入 {out}")
+    sys.stdout.flush(); sys.stderr.flush()
+    try:
+        ex.shutdown(wait=False, cancel_futures=True)
+    except Exception:
+        pass
+    os._exit(0)
 
 
 if __name__ == "__main__":
