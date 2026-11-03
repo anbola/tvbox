@@ -17,6 +17,14 @@ import subprocess
 import sys
 import time
 
+# 防止在 GBK 控制台（部分 Windows / 云端 Runner）打印 ▶✓✗ 等字符时抛
+# UnicodeEncodeError，导致整条流水线在第一步就崩。改走 UTF-8 输出即可。
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PY = sys.executable or "python3"
 
