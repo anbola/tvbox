@@ -16,8 +16,9 @@ description: 维护 GitHub 仓库 anbola/tvbox（TVBox / MyTV 自维护「直播
 |---|---|
 | 仓库 | `https://github.com/anbola/tvbox`（分支 `main`） |
 | 页面 | `https://anbola.github.io/tvbox/` |
-| **用户唯一订阅入口（主用）** | `https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/tvbox_clean.json`（国内加速镜像，实测 ~2s） |
-| 订阅备用 | `https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json`、`https://anbola.github.io/tvbox/tvbox_clean.json`（GitHub Pages，慢/偶发超时，**降级为备用**） |
+| **用户唯一订阅入口（主用）** | `https://anbola.github.io/tvbox/tvbox_clean.json`（GitHub Pages，稳定长期） |
+| 订阅备用 | `https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/tvbox_clean.json`（国内加速镜像，实测 ~2s）、`https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json` |
+| 直播内嵌在上面的 json 里（`lives` 主 `url`=github.io，`url2`=镜像自动回退），TVBox「直播源」框**留空** |
 | 直播内嵌在上面的 json 里（`lives` 指向 `lives/main.m3u`），TVBox「直播源」框**留空** |
 | GitHub 令牌 | 本地 `~/.workbuddy/secrets/anbola_github_token.txt`（PAT，`ghp_` 开头）；仓库内另有 `anbola_token.txt` 也被 .gitignore 屏蔽。**绝不入库** |
 | 历史变更日志 | **不存在**（README §7 写的 `history/CHANGELOG.md` 是悬空引用，目前没有这个文件——别去找） |
