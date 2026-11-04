@@ -1,0 +1,165 @@
+{
+ "generated": "2026-11-04 21:35:34",
+ "criterion": "ffprobe 实测 1920x1080 / DAR 16:9 / H.264 / 非MP3 + 3轮首包全通且最大<500ms",
+ "note": "build_live.py 会把这些线路并入候选池；现有 prefer() 的 (avc,1080p,同网,码率,延迟) 排序会自动把它们排到 4:3 标清线之前",
+ "picks": {
+  "厦门卫视": {
+   "url": "http://183.250.156.180:9999/newlive/live/hls/28/live.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 112,
+   "worst_ms": 141
+  },
+  "山西卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000109.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 112,
+   "worst_ms": 140
+  },
+  "河北卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000108.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 144,
+   "worst_ms": 213
+  },
+  "贵州卫视": {
+   "url": "http://120.198.95.220:9901/tsfile/live/1052_1.m3u8?key=txiptv&playlive=1&down=1",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 145,
+   "worst_ms": 178
+  },
+  "四川卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000103.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 147,
+   "worst_ms": 232
+  },
+  "云南卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000482.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 103,
+   "worst_ms": 109
+  },
+  "青海卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000111.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 149,
+   "worst_ms": 249
+  },
+  "广西卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000116.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 149,
+   "worst_ms": 214
+  },
+  "甘肃卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000119.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 145,
+   "worst_ms": 233
+  },
+  "湖南卫视": {
+   "url": "http://183.250.156.180:9999/newlive/live/hls/30/live.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 115,
+   "worst_ms": 125
+  },
+  "西藏卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000121.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 120,
+   "worst_ms": 133
+  },
+  "江西卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000098.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 159,
+   "worst_ms": 272
+  },
+  "海南卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000473.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 115,
+   "worst_ms": 126
+  },
+  "吉林卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000097.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 148,
+   "worst_ms": 236
+  },
+  "陕西卫视": {
+   "url": "http://120.76.248.139/live/bfgd/4200000512.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 135,
+   "worst_ms": 224
+  },
+  "延边卫视": {
+   "url": "https://srs.iyb983.cn/video/CYS/index.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 146,
+   "worst_ms": 184
+  },
+  "CCTV-13 新闻": {
+   "url": "https://event.pull.hebtv.com/jishi/cp1.m3u8",
+   "w": 1920,
+   "h": 1080,
+   "dar": "16:9",
+   "codec": "h264",
+   "ttfb_ms": 214,
+   "worst_ms": 260
+  }
+ },
+ "drop": [
+  "http://218.13.170.98:9901/tsfile/live/1020_1.m3u8?key=txiptv&playlive=1&authid=0",
+  "http://59.39.89.130:60901/tsfile/live/0125_3.m3u8?key=txiptv&playlive=1&authid=0"
+ ],
+ "drop_reason": "ffprobe 拉不到流且首包 >1s 的秒级慢线；保留会在 App 自动换源时白等数秒"
+}
