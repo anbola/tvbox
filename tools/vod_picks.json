@@ -1,0 +1,54 @@
+{
+ "generated": "2026-11-04 21:40:24",
+ "criterion": "A/B 同场次 9 轮 https P75（现用6站 vs 候选同批对比）+ ?ac=list 内容校验 + host去重；并剔除「API快但分片<1200kbps」的站（片源速度同样决定体验）",
+ "sites": [
+  {
+   "name": "非凡5",
+   "api": "https://ffzy5.tv/api.php/provide/vod",
+   "p75_ms": 676,
+   "worst_ms": 737,
+   "ok": 9
+  },
+  {
+   "name": "索尼",
+   "api": "https://suoniapi.com/api.php/provide/vod",
+   "p75_ms": 984,
+   "worst_ms": 2969,
+   "ok": 9
+  },
+  {
+   "name": "量子",
+   "api": "https://cj.lziapi.com/api.php/provide/vod",
+   "p75_ms": 1086,
+   "worst_ms": 2009,
+   "ok": 9
+  },
+  {
+   "name": "360",
+   "api": "https://360zyzz.com/api.php/provide/vod",
+   "p75_ms": 1476,
+   "worst_ms": 1506,
+   "ok": 9
+  },
+  {
+   "name": "电影天堂",
+   "api": "https://caiji.dyttzyapi.com/api.php/provide/vod",
+   "p75_ms": 1615,
+   "worst_ms": 4380,
+   "ok": 9
+  }
+ ],
+ "quickSearch": [
+  "非凡5",
+  "量子"
+ ],
+ "quick_criterion": "0.7*P75 + 0.3*worst（搜索并发看尾部延迟）",
+ "excluded": [
+  {
+   "name": "光速",
+   "api": "https://api.guangsuapi.com/api.php/provide/vod",
+   "reason": "API P75 1624ms 尚可，但视频分片实测 64/191/351kbps（历史 84kbps，qualify=False），播放会卡；宁缺毋滥"
+  }
+ ],
+ "note": "第6站不补：候选补测 最大/森林/樱花/天涯 分片速度均不达标；TVBox 搜索会并发所有站，补一个 P75>2500ms 的慢站反而拖慢搜索"
+}
