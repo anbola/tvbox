@@ -60,6 +60,8 @@ UPLOAD = [
     ("tools/codec_probe.py", "tools/codec_probe.py"),
     ("tools/live_expand.py", "tools/live_expand.py"),
     ("tools/build_config.py", "tools/build_config.py"),
+    ("tools/tv_speedtest.py", "tools/tv_speedtest.py"),
+    ("tools/optimize_tv.py", "tools/optimize_tv.py"),
     ("tools/refresh_all.py", "tools/refresh_all.py"),
     ("tools/deploy_clean.py", "tools/deploy_clean.py"),
     ("refresh.bat", "refresh.bat"),
