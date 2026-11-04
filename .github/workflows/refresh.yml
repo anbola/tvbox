@@ -93,6 +93,11 @@ jobs:
           print("校验通过: sites=%d lives=%d" % (len(cfg["sites"]), len(cfg["lives"])))
           PY
 
+      # ②.5 订阅地址固定性校验（2026-11-04 用户拍板：网址永不变）
+      #     防止以后有人把 README/配置/脚本里的订阅地址改成别的，导致用户又要重填。
+      - name: 校验订阅地址未被改动
+        run: python tools/check_address.py
+
       # ③ 更新：只在候选池有变化时提交
       - name: 提交变更
         run: |
