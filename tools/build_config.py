@@ -205,42 +205,49 @@ def main():
     #   · playerType 钉死 1(IJK)：微鲸 WTV55K1 用 EXO 硬解这批源的 MP3 音频时，
     #     Android 5.0.2 的 ACodec 会在 OMX_IndexParamAudioMp3 上 CHECK 失败直接 abort，
     #     表现为「点直播闪一下就退出」。IJK + 软解可绕开该平台缺陷。
-    # 【2026-11-04 手机优先】lives[0] 是 TVBox / 影视仓**默认加载**的直播源。
-    # 以前把内网极速放第一：手机（蜂窝数据 / 外面 WiFi）填完订阅地址后，默认
-    # 拉到一堆 dbiptv.sn.chinamobile.com 内网地址，频道要么列不出来要么全播不了
-    # → 用户看到的就是「点播正常、直播还是空的」，而且多数人找不到切换入口。
-    # 现在把实测可达的公网版放第一项：手机**零操作**就有直播。
-    # 家里电视想要 103 频道内网极速，在直播页下拉切到 ② 即可（选择会被记住）。
-    # ⚠️ 订阅地址 SUBSCRIBE_URL 一个字没变，只是同一个文件里数组顺序变了。
+    # 【2026-11-04 19:42 用户拍板：电视绝对优先，不许再改】
+    # lives[0] 是 TVBox / 影视仓**默认加载**的直播源，必须是家里电视用的内网极速
+    # main.m3u（106 台 / 174 线路，运营商内网 CDN，实测首包 0.05~0.14s）。
+    # 19:30 曾把公网 public.m3u 挪到第一想让手机"零操作可看"，实测对电视影响过大：
+    #   · 台数 106 → 43（少 6 成，陕西本地台/地方台全没了）
+    #   · 起播 0.1s 级 → 部分公网线路 2~8s，且是民间小站/裸 IP，随时会失效
+    #   · 电视是主力设备，每次开机/换台都要手动切源，遥控器操作更烦
+    # 用户明确「最主要是看电视，影响大就绝对把电视放第一位」→ 恢复内网第一。
+    # 手机侧成本：首次在直播页切一次 ③（App 会记住），或壳若有独立「直播地址」框
+    # 直接填 public.m3u 一次配好。这已经是最接近"区分设备"的做法。
+    # ⚠️ 静态单网址（GitHub Pages 无后端、TVBox 不执行 JS、手机连家里 WiFi 时
+    #    与电视出口 IP 完全相同）在架构上**无法**按设备/网络自动返回不同 lives 顺序。
+    #    不要为了"智能化"引入动态后端 / 第二个网址 —— 会牺牲速度、稳定性和固定网址。
+    # ⚠️ 订阅地址 SUBSCRIBE_URL 一字未改；以后别再把公网挪到第一项。
     PUBLIC_BASE = os.environ.get(
         "TVBOX_PUBLIC_BASE",
         "https://anbola.github.io/tvbox/lives/public.m3u",
     )
     has_public = os.path.exists(os.path.join(ROOT, "lives", "public.m3u"))
 
-    lives = []
+    lives = [
+        {
+            "name": "① 家里电视·移动内网极速",
+            "type": 0,
+            "url": LIVE_PRIMARY,
+            "playerType": 1,
+        },
+        {
+            "name": "② 备用·国内加速镜像",
+            "type": 0,
+            "url": LIVE_BACKUP,
+            "playerType": 1,
+        },
+    ]
     if has_public:
         lives.append({
-            "name": "① 默认·公网通用（手机/电视）",
+            "name": "③ 手机/外网·公网通用",
             "type": 0,
             "url": PUBLIC_BASE,
             "playerType": 1,
         })
     else:
-        print("! 未找到 lives/public.m3u，退回内网极速为默认（建议跑 tools/build_public.py）")
-
-    lives.append({
-        "name": "② 家里电视·移动内网极速",
-        "type": 0,
-        "url": LIVE_PRIMARY,
-        "playerType": 1,
-    })
-    lives.append({
-        "name": "③ 备用·国内加速镜像",
-        "type": 0,
-        "url": LIVE_BACKUP,
-        "playerType": 1,
-    })
+        print("! 未找到 lives/public.m3u，跳过公网版（建议跑 tools/build_public.py）")
 
     cfg = {"sites": sites, "lives": lives}
     out = os.path.join(ROOT, "tvbox_clean.json")
