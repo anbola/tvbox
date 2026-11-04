@@ -266,6 +266,24 @@ def main():
 
     names = sorted(picked.keys(), key=order_key)
 
+    # 【2026-11-04 电视提速】剔除 tv_speedtest.py 实测「3 轮全部失败」的死链。
+    # 换台撞上死链会白等 5~10 秒，是电视端唯一还能明显体感到的卡顿。
+    # 只删 URL，绝不重排：avc / 1080p / 同网 / 码率 的排序优先级是
+    # 4:3 方屏与微鲸盒子闪退的根治手段，不许为几十毫秒打乱。
+    tp = os.path.join(ROOT, "_probe", "tv_live_ttfb.json")
+    dead = set()
+    if os.path.exists(tp):
+        dead = {u for u, v in json.load(open(tp, encoding="utf-8")).items()
+                if not v.get("ok")}
+    if dead:
+        before_n = sum(len(v) for v in picked.values())
+        for n in list(picked):
+            picked[n] = [it for it in picked[n] if it["url"] not in dead]
+            if not picked[n]:
+                del picked[n]
+        names = [n for n in names if n in picked]
+        print(f"剔除实测死链 {before_n - sum(len(v) for v in picked.values())} 条")
+
     lines = ["#EXTM3U"]
     total = 0
     stat = {"央视": 0, "卫视": 0, "陕西本地": 0, "其他": 0}
