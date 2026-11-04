@@ -80,21 +80,30 @@ def optimize_live(ttfb):
 
 def optimize_vod(vod):
     cfg = json.load(io.open(CFG, encoding="utf-8"))
-    rank = {}
+    # 判据：搜索并发的等待 = 最慢那个站，所以看**尾部延迟(P75)**，不是中位数。
+    # 2026-11-04 教训：只测 3 轮按中位数挑，选出了波动最大的虎牙
+    # （9 轮 P75 1739ms / 最差 5470ms），单独复测时量子也从 808ms 跳到 3468ms。
+    # 优先级：9 轮 P75 > 多轮 ttfb 中位数 > 无穷大（缺数据不误开慢站）。
+    stab = load("tv_vod_stability.json")
+    # 与 build_config.py 完全一致的内置兜底：测速数据丢失也不会退回「评分前 2」。
+    p75 = {"索尼": 836, "360": 1147, "量子": 1148,
+           "虎牙": 1739, "暴风": 1892, "金鹰": 3328}
+    p75.update({s["name"]: s["p75_ms"] for s in stab.get("sites", [])
+                if s.get("p75_ms") is not None})
+    med = {}
     for measured_url, v in vod.items():
         if v.get("ttfb_ms") is not None and v.get("ok"):
-            rank[api_of(measured_url)] = v["ttfb_ms"]
-    # 只按实测响应挑；缺测速数据的站按无穷大排，避免误开慢站
-    scored = sorted(
-        ((rank.get(s["api"].rstrip("/"), 9e9), s["name"], s["api"]) for s in cfg["sites"]),
-        key=lambda x: x[0],
-    )
+            med[api_of(measured_url)] = v["ttfb_ms"]
+
+    def cost(s):
+        v = p75.get(s["name"])
+        return v if v is not None else med.get(s["api"].rstrip("/"), 9e9)
+
+    scored = sorted(((cost(s), s["name"], s["api"]) for s in cfg["sites"]),
+                    key=lambda x: x[0])
     fastest = {a for _, _, a in scored[:2]}
     before = {s["name"]: s.get("quickSearch", 0) for s in cfg["sites"]}
-    wait_before = max(
-        [rank.get(s["api"].rstrip("/"), 9e9) for s in cfg["sites"]
-         if before.get(s["name"])] or [0]
-    )
+    wait_before = max([cost(s) for s in cfg["sites"] if before.get(s["name"])] or [0])
     for s in cfg["sites"]:
         s["quickSearch"] = 1 if s["api"] in fastest else 0
     after = {s["name"]: s.get("quickSearch", 0) for s in cfg["sites"]}
@@ -102,7 +111,8 @@ def optimize_vod(vod):
         with open(CFG, "w", encoding="utf-8", newline="\n") as f:
             json.dump(cfg, f, ensure_ascii=False, indent=2)
     return {
-        "api_ttfb_ms": {s["name"]: rank.get(s["api"].rstrip("/")) for s in cfg["sites"]},
+        "criterion": "9轮P75(ms)" if stab.get("sites") else "内置9轮P75兜底(ms)",
+        "cost_ms": {s["name"]: cost(s) for s in cfg["sites"]},
         "quick_before": before, "quick_after": after,
         "fastest_two": [n for _, n, _ in scored[:2]],
         "wait_before_ms": wait_before,
@@ -129,7 +139,7 @@ def main():
     print(f"[直播] 剔除死链 {len(a['removed'])} 条：{a['lines_before']} -> {a['lines_after']} 线路")
     for u in a["removed"]:
         print("   -", u[:110])
-    print("[点播] API 首包(3轮中位数):", b["api_ttfb_ms"])
+    print(f"[点播] 判据 {b['criterion']}:", b["cost_ms"])
     print(f"[点播] 搜索并发 {b['fastest_two']}；"
           f"最慢等待 {b['wait_before_ms']}ms -> {b['wait_after_ms']}ms")
     print("[点播] quickSearch:", b["quick_after"])
