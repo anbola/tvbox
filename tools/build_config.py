@@ -137,17 +137,45 @@ def build_site(site, quick):
 
 
 def main():
-    # 优先用"多次采样取中位数"的 vod_final.json（更稳），退回单次报告
-    p_final = os.path.join(ROOT, "_probe", "vod_final.json")
-    p_report = os.path.join(ROOT, "_probe", "vod_report.json")
-    src = p_final if os.path.exists(p_final) else p_report
+    # 数据源优先级：稳定性榜单（多轮采样）> 旧版 final > 单次报告
+    # 单次测速波动极大（同一站可能 7.3Mbps / 0.6Mbps 来回跳），
+    # 只有 vod_stable.json 的「成功率 × 码率中位数」才能代表真正优质。
+    cands = [
+        os.path.join(ROOT, "_probe", "vod_stable.json"),
+        os.path.join(ROOT, "_probe", "vod_final.json"),
+        os.path.join(ROOT, "_probe", "vod_report.json"),
+    ]
+    src = next((p for p in cands if os.path.exists(p)), None)
+    if not src:
+        raise SystemExit("没有点播测速数据，请先跑 tools/vod_stable.py")
     rep = json.load(open(src, encoding="utf-8"))
     print(f"数据来源: {os.path.basename(src)}")
-    good = [r for r in rep if r.get("vod_kbps", 0) >= MIN_VOD_KBPS and not r.get("err")]
-    good.sort(key=lambda r: (-r["vod_kbps"], r.get("list_ms") or 9999))
-    good = good[:MAX_SITES]
+
+    stable = "vod_stable.json" in src
+    if stable:
+        # 稳定性榜单：必须 qualify（成功率≥2/3 且码率中位数≥1200），按综合评分降序
+        good = [r for r in rep if r.get("qualify")]
+        good.sort(key=lambda r: -r.get("score", 0))
+    else:
+        # 旧数据兼容路径
+        good = [r for r in rep if r.get("vod_kbps", 0) >= MIN_VOD_KBPS and not r.get("err")]
+        good.sort(key=lambda r: (-r["vod_kbps"], r.get("list_ms") or 9999))
+
+    # 同族去重：「量子 / 量子1」「非凡 / 非凡5 / 非凡1」「360 / 360新」
+    # 往往是同一套资源池的不同域名，同时入选等于重复内容、白占名额。
+    def family(name):
+        return re.sub(r"(新|\d+)$", "", (name or "").strip()) or name
+    seen = set()
+    deduped = []
+    for r in good:
+        fam = family(r.get("name"))
+        if fam in seen:
+            continue
+        seen.add(fam)
+        deduped.append(r)
+    good = deduped[:MAX_SITES]
     if not good:
-        raise SystemExit("没有达标点播站，请先跑 tools/vod_probe.py")
+        raise SystemExit("没有达标点播站，请先跑 tools/vod_stable.py（多轮稳定性测速）")
 
     print(f"入选点播站 {len(good)} 个（视频速度降序）：")
     sites = []
@@ -168,21 +196,51 @@ def main():
     # 备用：国内加速镜像。主用偶发慢/超时时，TVBox 自动回退到这一条（详见仓库根 TVBox_CDN与部署修复方案.md）。
     LIVE_BACKUP = "https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/lives/main.m3u"
 
-    cfg = {
-        "sites": sites,
-        # playerType：0 系统 / 1 IJK / 2 EXO（见 README「直播参数说明」）
-        # 必须钉死 1(IJK)：微鲸 WTV55K1 用 EXO 硬解这批源的 MP3 音频时，
-        # Android 5.0.2 的 ACodec 会在 OMX_IndexParamAudioMp3 上 CHECK 失败直接 abort，
-        # 表现为"点直播闪一下就退出"。IJK + 软解可绕开该平台缺陷。
-        # url / url2：TVBox 原生支持直播源双地址，主地址失败自动切备用，
-        # 专治"CDN加载失败"（GitHub 系在大陆慢/被墙，详见仓库根 TVBox_CDN与部署修复方案.md）。
-        "lives": [{
-            "name": "央视·卫视·陕西本地（实测排序）",
+    # ⚠️ lives 字段规范（TVBox / 影视仓 / FongMi / takagen99 通用，2026-11-04 核实）：
+    #   · "type": 0 必须显式写 —— 0=M3U、1=TXT。缺省值虽是 0，但不少分支缺省时
+    #     会把整段 lives 判为无效并静默丢弃，表现就是「点播有、直播全空」。
+    #   · "playerType" 必须是【整数】1(IJK)，写成字符串 "1" 会让部分 Gson 严格解析抛错。
+    #   · lives 对象里【没有 url2 字段】！备用直播源只能靠「数组里放多个对象」实现，
+    #     TVBox 会在直播页并列列出、可手动切换；写非法字段有整段被丢弃的风险。
+    #   · playerType 钉死 1(IJK)：微鲸 WTV55K1 用 EXO 硬解这批源的 MP3 音频时，
+    #     Android 5.0.2 的 ACodec 会在 OMX_IndexParamAudioMp3 上 CHECK 失败直接 abort，
+    #     表现为「点直播闪一下就退出」。IJK + 软解可绕开该平台缺陷。
+    # 第 3 个 lives 对象：公网通用版。
+    # main.m3u 全是陕西移动 IPTV 内网/组播地址，只在家里移动宽带内网可达；
+    # 手机用蜂窝数据 / 外面 WiFi 时全部连不上 → 「直播空白」。
+    # public.m3u 是实测过的纯公网 IPv4 线路，用户在直播页手动切到它即可。
+    # TVBox 官方做法就是 lives 数组放多个对象，让用户按需切换，不要写 url2。
+    PUBLIC_BASE = os.environ.get(
+        "TVBOX_PUBLIC_BASE",
+        "https://anbola.github.io/tvbox/lives/public.m3u",
+    )
+    has_public = os.path.exists(os.path.join(ROOT, "lives", "public.m3u"))
+
+    lives = [
+        {
+            "name": "① 家里电视·移动内网极速",
+            "type": 0,
             "url": LIVE_PRIMARY,
-            "url2": LIVE_BACKUP,
-            "playerType": "1",
-        }],
-    }
+            "playerType": 1,
+        },
+        {
+            "name": "② 备用·国内加速镜像",
+            "type": 0,
+            "url": LIVE_BACKUP,
+            "playerType": 1,
+        },
+    ]
+    if has_public:
+        lives.append({
+            "name": "③ 手机/外网·公网通用",
+            "type": 0,
+            "url": PUBLIC_BASE,
+            "playerType": 1,
+        })
+    else:
+        print("! 未找到 lives/public.m3u，跳过公网版（建议跑 tools/build_public.py）")
+
+    cfg = {"sites": sites, "lives": lives}
     out = os.path.join(ROOT, "tvbox_clean.json")
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         json.dump(cfg, f, ensure_ascii=False, indent=2)
