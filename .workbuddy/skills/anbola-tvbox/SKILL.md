@@ -213,6 +213,13 @@ PY
   由 `deploy_clean.py` 自动同步（别名层，防老客户端 404）。别单独删，删了下次 refresh 会复活。
 - 已装且适用的技能：`file-version-archive`（归档）、`github-pages-deploy`（Pages/保活）。
   SkillHub 无 IPTV/TVBox 对口技能（4 组关键词全部 score≤0.05），不必另装。
+- ⭐ **每次发布后的归档一条命令（v3.1 起）**：
+  `python tools/archive_version.py archive vX.Y --note "改了什么" --milestone --apply`
+  → 自动全量快照到 `history/vX.Y_YYYYMMDD/`（MANIFEST.md + manifest.json：
+  版本号/时间/变更说明/有效性/里程碑/MD5）+ 追加 CHANGELOG.md 与 INDEX.md。
+  默认 dry-run，`--apply` 才动手。另有 `tidy`（顶层散落文件归位）与
+  `clean-cache`（清 pyc）子命令。规范见 `history/README.md`。
+  ⚠️ 改台账时别丢原有 dict 记录，时间戳用 `ts[-4:-2]:ts[-2:]`（曾误写成 `-1:53`）。
 
 ## 9. 接手清单（换电脑/新会话第一件事）
 1. 读本 SKILL + 仓库 `README.md`（人看的手册，最全）。
