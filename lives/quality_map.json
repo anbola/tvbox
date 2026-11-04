@@ -1,0 +1,1102 @@
+{
+ "generated": "2026-11-04 21:35:34",
+ "source": "tools/stream_probe.py (ffprobe 真实探测)",
+ "note": "url -> 编码/宽/高；build_live.py 的 1080p/avc 优先级依赖此表",
+ "map": {
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225783/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225781/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225762/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226457/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225778/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226454/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225761/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225761/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225758/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225776/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225777/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226240/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226189/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226189/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226190/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225775/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225774/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225784/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225785/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8?": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225785/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226921/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226198/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226208/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226236/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225756/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225753/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226226/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225745/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226225/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225787/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225788/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.198.95.220:9901/tsfile/live/1021_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225746/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.198.95.220:9901/tsfile/live/1022_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225789/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.198.95.220:9901/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225790/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1007_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226203/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225773/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225803/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://113.25.252.226:9901/tsfile/live/1018_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225757/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1085_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225752/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225801/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225771/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225765/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.25.252.226:9901/tsfile/live/1013_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226209/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226204/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225760/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225768/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226206/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225767/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225750/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225764/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1130_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.198.95.220:9901/tsfile/live/1018_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.165.39.49:85/tsfile/live/1004_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225766/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226201/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.165.39.49:85/tsfile/live/1002_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225772/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1127_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225802/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225792/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225763/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1009_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1031_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1008_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://39.165.39.49:85/tsfile/live/1128_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225754/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1105_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225748/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.25.252.226:9901/tsfile/live/1017_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.165.39.49:85/tsfile/live/1149_1.m3u8?key=txiptv&playlive=0&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225794/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225747/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225751/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225793/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://49.234.31.101:7033/tsfile/live/1073_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225770/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1032_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225769/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225786/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.25.252.226:9901/tsfile/live/1031_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.198.95.220:9901/tsfile/live/1057_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1029_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226202/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225791/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1033_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226219/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226214/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226214/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226229/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226220/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1030_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226234/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226220/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226228/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226212/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226372/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226378/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1028_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226378/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226385/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226385/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.198.95.220:9901/tsfile/live/1032_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226383/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226383/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226374/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1036_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226375/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://genglei.8866.org:9901/tsfile/live/1037_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226375/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226377/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226377/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226331/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226376/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226331/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226374/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226376/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226370/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226370/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226369/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226369/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226371/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226367/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226366/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226366/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226367/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226379/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226380/1.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226380/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226379/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226363/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226359/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226361/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://113.25.252.226:9901/tsfile/live/1037_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.25.252.226:9901/tsfile/live/1032_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226363/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888888/224/3221226364/1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226361/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226359/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226364/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226465/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226462/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226463/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226956/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://113.15.109.216:59901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://dbiptv.sn.chinamobile.com/PLTV/88888893/224/3221226981/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://113.25.252.226:9901/tsfile/live/1040_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.198.95.220:9901/tsfile/live/1012_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://112.46.85.60:8009/hls/17/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.76.248.139/live/bfgd/4200000108.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000110.m3u8": {
+   "c": "mpeg2video",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.76.248.139/live/bfgd/4200000103.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://119.39.9.8:9901/tsfile/live/0118_1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000109.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000111.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000116.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000119.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000117.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.76.248.139/live/bfgd/4200000150.m3u8": {
+   "c": "mpeg2video",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.76.248.139/live/bfgd/4200000086.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000118.m3u8": {
+   "c": "mpeg2video",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.76.248.139/live/bfgd/4200000121.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000473.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000097.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000098.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000482.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000101.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000512.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.76.248.139/live/bfgd/4200000124.m3u8": {
+   "c": "mpeg2video",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.26.202.52:85/tsfile/live/0115_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.198.95.220:9901/tsfile/live/1068_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "mpeg2video",
+   "w": 720,
+   "h": 576
+  },
+  "http://120.198.95.220:9901/tsfile/live/1052_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://183.250.156.180:9999/newlive/live/hls/28/live.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://124.228.160.112:9901/tsfile/live/0019_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.57.140.161:10081/newlive/live/hls/28/live.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://183.250.156.180:9999/newlive/live/hls/39/live.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://183.250.156.180:9999/newlive/live/hls/30/live.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://120.198.95.220:9901/tsfile/live/1056_1.m3u8?key=txiptv&playlive=1&down=1": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://113.15.109.216:59901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.25.252.226:9901/tsfile/live/1047_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://113.15.109.216:59901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://218.84.12.186:8001/hls/main/playlist.m3u8?zxinjd;http://218.84.12.186:8001/hls/main/playlist.m3u8zxinjd": {
+   "c": "avc",
+   "w": 0,
+   "h": 0
+  },
+  "http://36.136.38.87:9901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://36.136.38.87:9901/tsfile/live/0119_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221225769/index.m3u8?": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://39.134.24.162/dbiptv.sn.chinamobile.com/PLTV/88888890/224/3221226212/index.m3u8": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://36.136.38.87:9901/tsfile/live/0116_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://36.136.38.87:9901/tsfile/live/0127_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://36.136.38.87:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://183.250.156.180:9999/newlive/live/hls/33/live.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://36.136.38.87:9901/tsfile/live/0128_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://36.136.38.87:9901/tsfile/live/0138_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://49.234.31.101:7033/tsfile/live/1068_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://36.136.38.87:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://222.134.245.16:9901/tsfile/live/0140_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://36.136.38.87:9901/tsfile/live/0117_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://36.136.38.87:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://222.134.245.16:9901/tsfile/live/0109_1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://49.234.31.101:7033/tsfile/live/1072_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 720,
+   "h": 576
+  },
+  "http://222.134.245.16:9901/tsfile/live/0141_1.m3u8?key=txiptv&playlive=1&authid=0": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://event.pull.hebtv.com/jishi/weishi_tingyun.m3u8": {
+   "c": "avc",
+   "w": 960,
+   "h": 540
+  },
+  "http://l.cztvcloud.com/channels/lantian/SXxinchang2/720p.m3u8#": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://l.cztvcloud.com/channels/lantian/SXxinchang2/720p.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "https://ali-m-l.cztv.com/channels/lantian/channel007/1080p.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "http://play1-qk.nmtv.cn/live/1769652018126032.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "https://srs.iyb983.cn:443/video/CYS/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "https://txmov2.a.kwimgs.com/bs3/video-hls/5199687338554291078_hlsb.m3u8": {
+   "c": "avc",
+   "w": 1280,
+   "h": 720
+  },
+  "https://livelyws1.chinamcache.com/lyws/newlive_zb03.m3u8?auth_key=1767148001-0-0-0650c6542c331540df214a79a09a2356": {
+   "c": "avc",
+   "w": 1280,
+   "h": 720
+  },
+  "https://srs.iyb983.cn/video/CYS/index.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "https://event.pull.hebtv.com/jishi/cp1.m3u8": {
+   "c": "avc",
+   "w": 1920,
+   "h": 1080
+  },
+  "https://event.pull.hebtv.com/live/live101.m3u8": {
+   "c": "avc",
+   "w": 3840,
+   "h": 2160
+  }
+ }
+}
