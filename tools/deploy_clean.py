@@ -55,6 +55,8 @@ UPLOAD = [
     ("tools/vod_stable.py", "tools/vod_stable.py"),
     ("tools/build_public.py", "tools/build_public.py"),
     ("tools/healthcheck.py", "tools/healthcheck.py"),
+    ("tools/address.py", "tools/address.py"),
+    ("tools/check_address.py", "tools/check_address.py"),
     ("tools/codec_probe.py", "tools/codec_probe.py"),
     ("tools/live_expand.py", "tools/live_expand.py"),
     ("tools/build_config.py", "tools/build_config.py"),
