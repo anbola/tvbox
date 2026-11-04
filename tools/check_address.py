@@ -75,6 +75,21 @@ ck("SKILL 记录唯一入口且声明固定",
    SUBSCRIBE_URL in skill and "永久固定" in skill)
 ck("CI 会跑本校验", "check_address.py" in read(".github/workflows/refresh.yml"))
 
+# 4) 【v3.2】画质/点播优选数据必须随仓库带上。
+#    build_live.py 依赖 quality_map.json 才能把 1080p 排到 4:3 标清前面，
+#    hd_picks.json / vod_picks.json 是实测优选结果；这三个文件一旦丢失，
+#    CI 每周重建就会悄悄把「105 台里 37 台方屏」带回来，必须让 CI 直接失败。
+try:
+    qm = json.loads(read("lives/quality_map.json")).get("map", {})
+    hp = json.loads(read("lives/hd_picks.json")).get("picks", {})
+    vp = json.loads(read("tools/vod_picks.json")).get("sites", [])
+except Exception as e:
+    qm, hp, vp = {}, {}, []
+    print(f"  ! 画质/优选数据解析失败: {e}")
+ck("ffprobe 画质地图存在且够全", len(qm) >= 200, f"{len(qm)} 条")
+ck("高清优选线存在", len(hp) >= 15, f"{len(hp)} 个频道")
+ck("点播优选清单存在", len(vp) >= 5, f"{len(vp)} 站")
+
 print()
 if errors:
     print(f"地址校验失败 {len(errors)} 项：")
