@@ -1,7 +1,143 @@
 {
-  "checked_at": "2026-11-04 18:50:11",
+  "checked_at": "2026-11-04 18:57:48",
   "ok": true,
-  "note": "初始化：待云端每日健康检查覆盖",
   "errors": [],
-  "checks": []
+  "checks": [
+    {
+      "item": "主用 GitHub Pages HTTP",
+      "ok": true,
+      "detail": "200 / 3660B"
+    },
+    {
+      "item": "备用 国内加速镜像 HTTP",
+      "ok": true,
+      "detail": "200 / 3660B"
+    },
+    {
+      "item": "sites 非空",
+      "ok": true,
+      "detail": "6 个点播站"
+    },
+    {
+      "item": "  站 量子",
+      "ok": true,
+      "detail": "key/type/api 完整"
+    },
+    {
+      "item": "  站 360新",
+      "ok": true,
+      "detail": "key/type/api 完整"
+    },
+    {
+      "item": "  站 非凡5",
+      "ok": true,
+      "detail": "key/type/api 完整"
+    },
+    {
+      "item": "  站 电影天堂",
+      "ok": true,
+      "detail": "key/type/api 完整"
+    },
+    {
+      "item": "  站 速播",
+      "ok": true,
+      "detail": "key/type/api 完整"
+    },
+    {
+      "item": "  站 天涯",
+      "ok": true,
+      "detail": "key/type/api 完整"
+    },
+    {
+      "item": "lives 非空",
+      "ok": true,
+      "detail": "3 个直播源对象"
+    },
+    {
+      "item": "  直播 ① 家里电视·移动内网极速",
+      "ok": true,
+      "detail": "字段合规"
+    },
+    {
+      "item": "  直播 ② 备用·国内加速镜像",
+      "ok": true,
+      "detail": "字段合规"
+    },
+    {
+      "item": "  直播 ③ 手机/外网·公网通用",
+      "ok": true,
+      "detail": "字段合规"
+    },
+    {
+      "item": "main.m3u(内网极速) HTTP",
+      "ok": true,
+      "detail": "200 / 25136B"
+    },
+    {
+      "item": "main.m3u(内网极速) #EXTM3U 头",
+      "ok": true,
+      "detail": "#EXTM3U"
+    },
+    {
+      "item": "main.m3u(内网极速) 频道数",
+      "ok": true,
+      "detail": "170 个（阈值 60）"
+    },
+    {
+      "item": "main.m3u(内网极速) 无非法行",
+      "ok": true,
+      "detail": "全部合法"
+    },
+    {
+      "item": "public.m3u(公网通用) HTTP",
+      "ok": true,
+      "detail": "200 / 7578B"
+    },
+    {
+      "item": "public.m3u(公网通用) #EXTM3U 头",
+      "ok": true,
+      "detail": "#EXTM3U"
+    },
+    {
+      "item": "public.m3u(公网通用) 频道数",
+      "ok": true,
+      "detail": "55 个（阈值 20）"
+    },
+    {
+      "item": "public.m3u(公网通用) 无非法行",
+      "ok": true,
+      "detail": "全部合法"
+    },
+    {
+      "item": "  量子",
+      "ok": true,
+      "detail": "HTTP200 分类40个"
+    },
+    {
+      "item": "  360新",
+      "ok": true,
+      "detail": "HTTP200 分类51个"
+    },
+    {
+      "item": "  非凡5",
+      "ok": true,
+      "detail": "HTTP200 分类31个"
+    },
+    {
+      "item": "  电影天堂",
+      "ok": true,
+      "detail": "HTTP200 分类32个"
+    },
+    {
+      "item": "  速播",
+      "ok": true,
+      "detail": "HTTP200 分类44个"
+    },
+    {
+      "item": "  天涯",
+      "ok": true,
+      "detail": "HTTP200 分类39个"
+    }
+  ],
+  "subscription": "https://anbola.github.io/tvbox/tvbox_clean.json"
 }
