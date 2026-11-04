@@ -70,9 +70,11 @@ def check_config():
             rec(f"{name} HTTP", code == 200, f"{code} / {len(raw)}B")
             if cfg is None:
                 cfg = d
-            # 镜像与主用内容应一致（允许 CDN 短暂滞后，只提示不算错）
+            # 第三方镜像有数小时缓存滞后：内容不同只做提示，不记入 errors，
+            # 否则每日 healthcheck 会误报并自动开无用 issue（2026-11-04 修正）。
+            # HTTP 200 + JSON 可解析 + lives 结构合法 已足以判定镜像可用。
             if cfg is not None and d.get("sites") != cfg.get("sites"):
-                rec(f"{name} 内容一致", False, "与主用的 sites 不一致（可能 CDN 缓存滞后）")
+                print(f"  INFO  {name} 内容滞后（CDN 缓存，仅提示）")
         except Exception as e:
             rec(f"{name} HTTP", False, type(e).__name__)
     return cfg
