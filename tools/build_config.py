@@ -205,40 +205,42 @@ def main():
     #   · playerType 钉死 1(IJK)：微鲸 WTV55K1 用 EXO 硬解这批源的 MP3 音频时，
     #     Android 5.0.2 的 ACodec 会在 OMX_IndexParamAudioMp3 上 CHECK 失败直接 abort，
     #     表现为「点直播闪一下就退出」。IJK + 软解可绕开该平台缺陷。
-    # 第 3 个 lives 对象：公网通用版。
-    # main.m3u 全是陕西移动 IPTV 内网/组播地址，只在家里移动宽带内网可达；
-    # 手机用蜂窝数据 / 外面 WiFi 时全部连不上 → 「直播空白」。
-    # public.m3u 是实测过的纯公网 IPv4 线路，用户在直播页手动切到它即可。
-    # TVBox 官方做法就是 lives 数组放多个对象，让用户按需切换，不要写 url2。
+    # 【2026-11-04 手机优先】lives[0] 是 TVBox / 影视仓**默认加载**的直播源。
+    # 以前把内网极速放第一：手机（蜂窝数据 / 外面 WiFi）填完订阅地址后，默认
+    # 拉到一堆 dbiptv.sn.chinamobile.com 内网地址，频道要么列不出来要么全播不了
+    # → 用户看到的就是「点播正常、直播还是空的」，而且多数人找不到切换入口。
+    # 现在把实测可达的公网版放第一项：手机**零操作**就有直播。
+    # 家里电视想要 103 频道内网极速，在直播页下拉切到 ② 即可（选择会被记住）。
+    # ⚠️ 订阅地址 SUBSCRIBE_URL 一个字没变，只是同一个文件里数组顺序变了。
     PUBLIC_BASE = os.environ.get(
         "TVBOX_PUBLIC_BASE",
         "https://anbola.github.io/tvbox/lives/public.m3u",
     )
     has_public = os.path.exists(os.path.join(ROOT, "lives", "public.m3u"))
 
-    lives = [
-        {
-            "name": "① 家里电视·移动内网极速",
-            "type": 0,
-            "url": LIVE_PRIMARY,
-            "playerType": 1,
-        },
-        {
-            "name": "② 备用·国内加速镜像",
-            "type": 0,
-            "url": LIVE_BACKUP,
-            "playerType": 1,
-        },
-    ]
+    lives = []
     if has_public:
         lives.append({
-            "name": "③ 手机/外网·公网通用",
+            "name": "① 默认·公网通用（手机/电视）",
             "type": 0,
             "url": PUBLIC_BASE,
             "playerType": 1,
         })
     else:
-        print("! 未找到 lives/public.m3u，跳过公网版（建议跑 tools/build_public.py）")
+        print("! 未找到 lives/public.m3u，退回内网极速为默认（建议跑 tools/build_public.py）")
+
+    lives.append({
+        "name": "② 家里电视·移动内网极速",
+        "type": 0,
+        "url": LIVE_PRIMARY,
+        "playerType": 1,
+    })
+    lives.append({
+        "name": "③ 备用·国内加速镜像",
+        "type": 0,
+        "url": LIVE_BACKUP,
+        "playerType": 1,
+    })
 
     cfg = {"sites": sites, "lives": lives}
     out = os.path.join(ROOT, "tvbox_clean.json")
