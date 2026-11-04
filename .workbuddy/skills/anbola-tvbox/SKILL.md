@@ -21,12 +21,19 @@ description: 维护 GitHub 仓库 anbola/tvbox（TVBox / MyTV 自维护「直播
 |---|---|
 | 仓库 | `https://github.com/anbola/tvbox`（分支 `main`） |
 | 页面 | `https://anbola.github.io/tvbox/` |
-| **用户唯一订阅入口（主用）** | `https://anbola.github.io/tvbox/tvbox_clean.json`（GitHub Pages，稳定长期） |
-| 订阅备用 | `https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/tvbox_clean.json`（国内加速镜像，实测 ~2s）、`https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json` |
+| **唯一订阅入口（永久固定）** | `https://anbola.github.io/tvbox/tvbox_clean.json` —— ⛔ **2026-11-04 用户拍板：此网址永不变，禁止改动、禁止让用户重填/换地址**；更新只覆盖该文件内容 |
+| 应急备用（平时不用） | `https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/tvbox_clean.json`、`https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json`（仅主地址连续多日打不开才临时用，有缓存滞后） |
 | 线上健康状态 | `https://anbola.github.io/tvbox/status.json`（每日健康检查产出） |
 | 直播 | 内嵌在 json 的 **`lives` 数组 3 个对象**（① 内网极速 / ② 国内镜像 / ③ 公网通用），TVBox「直播源」框**留空**；⚠️ **绝对不要在 lives 对象里写 `url2`**（见 §7） |
 | GitHub 令牌 | 本地 `~/.workbuddy/secrets/anbola_github_token.txt`（PAT，`ghp_` 开头）；仓库内另有 `anbola_token.txt` 也被 .gitignore 屏蔽。**绝不入库** |
 | 本地历史索引 | `history/INDEX.md`（2026-11-04 起有，含 43 个历史版本台账 + 里程碑标记） |
+
+⛔ **订阅地址铁律（2026-11-04 用户明确要求「每次不要变那个网址」）**：
+`SUBSCRIBE_URL` 以 `tools/address.py` 为唯一权威；`tools/check_address.py` 在 CI 里强制校验
+配置 / README / status.json / healthcheck / SKILL 里的地址一致。**以后任何更新都只改文件内容，
+不改 URL、不给用户新地址、不写「请改用 XXX 地址」的文案。** 以前那些「换镜像主用 / 换 pages.dev /
+换七牛域名」的建议全部作废（`TVBox_CDN与部署修复方案.md` 顶部已标历史记录）。
+若主地址真的连续多日不可用，先修它（Pages/仓库/健康检查），**而不是让用户改地址**。
 
 ## 2. 当前架构快照（2026-11-04 v3.0）
 ```
