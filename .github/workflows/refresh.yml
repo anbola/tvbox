@@ -41,9 +41,17 @@ jobs:
           python-version: "3.12"
 
       # ① 抓取：各社区源 → 合并进候选池（只扩充，绝不覆盖 main.m3u）
+      # 不再 continue-on-error 静默吞失败：抓取失败必须留下可见告警，
+      # 否则会出现「工作流全绿、但候选池其实几个月没更新」的假健康。
       - name: 抓取并合并候选池
-        continue-on-error: true
+        id: pool
         run: python tools/merge_pool.py
+
+      - name: 源抓取失败告警
+        if: failure() && steps.pool.outcome == 'failure'
+        run: |
+          echo "::warning::候选池抓取失败（上游源可能失效），本次不更新 pool.m3u；详见上方的 ✗ 行"
+          echo "建议在 tools/merge_pool.py 的 SOURCES 里替换掉 ✗ 的上游地址"
 
       # ② 筛选（结构级）：配置合法 + m3u 合法，防止把坏文件推上线
       - name: 校验产物
@@ -60,17 +68,29 @@ jobs:
               assert "ext" not in s, "不应有 ext 字段"
               assert "ac=videolist" not in s["api"], "api 不应焊死 ac=videolist"
           assert cfg.get("lives"), "lives 不能为空"
-          txt = open("lives/main.m3u", encoding="utf-8").read()
-          assert txt.startswith("#EXTM3U"), "main.m3u 头非法"
-          n = txt.count("#EXTINF")
-          assert n > 20, "频道太少: %d" % n
-          # 直播地址必须都是 http(s)
-          bad = [l for l in txt.splitlines()
-                 if l and not l.startswith("#") and not l.startswith("http")]
-          assert not bad, "存在非法行: %r" % bad[:3]
-          # 非 BMP 字符（emoji）会让老版本 App 整段解析失败，必须拦住
-          assert not any(ord(c) > 0xFFFF for c in txt), "main.m3u 含 emoji"
-          print("校验通过: sites=%d 频道=%d" % (len(cfg["sites"]), n))
+          # ★ lives 字段规范：写错就是「点播正常、直播空白」（2026-11-04 实测踩过）
+          #   type 必须整数 0(M3U)；playerType 必须整数；不能有 url2 等非法字段。
+          #   备用源靠 lives 数组放多个对象，不是写在同一个对象里。
+          for lv in cfg["lives"]:
+              assert lv.get("type") == 0, "lives.type 必须为整数 0: %r" % lv.get("name")
+              assert isinstance(lv.get("playerType"), int), \
+                     "playerType 必须是整数（字符串会让部分分支丢弃整段 lives）: %r" % lv.get("name")
+              assert "url2" not in lv, "lives 不支持 url2 字段，请改用数组第二个对象"
+              assert str(lv.get("url","")).startswith("http"), "lives.url 非法"
+          for fn, lo in (("lives/main.m3u", 60), ("lives/public.m3u", 20)):
+              import os
+              if not os.path.exists(fn):
+                  print("跳过（不存在）:", fn); continue
+              txt = open(fn, encoding="utf-8").read()
+              assert txt.startswith("#EXTM3U"), "%s 头非法" % fn
+              n = txt.count("#EXTINF")
+              assert n > lo, "%s 频道太少: %d" % (fn, n)
+              bad = [l for l in txt.splitlines()
+                     if l and not l.startswith("#") and not l.startswith("http")]
+              assert not bad, "%s 存在非法行: %r" % (fn, bad[:3])
+              assert not any(ord(c) > 0xFFFF for c in txt), "%s 含 emoji" % fn
+              print("校验通过: %s 频道=%d" % (fn, n))
+          print("校验通过: sites=%d lives=%d" % (len(cfg["sites"]), len(cfg["lives"])))
           PY
 
       # ③ 更新：只在候选池有变化时提交
