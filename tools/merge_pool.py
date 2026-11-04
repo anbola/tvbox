@@ -25,7 +25,10 @@ SOURCES = [
     ("niuhu", "https://gh-proxy.com/https://raw.githubusercontent.com/niubihu1/tvbox/main/live.txt"),
     ("iptvorg_cn", "https://iptv-org.github.io/iptv/countries/cn.m3u"),
     ("ygbh", "https://gh-proxy.com/https://raw.githubusercontent.com/guot54/YGBH/main/zB/zB.txt"),
-    ("tianwei", "http://tvkj.top/tvlive.txt"),
+    # 2026-11-04 补入实测 200 的公网优质订阅（原 tianwei/tvkj.top 已 404）
+    ("zhi35", "https://live.zhi35.com/iptv.m3u"),
+    ("hacks_ipv4", "https://live.hacks.tools/tv/iptv4.m3u"),
+    ("myiptv", "https://gh-proxy.com/https://raw.githubusercontent.com/suxuang/myIPTV/main/ipv4.m3u"),
 ]
 
 SKIP_KW = ("购物", "导视", "九宫格", "测试", "彩条", "广告", "优购物", "好购物",
