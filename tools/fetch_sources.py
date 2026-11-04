@@ -30,8 +30,13 @@ SOURCES = [
     ("iptvorg_cn", "https://iptv-org.github.io/iptv/countries/cn.m3u"),
     # 月光宝盒
     ("ygbh", "https://gh-proxy.com/https://raw.githubusercontent.com/guot54/YGBH/main/zB/zB.txt"),
-    # 天微直播
-    ("tianwei", "http://tvkj.top/tvlive.txt"),
+    # ↓ 2026-11-04：tvkj.top/tvlive.txt 已 404，换成实测 200 的社区优质源
+    # zhi35/iptv：每日自动更新、IPv4/IPv6 双栈，392 台
+    ("zhi35", "https://live.zhi35.com/iptv.m3u"),
+    # ipv4 优先的公网订阅（404 台，服务器端验活）
+    ("hacks_ipv4", "https://live.hacks.tools/tv/iptv4.m3u"),
+    # suxuang/myIPTV：1273 台，含大量公网代理型线路（手机/外网可用）
+    ("myiptv", "https://gh-proxy.com/https://raw.githubusercontent.com/suxuang/myIPTV/main/ipv4.m3u"),
 ]
 
 
