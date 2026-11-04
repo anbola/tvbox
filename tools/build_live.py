@@ -153,6 +153,16 @@ def load_codecs():
                 m[r["url"]] = (r.get("codec"), r.get("w") or 0, r.get("h") or 0)
     if not found:
         print("! 未找到 _probe/codecs*.json，跳过编码过滤（建议先跑 tools/codec_probe.py）")
+    # 【v3.2 / 2026-11-04】ffprobe 真实画质表优先覆盖手写 TS 解析结果。
+    # 旧的 codecs*.json 只覆盖 74 条，且家里电视实际走的 dbiptv 内网线几乎全缺，
+    # prefer() 拿不到分辨率就一律当 576p，把 720x576 的 4:3 线排到了第一 ——
+    # 这就是「105 台里 37 台方屏」的根因。这里只补数据，不改排序规则。
+    qp = os.path.join(ROOT, "lives", "quality_map.json")
+    if os.path.exists(qp):
+        qm = json.load(open(qp, encoding="utf-8")).get("map", {})
+        for u, v in qm.items():
+            m[u] = (v.get("c"), v.get("w") or 0, v.get("h") or 0)
+        print(f"ffprobe 画质表覆盖 {len(qm)} 条（lives/quality_map.json）")
     return m
 
 
@@ -173,6 +183,17 @@ def load_extra():
                 continue        # 分辨率解析异常（如 10x60）直接丢
             out.append(dict(name=r["name"], url=r["url"], kbps=r["kbps"],
                             ttfb_ms=999, extra=True))
+    # 【v3.2】全网调研 + ffprobe 实测选出的 1920x1080 / 16:9 / H.264 线路。
+    # 判据见 lives/hd_picks.json。kbps 给 5000（落在 SAFE 带 1500~8000 内），
+    # ttfb 用 3 轮实测均值；prefer() 里真实 1080p 会压过 576p，同网优先级不变。
+    hp = os.path.join(ROOT, "lives", "hd_picks.json")
+    if os.path.exists(hp):
+        picks = json.load(open(hp, encoding="utf-8")).get("picks", {})
+        for name, v in picks.items():
+            out.append(dict(name=name, url=v["url"], kbps=5000,
+                            ttfb_ms=v.get("ttfb_ms") or 999,
+                            extra=True, force=True, pinned=True))
+        print(f"并入高清优选线 {len(picks)} 条（lives/hd_picks.json）")
     return out
 
 
@@ -183,11 +204,22 @@ def main():
     codecs = load_codecs()
 
     # 并入补源结果（去重：同一个 url 只留实测数据那条）
+    # force=True 的高清优选线即使已在 speeds.json 里也保留（那边可能误判它死链）
     have = {r["url"] for r in ok}
-    extra = [e for e in load_extra() if e["url"] not in have]
+    extra = [e for e in load_extra() if e["url"] not in have or e.get("force")]
     if extra:
         print(f"并入补源线路 {len(extra)} 条")
     ok = ok + extra
+
+    # 【v3.2】剔除已被实测更优高清线取代的慢线（见 lives/hd_picks.json 的 drop）。
+    hp = os.path.join(ROOT, "lives", "hd_picks.json")
+    if os.path.exists(hp):
+        drop = set(json.load(open(hp, encoding="utf-8")).get("drop", []))
+        if drop:
+            before = len(ok)
+            ok = [r for r in ok if r["url"] not in drop]
+            if before != len(ok):
+                print(f"剔除被取代的慢线 {before - len(ok)} 条")
 
     chans = defaultdict(list)
     skipped = 0
@@ -218,7 +250,12 @@ def main():
             res = 2
         same_net = 0 if "chinamobile" in it["url"] else 1
         band = 0 if 1200 <= k <= 9000 else 1
-        return (avc, res, same_net, band, -min(k, 9000), it.get("ttfb_ms") or 999)
+        # 【v3.2】pinned 只给 lives/hd_picks.json 里那批「ffprobe 实测 1080p/16:9/AVC
+        # + 3 轮首包全通」的线路。旧规则里 -min(kbps) 排在延迟之前，会把人工给的
+        # 5000kbps 线压在一条 8Mbps 但 3 秒才响应的慢线后面。
+        # 没有 pinned 线的频道排序完全不变（电视机原有的同网/码率优先级不受影响）。
+        pinned = 0 if it.get("pinned") else 1
+        return (pinned, avc, res, same_net, band, -min(k, 9000), it.get("ttfb_ms") or 999)
 
     picked = {}
     dropped_hevc = []
