@@ -38,7 +38,12 @@ PROBE = os.path.join(ROOT, "_probe")
 LIVE = os.path.join(ROOT, "lives", "main.m3u")
 CFG = os.path.join(ROOT, "tvbox_clean.json")
 
-ROUNDS = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+# 只在作为主程序运行时读命令行轮数；被 vod_rank.py 等模块 import 时固定为 3，
+# 否则会把调用方的参数（--coarse 之类）当成轮数，int() 直接抛 ValueError。
+try:
+    ROUNDS = int(sys.argv[1]) if __name__ == "__main__" and len(sys.argv) > 1 else 3
+except ValueError:
+    ROUNDS = 3
 TIMEOUT = 6
 WORKERS = 24
 socket.setdefaulttimeout(TIMEOUT)
