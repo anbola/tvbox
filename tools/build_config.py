@@ -177,10 +177,30 @@ def main():
     if not good:
         raise SystemExit("没有达标点播站，请先跑 tools/vod_stable.py（多轮稳定性测速）")
 
-    print(f"入选点播站 {len(good)} 个（视频速度降序）：")
+    # 【2026-11-04 电视提速】quickSearch 不再按「评分前 2」给，而是按
+    # 3 轮实测 API 首包给最快的 2 个站。TVBox 搜索时并发请求这些站，最慢那个
+    # 决定整体等待：按评分给会包含暴风(1899ms)，把搜索拖到 1.9s；
+    # 换成量子(808ms)+虎牙(842ms) 后只要 0.84s。
+    # 站点**成员与顺序仍按 3 轮稳定性评分**，保证画质/片源不受影响。
+    ttfb_rank = {}
+    tp = os.path.join(ROOT, "_probe", "tv_vod_ttfb.json")
+    if os.path.exists(tp):
+        for k, v in json.load(open(tp, encoding="utf-8")).items():
+            if v.get("ttfb_ms") is not None and v.get("ok"):
+                ttfb_rank[k.split("/?")[0]] = v["ttfb_ms"]
+    quick_apis = set()
+    if ttfb_rank:
+        ranked = sorted(good, key=lambda r: ttfb_rank.get(
+            force_https(r["api"]).rstrip("/"), 9e9))
+        quick_apis = {force_https(r["api"]).rstrip("/") for r in ranked[:2]}
+        print(f"  quickSearch 按实测响应给: {[r['name'] for r in ranked[:2]]}")
+
+    print(f"入选点播站 {len(good)} 个（稳定性评分降序）：")
     sites = []
     for i, r in enumerate(good):
-        s = build_site(r, quick=(i < 2))
+        quick = (force_https(r["api"]).rstrip("/") in quick_apis
+                 if ttfb_rank else (i < 2))
+        s = build_site(r, quick=quick)
         if s:
             sites.append(s)
 
