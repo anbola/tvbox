@@ -63,6 +63,12 @@ UPLOAD = [
     ("tools/tv_speedtest.py", "tools/tv_speedtest.py"),
     ("tools/optimize_tv.py", "tools/optimize_tv.py"),
     ("tools/archive_version.py", "tools/archive_version.py"),
+    # 【v3.2】全网调研 + 真实画质/多轮P75 优选的工具与数据（CI 重建时必须随仓库带上）
+    ("tools/stream_probe.py", "tools/stream_probe.py"),
+    ("tools/vod_rank.py", "tools/vod_rank.py"),
+    ("tools/vod_picks.json", "tools/vod_picks.json"),
+    ("lives/quality_map.json", "lives/quality_map.json"),
+    ("lives/hd_picks.json", "lives/hd_picks.json"),
     ("tools/tidy_history_once.py", "tools/tidy_history_once.py"),
     ("tools/refresh_all.py", "tools/refresh_all.py"),
     ("tools/deploy_clean.py", "tools/deploy_clean.py"),
