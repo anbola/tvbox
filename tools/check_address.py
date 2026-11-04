@@ -38,14 +38,15 @@ def read(rel):
 
 
 # 1) 配置里的直播地址必须固定，且不含非法字段
-#    ⚠️ 2026-11-04：lives[0] 必须是「公网通用」。TVBox / 影视仓默认加载第一项，
-#    若把内网 IPTV 放第一，手机填完地址后直播永远空白（用户看不到切换入口）。
+#    ⚠️ 2026-11-04 19:42 用户拍板「电视绝对优先」：lives[0] 必须是内网极速 main.m3u。
+#    TVBox / 影视仓默认加载第一项；把公网挪到第一会让家里电视从 106 台变 43 台、
+#    起播 0.1s 变 2~8s。手机改用第 ③ 项（切一次即记住）。此断言防止以后被"优化"回去。
 cfg = json.loads(read("tvbox_clean.json"))
 lives = cfg.get("lives", [])
-ck("配置 lives 首项=公网通用(手机默认可看)",
-   bool(lives) and lives[0].get("url") == LIVE_PUBLIC_URL,
+ck("配置 lives 首项=电视内网极速(电视优先)",
+   bool(lives) and lives[0].get("url") == LIVE_MAIN_URL,
    lives[0].get("url", "") if lives else "lives 为空")
-ck("配置仍保留内网极速源", any(l.get("url") == LIVE_MAIN_URL for l in lives))
+ck("配置保留手机公网源", any(l.get("url") == LIVE_PUBLIC_URL for l in lives))
 ck("lives 无非法 url2", all("url2" not in l for l in lives))
 ck("lives url 均在白名单",
    all(l.get("url") in ALLOWED_LIVE_URLS for l in lives),
