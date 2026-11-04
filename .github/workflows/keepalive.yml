@@ -1,0 +1,40 @@
+name: 保活（防止定时任务被 GitHub 自动禁用）
+
+# GitHub 会在仓库【60 天无任何 push 活动】后自动 disable 所有 schedule 工作流，
+# 表现就是「用了一段时间突然不更新了」，且不发任何通知。
+# 本工作流每月 1 / 15 号各提交一次心跳文件，让仓库始终"活着"。
+on:
+  schedule:
+    - cron: "17 2 1,15 * *"   # 每月 1、15 日 10:17 北京时间
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: true
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 写入心跳
+        run: |
+          mkdir -p .github
+          printf '%s\n' "last_heartbeat=$(date -u +%Y-%m-%dT%H:%M:%SZ)" > .keepalive
+          printf '%s\n' "run_id=${{ github.run_id }}" >> .keepalive
+
+      - name: 提交
+        run: |
+          git config user.name  "tvbox-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add .keepalive
+          if git diff --staged --quiet; then
+            echo "心跳无变化"
+          else
+            git commit -m "chore(keepalive): 保持仓库活跃，防止定时任务被禁用"
+            git push
+          fi
