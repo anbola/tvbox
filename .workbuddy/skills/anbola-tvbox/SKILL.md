@@ -157,13 +157,22 @@ PY
 
 - ⚠️ **refresh.bat「卡住」根因与修复（2026-11-03 确诊+已修+本轮验证通过）**：① 进度盲区——`speedtest.py` 原只在「每 200 条」打印一次，最后 <200 条不再打印，看着像死机，其实在跑；② 真卡死风险——最后一批是非移动 CDN 外部源，碰到「失效域名 + DNS 解析挂起」时，Python `urlopen(timeout)` **拦不住 DNS 阶段**，线程无限阻塞 → 窗口真死。已修：`speedtest.py`/`vod_probe.py`/`codec_probe.py`/`build_config.py`/`live_expand.py` 全部去掉 `with ThreadPoolExecutor` 的隐式 `shutdown(wait=True)`，改为 `socket.setdefaulttimeout` 全局兜底 + `as_completed(timeout=300)` 强制收尾 + `os._exit(0)` 利落退出；`refresh_all.py` 的 `print("▶")` 改 `sys.stdout.reconfigure(encoding='utf-8')` 避开 GBK 崩溃。**2026-11-03 重跑验证：总用时 1124s 全程跑完、未挂起，超时兜底在第 ② 步优雅触发（1249/1256 条后停止等待，已测照常入库），证明卡死已根治。**
 
-## 8. 当前健康度（2026-11-03 深夜跑完，已部署验证）
-- **直播**：1256 条核心候选实测 → 7 条无响应（死链）自动剔除；生成 `main.m3u`=**103 频道 / 170 线路**（含多线路备份），并剥离 13 个纯 HEVC 频道（防微鲸盒子解码崩）。已部署，`anbola.github.io/tvbox/lives/main.m3u` 实测 200/25136B。
-- **点播**：35 站实测，仅 4 站越过质量线（≥1500kbps）：360/量子/电影天堂/非凡5。其余 31 站淘汰。配置 `tvbox_clean.json` 已部署（4 站），实测 200/2441B。
-- **卡死已根治并验证**：本轮 1124s 全程跑完未挂起（见 §7）。
-- ⚠️ **想凑满 6 站点播**：当前候选池（35 站）只够 4 个优质站。要真·6 个优质站，需在 `vod_probe.py` 的 `CANDIDATES` 里**扩充候选池到 ~45 站**（补几个公开采集站），让前 6 名质量更高。这属于加范围，需用户点头再做。
-- **3 个「兼容镜像」文件** `lives/fast.m3u`、`lives/cn_clean.m3u`、`tvbox_multisource.json` 由 `deploy_clean.py` 第 45–47 行**自动同步成 `main.m3u` / `tvbox_clean.json` 的相同内容**（别名层，防老客户端 404）。它们不是独立冗余——想彻底去掉要改 pipeline 的 UPLOAD 列表，别单独删（删了下次 refresh 又会被复活）。
-- 工作流 `refresh.yml` 状态 active。
+## 8. 当前健康度（2026-11-04 v3.0，部署后以 status.json 为准）
+- **直播内网版**：`main.m3u` = **103 频道 / 170 线路**（死链剔除、13 个纯 HEVC 频道剥离防微鲸崩）。
+- **直播公网版**：`public.m3u` = **42 频道 / 55 条实测可用线路**（2411 条候选 → 过滤 IPv6/内网
+  后 309 条 → 实测 56 条可用）。央视 15 / 卫视 26 / 陕西本地 1。
+- **点播**：28 站 × 3 轮采样 → 8 站达标 → 同族去重取 **6 站**：
+  量子(3635k) / 360新(1606k) / 非凡5(1488k) / 电影天堂(1912k) / 速播(1914k) / 天涯(1269k)，
+  **6 站全部 3/3 轮成功**。
+- **配置**：6 sites + 3 lives 对象，`type:0` / `playerType` 整数 / 无 `url2`。
+- **持续可用**：refresh.yml（周更+规范断言）、keepalive.yml（保活）、
+  healthcheck.yml + healthcheck.py（每日体检 + 异常开 issue + status.json）。
+- **归档**：`history/` 43 个历史版本已规范命名，6 份 `manifest.json` +
+  `INDEX.md` + `README.md`；本次 v3.0 已登记为有效里程碑 ⭐。
+- **3 个「兼容镜像」文件** `lives/fast.m3u`、`lives/cn_clean.m3u`、`tvbox_multisource.json`
+  由 `deploy_clean.py` 自动同步（别名层，防老客户端 404）。别单独删，删了下次 refresh 会复活。
+- 已装且适用的技能：`file-version-archive`（归档）、`github-pages-deploy`（Pages/保活）。
+  SkillHub 无 IPTV/TVBox 对口技能（4 组关键词全部 score≤0.05），不必另装。
 
 ## 9. 接手清单（换电脑/新会话第一件事）
 1. 读本 SKILL + 仓库 `README.md`（人看的手册，最全）。
