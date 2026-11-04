@@ -146,21 +146,21 @@
   ],
   "lives": [
     {
-      "name": "① 家里电视·移动内网极速",
+      "name": "① 默认·公网通用（手机/电视）",
+      "type": 0,
+      "url": "https://anbola.github.io/tvbox/lives/public.m3u",
+      "playerType": 1
+    },
+    {
+      "name": "② 家里电视·移动内网极速",
       "type": 0,
       "url": "https://anbola.github.io/tvbox/lives/main.m3u",
       "playerType": 1
     },
     {
-      "name": "② 备用·国内加速镜像",
+      "name": "③ 备用·国内加速镜像",
       "type": 0,
       "url": "https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/lives/main.m3u",
-      "playerType": 1
-    },
-    {
-      "name": "③ 手机/外网·公网通用",
-      "type": 0,
-      "url": "https://anbola.github.io/tvbox/lives/public.m3u",
       "playerType": 1
     }
   ]
