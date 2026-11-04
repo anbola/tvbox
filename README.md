@@ -85,14 +85,19 @@ https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json
 
 ### 电视端提速（2026-11-04 实测 · 只服务家里电视）
 
-用 `tools/tv_speedtest.py`（3 轮 × 24 并发）量了 174 条直播线路 + 6 个点播 API，
-`tools/optimize_tv.py` 据此落地优化；原始数据在 `_probe/tv_baseline.json`
-与 `_probe/tv_optimize_report.json`。
+`tools/tv_speedtest.py` 3 轮 × 24 并发量了 174 条直播线路；对 6 个点播 API
+又做了 **9 轮采样**（判据用 **P75 尾部延迟**，因为搜索并发的等待 = 最慢那个站）。
+`tools/optimize_tv.py` 据此落地；原始数据见 `_probe/tv_baseline.json`、
+`_probe/tv_vod_stability.json`、`_probe/tv_optimize_report.json`。
 
 | 做了什么 | 实测前后 |
 |---|---|
-| 点播搜索并发只给响应最快的 2 站（量子 808ms + 虎牙 842ms） | 原组合含暴风 1899ms → **搜索等待 1.9s → 0.84s** |
+| 点播搜索并发改给 P75 最低的 2 站（**索尼 836ms + 360 1147ms**） | 原按评分给「虎牙 1739ms + 暴风 1892ms」→ **尾部等待 1.89s → 1.15s，最坏情况 5.5s → 1.2s** |
 | 直播剔除「3 轮全失败」的死链 2 条 | 174 → 172 线路，换台不再撞死链白等 5～10 秒 |
+
+> ⚠️ **为什么不能"跑一次看谁快"**：3 轮中位数曾挑出量子+虎牙（808/842ms），
+> 单独复测时量子跳到 3468ms、虎牙 P75 1739ms 最差 5470ms。点播 API 抖动极大，
+> 必须用 9 轮 P75 挑站。这条判据已写进两个脚本且带内置兜底值，测速数据丢了也不会退回旧逻辑。
 
 **刻意不做**（都是实测结论，防止以后为"快"牺牲画质/稳定性）：
 
@@ -103,7 +108,7 @@ https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json
   微鲸 WTV55K1 还有 ACodec 闪退风险。已从候选池 58 条 IPv4 线路里筛过，
   **无一条又快又高清** → 保持 1080p 慢线第一。
 
-优化已固化进 `tools/build_config.py`（quickSearch 按实测响应挑）与
+优化已固化进 `tools/build_config.py`（quickSearch 按 9 轮 P75 挑，带内置兜底）与
 `tools/build_live.py`（生成时剔死链），周更或重建不会打回原样。
 **订阅地址、点播站成员与顺序、lives 顺序全都不变。**
 
