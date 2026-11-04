@@ -6,10 +6,15 @@ description: 维护 GitHub 仓库 anbola/tvbox（TVBox / MyTV 自维护「直播
 # 项目：anbola/tvbox 自维护配置
 
 > 本 SKILL 是「跨电脑记忆」：clone 仓库 `anbola/tvbox` 并在 WorkBuddy 打开，本文件会自动加载，
-> 让新会话立刻知道「在干嘛、连哪个仓库、怎么操作」。最后更新：2026-11-03。
+> 让新会话立刻知道「在干嘛、连哪个仓库、怎么操作」。最后更新：**2026-11-04（v3.0）**。
 
 ## 0. 一句话定位
-为「陕西商洛 · 中国移动宽带 · 电视端 TVBox」定制的影视源。直播全部走**陕西移动 IPTV 官方 CDN**（`dbiptv.sn.chinamobile.com`），按用户自家宽带实测码率排序；点播是 35 个采集站里实测挑出、上限 6 个（MAX_SITES=6，2026-11-03 由 4 提至 6）；但 2026-11-03 实测仅 4 个站越过质量线（视频≥1500kbps），故实际入选 4 个（360、量子、电影天堂、非凡5），剩下 2 个名额需**扩充候选池**才能填（见 §7 末尾）。
+为「陕西商洛 · 中国移动宽带 · 电视端 TVBox / 影视仓」定制的影视源。
+- **直播**：`main.m3u` = 陕西移动 IPTV 内网 CDN（家里电视最快，103 频道/170 线路）；
+  `public.m3u` = 实测可用的纯公网 IPv4 线路（手机蜂窝/外网用，42 频道/55 线路）。
+  配置里是 **3 个 `lives` 对象**，用户在直播页下拉切换。
+- **点播**：28 站候选经 **3 轮稳定性采样**精选出 **6 个**（全部 3/3 轮成功）：
+  **量子 / 360新 / 非凡5 / 电影天堂 / 速播 / 天涯**。
 
 ## 1. 关键地址（写死，别猜）
 | 项 | 值 |
@@ -18,32 +23,46 @@ description: 维护 GitHub 仓库 anbola/tvbox（TVBox / MyTV 自维护「直播
 | 页面 | `https://anbola.github.io/tvbox/` |
 | **用户唯一订阅入口（主用）** | `https://anbola.github.io/tvbox/tvbox_clean.json`（GitHub Pages，稳定长期） |
 | 订阅备用 | `https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/tvbox_clean.json`（国内加速镜像，实测 ~2s）、`https://cdn.jsdmirror.com/gh/anbola/tvbox/tvbox_clean.json` |
-| 直播内嵌在上面的 json 里（`lives` 主 `url`=github.io，`url2`=镜像自动回退，`lives` 指向 `lives/main.m3u`），TVBox「直播源」框**留空** |
+| 线上健康状态 | `https://anbola.github.io/tvbox/status.json`（每日健康检查产出） |
+| 直播 | 内嵌在 json 的 **`lives` 数组 3 个对象**（① 内网极速 / ② 国内镜像 / ③ 公网通用），TVBox「直播源」框**留空**；⚠️ **绝对不要在 lives 对象里写 `url2`**（见 §7） |
 | GitHub 令牌 | 本地 `~/.workbuddy/secrets/anbola_github_token.txt`（PAT，`ghp_` 开头）；仓库内另有 `anbola_token.txt` 也被 .gitignore 屏蔽。**绝不入库** |
-| 历史变更日志 | **不存在**（README §7 写的 `history/CHANGELOG.md` 是悬空引用，目前没有这个文件——别去找） |
+| 本地历史索引 | `history/INDEX.md`（2026-11-04 起有，含 43 个历史版本台账 + 里程碑标记） |
 
-## 2. 当前架构快照（2026-11-03 更新，仓库约 24 个文件：根配置+文档+脚本+3 个兼容镜像）
+## 2. 当前架构快照（2026-11-04 v3.0）
 ```
-tvbox_clean.json          ★唯一配置（最多 6 个点播站 + 1 个直播）
-lives/main.m3u            ★直播源：103 频道 / 170 线路，100% 移动 CDN（约 25KB，死链已剔除、纯 HEVC 台已剥离防微鲸盒子崩）
-lives/pool.m3u            候选池（1.3MB，云端每周扩充，本地测速从这里挑）
+tvbox_clean.json          ★唯一配置（6 个点播站 + 3 个 lives 对象）
+lives/main.m3u            ★内网极速（103 频道/170 线路，死链+纯 HEVC 已剔除）
+lives/public.m3u          ★公网通用（42 频道/55 线路，手机/外网用）
+lives/pool.m3u            候选池（1MB，云端每周扩充）
+status.json               每日健康检查产物
 refresh.bat               ★一键刷新（双击，本地跑）
-README.md                 用户手册（详尽，给人看的）
-.github/workflows/refresh.yml   云端：每周六 21:30 抓候选池 + 结构校验
-tools/ (9):
-  fetch_sources.py  抓社区候选源
-  merge_pool.py     候选源去重合并进 pool.m3u（云端用）
-  speedtest.py      ★直播测速：下载真实 TS 分片算码率
-  codec_probe.py    解析 PAT/PMT/SPS：编码+分辨率（HEVC 会崩 / 576p 是 4:3）
-  build_live.py     按码率排序生成 main.m3u
-  vod_probe.py      ★点播体检：35 站 × 4 项指标
-  build_config.py   生成 tvbox_clean.json
-  refresh_all.py    串起全流程
-  deploy_clean.py   发布到 GitHub（令牌只从环境变量/本地文件读）
-# 兼容镜像层（deploy 自动同步为相同内容，防老客户端 404，勿单独删）：
+README.md                 用户手册（§9 点播精选 / §10 持续可用 / §11 归档规范）
+.github/workflows/
+  refresh.yml     每周六 21:30 抓候选池 + 结构校验（含 lives 规范断言）
+  keepalive.yml   ★每月 1/15 保活，防 GitHub 60 天无活动禁用定时任务
+  healthcheck.yml ★每天 08:20 全链路体检，异常自动开 issue
+tools/ (13):
+  fetch_sources.py   抓社区候选源（含 zhi35/hacks/myIPTV 公网源）
+  merge_pool.py      去重合并进 pool.m3u（云端用）
+  speedtest.py       ★直播测速：下载真实 TS 分片算码率
+  codec_probe.py     解析 PAT/PMT/SPS：编码+分辨率
+  live_expand.py     补 1080p 备选线路
+  build_live.py      生成 main.m3u
+  build_public.py    ★抓公网订阅→过滤 IPv6/内网→实测→生成 public.m3u
+  vod_probe.py       点播单次体检（被 vod_stable 复用 check()）
+  vod_stable.py      ★点播 3 轮稳定性采样 + 综合评分 + 同族去重
+  build_config.py    生成 tvbox_clean.json（优先读 vod_stable.json）
+  healthcheck.py     ★线上全链路体检，写 status.json
+  refresh_all.py     串起全流程（⑦ 发布后自检）
+  deploy_clean.py    发布到 GitHub（Contents API）
+  tidy_history_once.py  history/ 一次性批量归位
+# 兼容镜像层（deploy 自动同步，防老客户端 404，勿单独删）：
 #   lives/fast.m3u = lives/main.m3u ; lives/cn_clean.m3u = lives/main.m3u ; tvbox_multisource.json = tvbox_clean.json
 ```
-**最多 6 个点播站（type:1，api 裸地址，无 ext，ac=videolist 不焊死；build_config.py 按 vod_kbps 排序取前 MAX_SITES=6）**：2026-11-03 实测 35 站里**仅 4 个越过质量线（视频≥1500kbps 且无错）**——360（360zyzz.com，7290kbps）、量子（cj.lziapi.com，2852kbps）、电影天堂（caiji.dyttzyapi.com，1862kbps）、非凡5（ffzy5.tv，1561kbps）。其余 31 站被淘汰（连接失败/超时/码率过低，暴风本轮直接 TimeoutError）。**剩下 2 个名额想填，必须扩充候选池**（见 §7）。
+**点播精选规则（v3.0）**：`build_config.py` 优先读 `_probe/vod_stable.json`，按 `qualify`
+（成功率≥2/3 且码率中位数≥1200kbps）+ `score` 降序取前 6，并**同族去重**
+（`re.sub(r"(新|\d+)$","",name)`：量子/量子1、非凡/非凡5/非凡1、360/360新 是同一资源池不同域名）。
+无稳定性榜单才回退到旧的 `vod_final.json` / `vod_report.json`。
 
 ## 3. 怎么操作（两套路径，别混）
 ### 3.1 本地刷新（必须在本机/电视同网下跑，测速才有意义）
@@ -108,8 +127,33 @@ PY
 - **点播站缺 `key`/`type`/`api` 任一** → TVBox 静默跳过该站（首页少站、不报错）。`type` 必须为 1；不能有 `ext`；`api` 不焊死 `ac=videolist`。
 - **采集站「电影/电视剧」主分类服务器端是 0 条**，片源都在子分类。配置列的是真有货的分类（每站 14 个），播放器默认开第一个分类会空白——点一下标签就有。
 - **移动源 720×576 标清流**靠 VUI/DAR 标 16:9，但 IJK 不读该标记会铺成 4:3 方屏。根治：给频道排一条真 1080p 线路（main.m3u 排序规则已 1080p 优先）。
-- ⚠️ README 小矛盾（待修）：① 目录结构漏列已存在的 `codec_probe.py`，却列了仓库里**不存在**的 `live_expand.py`（refresh_all.py 里它 `optional=True`，缺失会被跳过）；② §7 引用了不存在的 `history/CHANGELOG.md`。
-- **「CDN加载失败，请检查网络」根因（2026-11-03 确诊）**：配置 JSON 与内嵌 `lives/main.m3u` 原先都挂在 GitHub 设施上，而 GitHub 系在大陆要么被墙（`cdn.jsdelivr.net` 主域、`raw.githubusercontent.com` 连接重置）要么慢到触发 TVBox 加载超时（`anbola.github.io` 高峰家宽超时、`fastly/gcore.jsdelivr.net` 实测 13~16s）。**直播流本身是国内地址**（`dbiptv.sn.chinamobile.com` 陕西移动 IPTV 官方 CDN + 直连 IP），不依赖 GitHub——所以这是"取配置的门"单点故障，换地址即让 4 站点播 + 88 台直播全恢复。修复已落地：订阅入口**维持 `anbola.github.io` 主用**（2026-11-03 用户拍板，更稳更熟悉），`build_config.py` 给直播源加 `url2` 备用=testingcf 镜像（主用偶发慢/超时自动回退），详见仓库根 `TVBox_CDN与部署修复方案.md`。**永久根治**= 把配置+直播源部署到国内托管（七牛/又拍云对象存储+CDN 实名永久免费额度，或 Cloudflare Pages 自动部署），已有 `tools/deploy_qiniu.py` 一键推送七牛。
+- ⭐ **「点播正常、直播空白」根因（2026-11-04 确诊，最高频坑）**：`lives` 对象里写了
+  `url2`（**TVBox 根本没有这个字段**）+ `playerType` 写成字符串 `"1"` + 缺 `type:0`，
+  会让 TVBox / 影视仓把**整段 lives 解析丢弃** → 点播站正常显示、直播页完全空白。
+  **官方规范**（ShellTV 语法文档 / 恩山 / CSDN 多处一致）：
+  ```json
+  "lives": [
+    {"name":"主", "type":0, "url":"...m3u", "playerType":1},
+    {"name":"备", "type":0, "url":"...m3u", "playerType":1}
+  ]
+  ```
+  · `type` 必须**显式整数 0**（0=M3U，1=TXT；缺省虽是 0，但不少分支缺省时直接丢整段）
+  · `playerType` 必须**整数**（字符串会让 Gson 严格解析抛错）
+  · **备用源靠数组放多个对象**，不是写 `url2`；多个 lives 在直播页下拉切换
+  · `healthcheck.py` + `refresh.yml` 已加断言，写出非法字段会被 CI 拦下
+- ⭐ **手机直播空白第二层根因（2026-11-04）**：`main.m3u` 全是 `dbiptv.sn.chinamobile.com`
+  等**陕西移动 IPTV 内网/组播地址**，只在家里移动宽带内网可达。手机用蜂窝/外面 WiFi
+  时频道即使列出也全部连不上 → 看起来"空的"。解法：`build_public.py` 从 zhi35 /
+  hacks / zbds / myIPTV 抓公网源，**过滤 IPv6 字面量 `[2409:...]` 和 otttv/PLTV 组播**，
+  逐条实测可达后生成 `lives/public.m3u`，作为第 3 个 lives 对象供手机切换。
+- ⭐ **点播单次测速不可信（2026-11-04）**：同一站不同时刻 360=7290↔620kbps、
+  电影天堂 1862kbps↔断连、速播 0↔1902kbps。**必须 3 轮采样取中位数 + 成功率加权**
+  （`vod_stable.py`），否则选出来的"优质站"几天就废。这是"用一段时间用不了"的主因之一。
+- ⭐ **「用一段时间突然不更新」机制性真因**：GitHub 会在仓库 **60 天无 push 活动**后
+  自动 **disable 所有 schedule 工作流**，无任何通知。`keepalive.yml` 每月 1/15 提交心跳防住；
+  `healthcheck.yml` 每天体检（配置/lives 规范/m3u/点播 API/订阅地址），异常自动开 issue。
+- README 目录结构、`history/CHANGELOG.md` 悬空引用等旧矛盾已在 v3.0 修正。
+- **「CDN加载失败，请检查网络」根因（2026-11-03 确诊）**：配置 JSON 与内嵌 `lives/main.m3u` 原先都挂在 GitHub 设施上，而 GitHub 系在大陆要么被墙（`cdn.jsdelivr.net` 主域、`raw.githubusercontent.com` 连接重置）要么慢到触发 TVBox 加载超时（`anbola.github.io` 高峰家宽超时、`fastly/gcore.jsdelivr.net` 实测 13~16s）。**直播流本身是国内地址**（`dbiptv.sn.chinamobile.com` 陕西移动 IPTV 官方 CDN + 直连 IP），不依赖 GitHub——所以这是"取配置的门"单点故障，换地址即让 4 站点播 + 88 台直播全恢复。修复已落地：订阅入口**维持 `anbola.github.io` 主用**（用户拍板，更稳更熟悉），备用通道改为 `lives` 数组里的第二个对象（testingcf 镜像）。⚠️ 早期版本写的是 `url2`，那是**非法字段**，11-04 已废除，详见下一条。详见仓库根 `TVBox_CDN与部署修复方案.md`。**永久根治**= 把配置+直播源部署到国内托管（七牛/又拍云对象存储+CDN 实名永久免费额度，或 Cloudflare Pages 自动部署），已有 `tools/deploy_qiniu.py` 一键推送七牛。
 
 - ⚠️ **refresh.bat「卡住」根因与修复（2026-11-03 确诊+已修+本轮验证通过）**：① 进度盲区——`speedtest.py` 原只在「每 200 条」打印一次，最后 <200 条不再打印，看着像死机，其实在跑；② 真卡死风险——最后一批是非移动 CDN 外部源，碰到「失效域名 + DNS 解析挂起」时，Python `urlopen(timeout)` **拦不住 DNS 阶段**，线程无限阻塞 → 窗口真死。已修：`speedtest.py`/`vod_probe.py`/`codec_probe.py`/`build_config.py`/`live_expand.py` 全部去掉 `with ThreadPoolExecutor` 的隐式 `shutdown(wait=True)`，改为 `socket.setdefaulttimeout` 全局兜底 + `as_completed(timeout=300)` 强制收尾 + `os._exit(0)` 利落退出；`refresh_all.py` 的 `print("▶")` 改 `sys.stdout.reconfigure(encoding='utf-8')` 避开 GBK 崩溃。**2026-11-03 重跑验证：总用时 1124s 全程跑完、未挂起，超时兜底在第 ② 步优雅触发（1249/1256 条后停止等待，已测照常入库），证明卡死已根治。**
 
