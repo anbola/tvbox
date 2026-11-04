@@ -68,19 +68,29 @@ def main():
     # ②.6 补高清源：给还停在 720x576 的频道找 1080p 线路
     run("②.6 补 1080p 备选线路", ["tools/live_expand.py"], optional=True)
 
-    # ③ 按速度生成直播源
+    # ③ 按速度生成直播源（陕西移动内网极速版）
     run("③ 生成 lives/main.m3u（高清优先 + 多线路）", ["tools/build_live.py"])
 
-    # ④ 点播站体检
-    if not no_vod:
-        run("④ 点播站体检（API 延迟 + 视频分片测速）", ["tools/vod_probe.py"], optional=True)
+    # ③.5 公网通用版：给手机/外网用（内网源在蜂窝网络下不可达）
+    run("③.5 生成 lives/public.m3u（公网版，手机/外网）",
+        ["tools/build_public.py"], optional=True)
 
-    # ⑤ 生成最终配置
+    # ④ 点播站【多轮稳定性】体检：单次测速波动极大（同一站 7.3Mbps↔0.6Mbps），
+    #    必须多轮采样 + 成功率加权，才能挑出真正优质的站。
+    if not no_vod:
+        ok = run("④ 点播站稳定性体检（3 轮采样）",
+                 ["tools/vod_stable.py", "--rounds", "3"], optional=True)
+        if not ok:
+            run("④' 回退：单次点播体检", ["tools/vod_probe.py"], optional=True)
+
+    # ⑤ 生成最终配置（优先读稳定性榜单）
     run("⑤ 生成 tvbox_clean.json", ["tools/build_config.py"], optional=no_vod)
 
     # ⑥ 发布
     if do_deploy:
         run("⑥ 发布到 GitHub", ["tools/deploy_clean.py"], optional=True)
+        # ⑦ 发布后自检：确认线上配置/直播源/点播站都活着（把问题拦在当天）
+        run("⑦ 线上健康检查", ["tools/healthcheck.py"], optional=True)
     else:
         print("\n（未发布。加 --deploy 可推送到 GitHub）")
 
