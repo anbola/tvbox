@@ -177,29 +177,41 @@ def main():
     if not good:
         raise SystemExit("没有达标点播站，请先跑 tools/vod_stable.py（多轮稳定性测速）")
 
-    # 【2026-11-04 电视提速】quickSearch 不再按「评分前 2」给，而是按
-    # 3 轮实测 API 首包给最快的 2 个站。TVBox 搜索时并发请求这些站，最慢那个
-    # 决定整体等待：按评分给会包含暴风(1899ms)，把搜索拖到 1.9s；
-    # 换成量子(808ms)+虎牙(842ms) 后只要 0.84s。
+    # 【2026-11-04 电视提速】quickSearch 不再按「评分前 2」给。
+    # TVBox 搜索时并发请求这些站，等待时间 = 最慢那个，所以按**9 轮 P75 尾部延迟**挑，
+    # 不能按中位数：实测只测 3 轮按中位数会选出波动最大的虎牙(P75 1739ms/最差 5.5s)。
+    # 数据优先级：tv_vod_stability.json(9轮P75) > tv_vod_ttfb.json(多轮中位数) > 评分前2。
     # 站点**成员与顺序仍按 3 轮稳定性评分**，保证画质/片源不受影响。
-    ttfb_rank = {}
+    # 内层兜底：测速数据文件若被清理，也别退回「评分前 2」（那会选中波动最大的虎牙）。
+    # 2026-11-04 20:42 九轮 P75 实测值，按站名固定，仅在没有数据文件时生效。
+    FALLBACK_P75 = {"索尼": 836, "360": 1147, "量子": 1148,
+                    "虎牙": 1739, "暴风": 1892, "金鹰": 3328}
+    rank_name, rank_api = {}, {}
+    sp = os.path.join(ROOT, "_probe", "tv_vod_stability.json")
     tp = os.path.join(ROOT, "_probe", "tv_vod_ttfb.json")
+    if os.path.exists(sp):
+        for s in json.load(open(sp, encoding="utf-8")).get("sites", []):
+            if s.get("p75_ms") is not None:
+                rank_name[s["name"]] = s["p75_ms"]
     if os.path.exists(tp):
         for k, v in json.load(open(tp, encoding="utf-8")).items():
             if v.get("ttfb_ms") is not None and v.get("ok"):
-                ttfb_rank[k.split("/?")[0]] = v["ttfb_ms"]
+                rank_api[k.split("/?")[0]] = v["ttfb_ms"]
     quick_apis = set()
-    if ttfb_rank:
-        ranked = sorted(good, key=lambda r: ttfb_rank.get(
-            force_https(r["api"]).rstrip("/"), 9e9))
+    if rank_name or rank_api:
+        def cost(r):
+            v = rank_name.get(r["name"], FALLBACK_P75.get(r["name"]))
+            return v if v is not None else rank_api.get(
+                force_https(r["api"]).rstrip("/"), 9e9)
+        ranked = sorted(good, key=cost)
         quick_apis = {force_https(r["api"]).rstrip("/") for r in ranked[:2]}
-        print(f"  quickSearch 按实测响应给: {[r['name'] for r in ranked[:2]]}")
+        print(f"  quickSearch 按尾部延迟(P75)给: {[r['name'] for r in ranked[:2]]}")
 
     print(f"入选点播站 {len(good)} 个（稳定性评分降序）：")
     sites = []
     for i, r in enumerate(good):
         quick = (force_https(r["api"]).rstrip("/") in quick_apis
-                 if ttfb_rank else (i < 2))
+                 if (rank_name or rank_api) else (i < 2))
         s = build_site(r, quick=quick)
         if s:
             sites.append(s)
