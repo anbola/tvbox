@@ -62,6 +62,8 @@ UPLOAD = [
     ("tools/build_config.py", "tools/build_config.py"),
     ("tools/tv_speedtest.py", "tools/tv_speedtest.py"),
     ("tools/optimize_tv.py", "tools/optimize_tv.py"),
+    ("tools/archive_version.py", "tools/archive_version.py"),
+    ("tools/tidy_history_once.py", "tools/tidy_history_once.py"),
     ("tools/refresh_all.py", "tools/refresh_all.py"),
     ("tools/deploy_clean.py", "tools/deploy_clean.py"),
     ("refresh.bat", "refresh.bat"),
