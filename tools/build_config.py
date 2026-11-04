@@ -177,13 +177,30 @@ def main():
     if not good:
         raise SystemExit("没有达标点播站，请先跑 tools/vod_stable.py（多轮稳定性测速）")
 
-    # 【2026-11-04 电视提速】quickSearch 不再按「评分前 2」给。
-    # TVBox 搜索时并发请求这些站，等待时间 = 最慢那个，所以按**9 轮 P75 尾部延迟**挑，
-    # 不能按中位数：实测只测 3 轮按中位数会选出波动最大的虎牙(P75 1739ms/最差 5.5s)。
-    # 数据优先级：tv_vod_stability.json(9轮P75) > tv_vod_ttfb.json(多轮中位数) > 评分前2。
-    # 站点**成员与顺序仍按 3 轮稳定性评分**，保证画质/片源不受影响。
-    # 内层兜底：测速数据文件若被清理，也别退回「评分前 2」（那会选中波动最大的虎牙）。
-    # 2026-11-04 20:42 九轮 P75 实测值，按站名固定，仅在没有数据文件时生效。
+    # 【v3.2 / 2026-11-04】点播站成员固定为「A/B 同场次 9 轮 https P75」优选结果。
+    # 之前每周由 vod_stable.json 的 3 轮评分重建，会选进暴风(2926ms)、虎牙(2605ms)、
+    # 金鹰(2683ms)；同场次对比下新 6 站 P75 仅 676~1624ms。判据与原始数据见
+    # tools/vod_picks.json / _probe/vod_ab_https.json，重跑 tools/vod_rank.py 可刷新。
+    vp = os.path.join(ROOT, "tools", "vod_picks.json")
+    vp_data = None
+    if os.path.exists(vp):
+        vp_data = json.load(open(vp, encoding="utf-8"))
+        fixed = []
+        for p in vp_data.get("sites", [])[:MAX_SITES]:
+            api = force_https(p["api"]).rstrip("/")
+            row = next((dict(r) for r in rep
+                        if force_https(r["api"]).rstrip("/") == api), None)
+            if row is None:
+                row = {"name": p["name"], "api": api}
+            row["name"], row["api"] = p["name"], api
+            fixed.append(row)
+        if fixed:
+            good = fixed
+            print(f"点播站按 tools/vod_picks.json 固定: {[r['name'] for r in good]}")
+
+    # quickSearch：TVBox 搜索并发等待 = 最慢那个，所以按尾部延迟挑。
+    # 数据优先级：固定清单 > tv_vod_stability.json(9轮P75) > tv_vod_ttfb.json。
+    # 内层兜底：测速数据文件被清理时也别退回「评分前 2」（会选中波动最大的虎牙）。
     FALLBACK_P75 = {"索尼": 836, "360": 1147, "量子": 1148,
                     "虎牙": 1739, "暴风": 1892, "金鹰": 3328}
     rank_name, rank_api = {}, {}
@@ -198,7 +215,12 @@ def main():
             if v.get("ttfb_ms") is not None and v.get("ok"):
                 rank_api[k.split("/?")[0]] = v["ttfb_ms"]
     quick_apis = set()
-    if rank_name or rank_api:
+    if vp_data and vp_data.get("quickSearch"):
+        qn = set(vp_data["quickSearch"])
+        quick_apis = {force_https(r["api"]).rstrip("/") for r in good
+                      if r["name"] in qn}
+        print(f"  quickSearch 按固定清单: {sorted(qn)}")
+    elif rank_name or rank_api:
         def cost(r):
             v = rank_name.get(r["name"], FALLBACK_P75.get(r["name"]))
             return v if v is not None else rank_api.get(
@@ -207,11 +229,11 @@ def main():
         quick_apis = {force_https(r["api"]).rstrip("/") for r in ranked[:2]}
         print(f"  quickSearch 按尾部延迟(P75)给: {[r['name'] for r in ranked[:2]]}")
 
-    print(f"入选点播站 {len(good)} 个（稳定性评分降序）：")
+    print(f"入选点播站 {len(good)} 个（A/B P75 优选）：")
     sites = []
     for i, r in enumerate(good):
         quick = (force_https(r["api"]).rstrip("/") in quick_apis
-                 if (rank_name or rank_api) else (i < 2))
+                 if (vp_data or rank_name or rank_api) else (i < 2))
         s = build_site(r, quick=quick)
         if s:
             sites.append(s)
