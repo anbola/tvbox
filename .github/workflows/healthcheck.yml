@@ -1,0 +1,79 @@
+name: 每日健康检查（配置 / 直播 / 点播 / 订阅地址）
+
+# 目标：把「用了一段时间突然用不了」变成「提前一天知道、且能自动回退」。
+# 检查项：
+#   1) 线上 tvbox_clean.json 是否 200 + JSON 合法 + sites/lives 结构正确
+#      （重点校验 lives 的 type:0 / playerType 整数 —— 写错就是「直播空白」）
+#   2) lives/main.m3u、lives/public.m3u 是否 200 且 #EXTM3U 头合法、频道数够
+#   3) 配置里每个点播站 api 是否还活着（返回 code=1 / 有分类）
+#   4) 订阅主地址 + 镜像地址是否都能取到同一份配置
+# 结果写入 status.json（Pages 可访问，随时能看），异常自动开 issue。
+on:
+  schedule:
+    - cron: "20 0 * * *"   # 每天 08:20 北京时间
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "tvbox_clean.json"
+      - "lives/**"
+      - ".github/workflows/healthcheck.yml"
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: healthcheck
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 跑健康检查
+        id: health
+        run: python tools/healthcheck.py
+
+      - name: 提交状态文件
+        if: always()
+        run: |
+          git config user.name  "tvbox-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add status.json
+          if git diff --staged --quiet; then
+            echo "状态无变化"
+          else
+            git commit -m "chore(health): 每日健康检查 $(date -u +%Y-%m-%d)"
+            git push || true
+          fi
+
+      - name: 异常时开 issue 告警
+        if: steps.health.outputs.has_error == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `⚠️ TVBox 健康检查异常 ${new Date().toISOString().slice(0,10)}`;
+            const body = process.env.HEALTH_SUMMARY || '详见 status.json';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'health-alert', per_page: 5
+            });
+            if (issues.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['health-alert']
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issues[0].number, body
+              });
+            }
+        env:
+          HEALTH_SUMMARY: ${{ steps.health.outputs.summary }}
