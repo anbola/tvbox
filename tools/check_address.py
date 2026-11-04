@@ -38,12 +38,14 @@ def read(rel):
 
 
 # 1) 配置里的直播地址必须固定，且不含非法字段
+#    ⚠️ 2026-11-04：lives[0] 必须是「公网通用」。TVBox / 影视仓默认加载第一项，
+#    若把内网 IPTV 放第一，手机填完地址后直播永远空白（用户看不到切换入口）。
 cfg = json.loads(read("tvbox_clean.json"))
 lives = cfg.get("lives", [])
-ck("配置 lives 主 url 固定",
-   bool(lives) and lives[0].get("url") == LIVE_MAIN_URL,
+ck("配置 lives 首项=公网通用(手机默认可看)",
+   bool(lives) and lives[0].get("url") == LIVE_PUBLIC_URL,
    lives[0].get("url", "") if lives else "lives 为空")
-ck("配置含公网直播源", any(l.get("url") == LIVE_PUBLIC_URL for l in lives))
+ck("配置仍保留内网极速源", any(l.get("url") == LIVE_MAIN_URL for l in lives))
 ck("lives 无非法 url2", all("url2" not in l for l in lives))
 ck("lives url 均在白名单",
    all(l.get("url") in ALLOWED_LIVE_URLS for l in lives),
