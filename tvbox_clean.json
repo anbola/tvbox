@@ -1,10 +1,10 @@
 {
   "sites": [
     {
-      "key": "360zyzz_9d48",
-      "name": "360",
+      "key": "cj_c8af",
+      "name": "量子",
       "type": 1,
-      "api": "https://360zyzz.com/api.php/provide/vod/",
+      "api": "https://cj.lziapi.com/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0,
@@ -16,7 +16,32 @@
         "爱情片",
         "恐怖片",
         "国产剧",
+        "欧美剧",
         "香港剧",
+        "韩国剧",
+        "大陆综艺",
+        "国产动漫",
+        "记录片",
+        "战争片"
+      ]
+    },
+    {
+      "key": "360zy_b06c",
+      "name": "360新",
+      "type": 1,
+      "api": "https://360zy.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "科幻片",
+        "爱情片",
+        "恐怖片",
+        "国产剧",
+        "欧美剧",
         "韩国剧",
         "大陆综艺",
         "动画片",
@@ -26,12 +51,12 @@
       ]
     },
     {
-      "key": "cj_c8af",
-      "name": "量子",
+      "key": "ffzy5_8d21",
+      "name": "非凡5",
       "type": 1,
-      "api": "https://cj.lziapi.com/api.php/provide/vod/",
+      "api": "https://ffzy5.tv/api.php/provide/vod/",
       "searchable": 1,
-      "quickSearch": 1,
+      "quickSearch": 0,
       "filterable": 0,
       "categories": [
         "动作片",
@@ -76,10 +101,29 @@
       ]
     },
     {
-      "key": "ffzy5_8d21",
-      "name": "非凡5",
+      "key": "subocj_362e",
+      "name": "速播",
       "type": 1,
-      "api": "https://ffzy5.tv/api.php/provide/vod/",
+      "api": "https://subocj.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "剧情片",
+        "爱情片",
+        "恐怖片",
+        "大陆综艺",
+        "纪录片",
+        "战争片"
+      ]
+    },
+    {
+      "key": "tyyszyapi_9e02",
+      "name": "天涯",
+      "type": 1,
+      "api": "https://tyyszyapi.com/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0,
@@ -92,21 +136,33 @@
         "恐怖片",
         "国产剧",
         "欧美剧",
-        "香港剧",
         "韩国剧",
         "大陆综艺",
+        "动画片",
         "国产动漫",
-        "记录片",
+        "纪录片",
         "战争片"
       ]
     }
   ],
   "lives": [
     {
-      "name": "央视·卫视·陕西本地（实测排序）",
+      "name": "① 家里电视·移动内网极速",
+      "type": 0,
       "url": "https://anbola.github.io/tvbox/lives/main.m3u",
-      "url2": "https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/lives/main.m3u",
-      "playerType": "1"
+      "playerType": 1
+    },
+    {
+      "name": "② 备用·国内加速镜像",
+      "type": 0,
+      "url": "https://testingcf.jsdelivr.net/gh/anbola/tvbox@main/lives/main.m3u",
+      "playerType": 1
+    },
+    {
+      "name": "③ 手机/外网·公网通用",
+      "type": 0,
+      "url": "https://anbola.github.io/tvbox/lives/public.m3u",
+      "playerType": 1
     }
   ]
 }
