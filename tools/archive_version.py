@@ -56,6 +56,12 @@ FILES = [
     "tools/deploy_clean.py",
     "tools/archive_version.py",
     "tools/tidy_history_once.py",
+    # v3.2 全网调研 + 真实画质/多轮P75 优选（数据文件必须进快照，CI 要用）
+    "tools/stream_probe.py",
+    "tools/vod_rank.py",
+    "tools/vod_picks.json",
+    "lives/quality_map.json",
+    "lives/hd_picks.json",
     ".github/workflows/refresh.yml",
     ".github/workflows/keepalive.yml",
     ".github/workflows/healthcheck.yml",
