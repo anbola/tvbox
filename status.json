@@ -1,35 +1,25 @@
 {
-  "checked_at": "2026-11-04 13:56:34",
+  "checked_at": "2026-11-05 06:58:39",
   "ok": true,
   "errors": [],
   "checks": [
     {
       "item": "主用 GitHub Pages HTTP",
       "ok": true,
-      "detail": "200 / 3640B"
+      "detail": "200 / 3243B"
     },
     {
       "item": "备用 国内加速镜像 HTTP",
       "ok": true,
-      "detail": "200 / 3660B"
+      "detail": "200 / 3243B"
     },
     {
       "item": "sites 非空",
       "ok": true,
-      "detail": "6 个点播站"
+      "detail": "5 个点播站"
     },
     {
-      "item": "  站 虎牙",
-      "ok": true,
-      "detail": "key/type/api 完整"
-    },
-    {
-      "item": "  站 暴风",
-      "ok": true,
-      "detail": "key/type/api 完整"
-    },
-    {
-      "item": "  站 360",
+      "item": "  站 非凡5",
       "ok": true,
       "detail": "key/type/api 完整"
     },
@@ -44,7 +34,12 @@
       "detail": "key/type/api 完整"
     },
     {
-      "item": "  站 金鹰",
+      "item": "  站 360",
+      "ok": true,
+      "detail": "key/type/api 完整"
+    },
+    {
+      "item": "  站 电影天堂",
       "ok": true,
       "detail": "key/type/api 完整"
     },
@@ -71,7 +66,7 @@
     {
       "item": "main.m3u(内网极速) HTTP",
       "ok": true,
-      "detail": "200 / 25435B"
+      "detail": "200 / 26843B"
     },
     {
       "item": "main.m3u(内网极速) #EXTM3U 头",
@@ -81,7 +76,7 @@
     {
       "item": "main.m3u(内网极速) 频道数",
       "ok": true,
-      "detail": "172 个（阈值 60）"
+      "detail": "186 个（阈值 60）"
     },
     {
       "item": "main.m3u(内网极速) 无非法行",
@@ -109,19 +104,9 @@
       "detail": "全部合法"
     },
     {
-      "item": "  虎牙",
+      "item": "  非凡5",
       "ok": true,
-      "detail": "HTTP200 分类44个"
-    },
-    {
-      "item": "  暴风",
-      "ok": true,
-      "detail": "HTTP200 分类49个"
-    },
-    {
-      "item": "  360",
-      "ok": true,
-      "detail": "HTTP200 分类51个"
+      "detail": "HTTP200 分类31个"
     },
     {
       "item": "  索尼",
@@ -134,9 +119,14 @@
       "detail": "HTTP200 分类40个"
     },
     {
-      "item": "  金鹰",
+      "item": "  360",
       "ok": true,
-      "detail": "HTTP200 分类44个"
+      "detail": "HTTP200 分类51个"
+    },
+    {
+      "item": "  电影天堂",
+      "ok": true,
+      "detail": "HTTP200 分类32个"
     }
   ],
   "subscription": "https://anbola.github.io/tvbox/tvbox_clean.json"
