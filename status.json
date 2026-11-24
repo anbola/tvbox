@@ -1,7 +1,12 @@
 {
-  "checked_at": "2026-11-24 10:03:43",
-  "ok": true,
-  "errors": [],
+  "checked_at": "2026-11-24 21:57:01",
+  "ok": false,
+  "errors": [
+    "备用 国内加速镜像 HTTP: TimeoutError",
+    "  索尼: URLError",
+    "  量子: URLError",
+    "  电影天堂: URLError"
+  ],
   "checks": [
     {
       "item": "主用 GitHub Pages HTTP",
@@ -10,8 +15,8 @@
     },
     {
       "item": "备用 国内加速镜像 HTTP",
-      "ok": true,
-      "detail": "200 / 3243B"
+      "ok": false,
+      "detail": "TimeoutError"
     },
     {
       "item": "sites 非空",
@@ -110,13 +115,13 @@
     },
     {
       "item": "  索尼",
-      "ok": true,
-      "detail": "HTTP200 分类61个"
+      "ok": false,
+      "detail": "URLError"
     },
     {
       "item": "  量子",
-      "ok": true,
-      "detail": "HTTP200 分类40个"
+      "ok": false,
+      "detail": "URLError"
     },
     {
       "item": "  360",
@@ -125,8 +130,8 @@
     },
     {
       "item": "  电影天堂",
-      "ok": true,
-      "detail": "HTTP200 分类32个"
+      "ok": false,
+      "detail": "URLError"
     }
   ],
   "subscription": "https://anbola.github.io/tvbox/tvbox_clean.json"
