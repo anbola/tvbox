@@ -46,10 +46,17 @@ PRIORITY = [
 ]
 
 
-def get_json(url, timeout=15):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=timeout, context=CTX) as r:
-        return json.loads(r.read().decode("utf-8", "ignore"))
+def get_json(url, timeout=15, retries=3):
+    """带重试：采集站网络抖动很常见，单次 URLError 就丢站会导致成员凭空减少。"""
+    last = None
+    for i in range(retries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=timeout, context=CTX) as r:
+                return json.loads(r.read().decode("utf-8", "ignore"))
+        except Exception as e:
+            last = e
+    raise last
 
 
 def site_key(api):
@@ -81,8 +88,16 @@ def build_site(site, quick):
     try:
         classes = get_json(api + "?ac=list").get("class") or []
     except Exception as e:
-        print(f"  {site['name']}: 取分类失败 {type(e).__name__}")
-        return None
+        # 固定清单里的站必须保留（成员不减）：重试后仍失败就用通用分类兜底，
+        # 让它在首页仍可见可点，绝不因为一次网络抖动凭空少一个站。
+        print(f"  {site['name']}: 取分类失败 {type(e).__name__}，用通用分类兜底保留")
+        fallback = ["电影", "电视剧", "综艺", "动漫", "纪录片"]
+        return {
+            "key": site_key(api), "name": site["name"], "type": 1, "api": api,
+            "searchable": int(site.get("searchable", 1)),
+            "quickSearch": 1 if quick else 0, "filterable": 0,
+            "categories": fallback,
+        }
     idmap = {c["type_name"]: c["type_id"] for c in classes if c.get("type_name")}
     names = [n for n in PRIORITY if n in idmap]
     # 候选不足时补其它分类（保持服务器顺序）
@@ -129,7 +144,9 @@ def build_site(site, quick):
         "name": site["name"],
         "type": 1,
         "api": api,
-        "searchable": 1,
+        # v3.3：搜索端点无效(索尼返回纯文本「暂不支持搜索」)或完整响应过慢(量子)的站
+        # 降为 searchable=0「仅浏览」，内容池仍在首页，但不再拖慢每次搜索。
+        "searchable": int(site.get("searchable", 1)),
         "quickSearch": 1 if quick else 0,
         "filterable": 0,
         "categories": picked,
@@ -193,6 +210,8 @@ def main():
             if row is None:
                 row = {"name": p["name"], "api": api}
             row["name"], row["api"] = p["name"], api
+            # 带上 v3.3 的「仅浏览」标记，否则会被下方 build_site 的默认值 1 覆盖
+            row["searchable"] = p.get("searchable", 1)
             fixed.append(row)
         if fixed:
             good = fixed
