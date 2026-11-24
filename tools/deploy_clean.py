@@ -66,6 +66,10 @@ UPLOAD = [
     # 【v3.2】全网调研 + 真实画质/多轮P75 优选的工具与数据（CI 重建时必须随仓库带上）
     ("tools/stream_probe.py", "tools/stream_probe.py"),
     ("tools/vod_rank.py", "tools/vod_rank.py"),
+    # 【v3.3】完整响应测速工具链（搜索/首页/分类多轮P75 + 多影片播放链路 + 定稿决策）
+    ("tools/vod_e2e.py", "tools/vod_e2e.py"),
+    ("tools/vod_play_multi.py", "tools/vod_play_multi.py"),
+    ("tools/vod_decide.py", "tools/vod_decide.py"),
     ("tools/vod_picks.json", "tools/vod_picks.json"),
     ("lives/quality_map.json", "lives/quality_map.json"),
     ("lives/hd_picks.json", "lives/hd_picks.json"),
