@@ -26,62 +26,12 @@
       ]
     },
     {
-      "key": "suoniapi_0a7e",
-      "name": "索尼",
+      "key": "360zy_681a",
+      "name": "360新",
       "type": 1,
-      "api": "https://suoniapi.com/api.php/provide/vod",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "categories": [
-        "动作片",
-        "喜剧片",
-        "剧情片",
-        "科幻片",
-        "爱情片",
-        "恐怖片",
-        "国产剧",
-        "欧美剧",
-        "大陆综艺",
-        "动画片",
-        "国产动漫",
-        "纪录片",
-        "战争片",
-        "预告片"
-      ]
-    },
-    {
-      "key": "cj_122e",
-      "name": "量子",
-      "type": 1,
-      "api": "https://cj.lziapi.com/api.php/provide/vod",
+      "api": "https://360zy.com/api.php/provide/vod",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 0,
-      "categories": [
-        "喜剧片",
-        "剧情片",
-        "科幻片",
-        "爱情片",
-        "恐怖片",
-        "国产剧",
-        "欧美剧",
-        "香港剧",
-        "韩国剧",
-        "大陆综艺",
-        "国产动漫",
-        "记录片",
-        "战争片",
-        "短剧"
-      ]
-    },
-    {
-      "key": "360zyzz_4262",
-      "name": "360",
-      "type": 1,
-      "api": "https://360zyzz.com/api.php/provide/vod",
-      "searchable": 1,
-      "quickSearch": 0,
       "filterable": 0,
       "categories": [
         "动作片",
@@ -98,31 +48,6 @@
         "动画片",
         "国产动漫",
         "纪录片"
-      ]
-    },
-    {
-      "key": "caiji_a758",
-      "name": "电影天堂",
-      "type": 1,
-      "api": "https://caiji.dyttzyapi.com/api.php/provide/vod",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "categories": [
-        "动作片",
-        "喜剧片",
-        "剧情片",
-        "科幻片",
-        "爱情片",
-        "恐怖片",
-        "国产剧",
-        "欧美剧",
-        "香港剧",
-        "韩国剧",
-        "大陆综艺",
-        "动画片",
-        "国产动漫",
-        "记录片"
       ]
     }
   ],
