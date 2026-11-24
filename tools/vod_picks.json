@@ -1,54 +1,109 @@
 {
- "generated": "2026-11-04 21:40:24",
- "criterion": "A/B 同场次 9 轮 https P75（现用6站 vs 候选同批对比）+ ?ac=list 内容校验 + host去重；并剔除「API快但分片<1200kbps」的站（片源速度同样决定体验）",
+ "generated": "2026-11-04 23:15:46",
+ "version": "v3.3",
+ "criterion": "完整响应 full_ms（非首包）12轮P75：搜索/首页/分类/详情；每站6部影片首片 kbps 中位交叉；同场次 https A/B。成员不减按交互速度排序，quickSearch 给最快2站，搜索无效或 P75>2300ms 的站降为 searchable=0 仅浏览",
+ "measurement": {
+  "tool": "tools/vod_e2e.py + tools/vod_play_multi.py",
+  "fine_rounds": 12,
+  "films_per_site": 6,
+  "raw": [
+   "_probe/vod_e2e_fine.json",
+   "_probe/vod_play_multi.json",
+   "_probe/vod_e2e_play.json",
+   "_probe/vod_e2e_coarse.json"
+  ]
+ },
  "sites": [
   {
    "name": "非凡5",
    "api": "https://ffzy5.tv/api.php/provide/vod",
-   "p75_ms": 676,
-   "worst_ms": 737,
-   "ok": 9
+   "family": "非凡",
+   "search_p75": 660.5,
+   "home_p75": 923.2,
+   "list_p75": 681.9,
+   "detail_p75": 703.2,
+   "kbps_median": 673.9,
+   "seg_ttfb_p75": 1283.1,
+   "hist_kbps": 1368.0,
+   "interaction_score": 723.7,
+   "searchable": 1,
+   "quickSearch": 1,
+   "role": "首页默认源 + 聚搜"
   },
   {
-   "name": "索尼",
-   "api": "https://suoniapi.com/api.php/provide/vod",
-   "p75_ms": 984,
-   "worst_ms": 2969,
-   "ok": 9
-  },
-  {
-   "name": "量子",
-   "api": "https://cj.lziapi.com/api.php/provide/vod",
-   "p75_ms": 1086,
-   "worst_ms": 2009,
-   "ok": 9
-  },
-  {
-   "name": "360",
-   "api": "https://360zyzz.com/api.php/provide/vod",
-   "p75_ms": 1476,
-   "worst_ms": 1506,
-   "ok": 9
-  },
-  {
-   "name": "电影天堂",
-   "api": "https://caiji.dyttzyapi.com/api.php/provide/vod",
-   "p75_ms": 1615,
-   "worst_ms": 4380,
-   "ok": 9
+   "name": "360新",
+   "api": "https://360zy.com/api.php/provide/vod",
+   "family": "360",
+   "search_p75": 1950.5,
+   "home_p75": 1463.5,
+   "list_p75": 2378.7,
+   "detail_p75": 1205.9,
+   "kbps_median": 9633.2,
+   "seg_ttfb_p75": 181.2,
+   "hist_kbps": 1420.1,
+   "interaction_score": 1747.0,
+   "searchable": 1,
+   "quickSearch": 1,
+   "role": "可搜索 + quickSearch"
   }
  ],
  "quickSearch": [
   "非凡5",
-  "量子"
+  "360新"
  ],
- "quick_criterion": "0.7*P75 + 0.3*worst（搜索并发看尾部延迟）",
- "excluded": [
+ "compare": {
+  "quickSearch 尾部等待_ms": [
+   3120,
+   1950
+  ],
+  "参与聚搜的路数": [
+   5,
+   3
+  ],
+  "聚搜尾部等待_ms": [
+   3120,
+   2192
+  ],
+  "搜索端点无效的站参与聚搜": [
+   1,
+   0
+  ],
+  "首页默认源搜索P75_ms": [
+   660,
+   660
+  ],
+  "第2站搜索P75_ms": [
+   0,
+   1950
+  ]
+ },
+ "note": "v3.3 完整响应口径(非首包)：12轮P75 搜索/首页/分类/详情 + 每站6部影片首片kbps。360新(360zy.com)顶替旧360zyzz.com(交互1747vs1876ms、分片9633vs8497kbps、首片181vs206ms)。索尼对任何wd=返回纯文本暂不支持搜索、量子完整响应3120/4593ms，均降searchable=0仅浏览。【2026-11-24二次深挖】电影天堂/量子/索尼域名全部失效(curl HTTP=000)，备用域名仅量子1存活但1981ms+成功率25%→不顶替，删除；新候选猫眼/金鹰点播单次测速966/1102ms看似快，但9轮P75搜索4062/4483ms(极慢不稳)→淘汰。最终保留非凡5(搜索1217ms)+360新(搜索1168ms、分片9633kbps)两站，均为searchable+quickSearch。360新首页P75较高(95KB片库大)是固有代价，但搜索与播放最快，优于所有活站。宁缺毋滥，不为凑数塞慢站。",
+ "removed_20261124": [
   {
-   "name": "光速",
-   "api": "https://api.guangsuapi.com/api.php/provide/vod",
-   "reason": "API P75 1624ms 尚可，但视频分片实测 64/191/351kbps（历史 84kbps，qualify=False），播放会卡；宁缺毋滥"
+   "name": "电影天堂",
+   "reason": "域名失效，全部备用域名不可达"
+  },
+  {
+   "name": "索尼",
+   "reason": "域名失效，全部备用域名不可达"
+  },
+  {
+   "name": "量子",
+   "reason": "域名失效，全部备用域名不可达"
   }
  ],
- "note": "第6站不补：候选补测 最大/森林/樱花/天涯 分片速度均不达标；TVBox 搜索会并发所有站，补一个 P75>2500ms 的慢站反而拖慢搜索"
+ "rejected_20261124": [
+  {
+   "name": "猫眼",
+   "reason": "9轮P75搜索4062ms，单次966ms是假象"
+  },
+  {
+   "name": "金鹰点播",
+   "reason": "9轮P75搜索4483ms，单次1102ms是假象"
+  },
+  {
+   "name": "电影天堂/量子/索尼",
+   "reason": "域名全部失效 HTTP=000"
+  }
+ ]
 }
