@@ -1,27 +1,22 @@
 {
-  "checked_at": "2026-11-24 21:57:01",
-  "ok": false,
-  "errors": [
-    "备用 国内加速镜像 HTTP: TimeoutError",
-    "  索尼: URLError",
-    "  量子: URLError",
-    "  电影天堂: URLError"
-  ],
+  "checked_at": "2026-11-25 08:48:34",
+  "ok": true,
+  "errors": [],
   "checks": [
     {
       "item": "主用 GitHub Pages HTTP",
       "ok": true,
-      "detail": "200 / 3243B"
+      "detail": "200 / 1620B"
     },
     {
       "item": "备用 国内加速镜像 HTTP",
-      "ok": false,
-      "detail": "TimeoutError"
+      "ok": true,
+      "detail": "200 / 1620B"
     },
     {
       "item": "sites 非空",
       "ok": true,
-      "detail": "5 个点播站"
+      "detail": "2 个点播站"
     },
     {
       "item": "  站 非凡5",
@@ -29,22 +24,7 @@
       "detail": "key/type/api 完整"
     },
     {
-      "item": "  站 索尼",
-      "ok": true,
-      "detail": "key/type/api 完整"
-    },
-    {
-      "item": "  站 量子",
-      "ok": true,
-      "detail": "key/type/api 完整"
-    },
-    {
-      "item": "  站 360",
-      "ok": true,
-      "detail": "key/type/api 完整"
-    },
-    {
-      "item": "  站 电影天堂",
+      "item": "  站 360新",
       "ok": true,
       "detail": "key/type/api 完整"
     },
@@ -71,7 +51,7 @@
     {
       "item": "main.m3u(内网极速) HTTP",
       "ok": true,
-      "detail": "200 / 26843B"
+      "detail": "200 / 26836B"
     },
     {
       "item": "main.m3u(内网极速) #EXTM3U 头",
@@ -114,24 +94,9 @@
       "detail": "HTTP200 分类31个"
     },
     {
-      "item": "  索尼",
-      "ok": false,
-      "detail": "URLError"
-    },
-    {
-      "item": "  量子",
-      "ok": false,
-      "detail": "URLError"
-    },
-    {
-      "item": "  360",
+      "item": "  360新",
       "ok": true,
       "detail": "HTTP200 分类51个"
-    },
-    {
-      "item": "  电影天堂",
-      "ok": false,
-      "detail": "URLError"
     }
   ],
   "subscription": "https://anbola.github.io/tvbox/tvbox_clean.json"
